@@ -28,18 +28,38 @@
   <body>
     <header class="site-header">
       <div class="container">
-        <h1>CoreCrew Logistics</h1>
-        <nav><a href="/apply" class="btn">Apply for Job Position</a></nav>
+        <div class="brand">
+          <div class="logo"></div>
+          <strong>CoreCrew Logistics</strong>
+        </div>
+        <nav>
+          <a href="/apply" class="btn ghost">Careers</a>
+          <a href="/apply" class="btn primary">Apply now</a>
+        </nav>
       </div>
     </header>
     <main class="container">
       <section class="hero">
-        <h2>Join our team</h2>
-        <p>We move goods and connect people. Explore roles in operations, driving, warehouse, customer support and more.</p>
-        <a href="/apply" class="btn primary">Start application</a>
+        <div class="copy">
+          <h2>Grow your career in logistics</h2>
+          <p>Join a team focused on precision, safety, and customer success. Roles across dispatch, drivers, warehouse, IT, and more.</p>
+          <div class="actions">
+            <a href="/apply" class="btn primary">Start application</a>
+            <a href="#contact" class="btn ghost">Contact</a>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Open roles</h3>
+          <table>
+            <tr><td>Logistics Coordinator / Dispatcher</td><td><a class="btn" href="/apply">Apply</a></td></tr>
+            <tr><td>Drivers (truck, delivery, fleet)</td><td><a class="btn" href="/apply">Apply</a></td></tr>
+            <tr><td>Warehouse Staff & Forklift Operators</td><td><a class="btn" href="/apply">Apply</a></td></tr>
+            <tr><td>Customer Support / Client Relations</td><td><a class="btn" href="/apply">Apply</a></td></tr>
+          </table>
+        </div>
       </section>
 
-      <section class="contact">
+      <section id="contact" class="section card">
         <h3>Contact</h3>
         <ul>
           <li><strong>Address:</strong> <%= COMPANY.address %></li>
