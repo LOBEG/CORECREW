@@ -1,4 +1,5 @@
 const path = require('path');
+const os = require('os');
 const express = require('express');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
@@ -8,7 +9,7 @@ const router = express.Router();
 // Storage for uploads (temp on disk)
 const upload = multer({
   storage: multer.diskStorage({
-    destination: (req, file, cb) => cb(null, path.join(__dirname, '..', 'uploads')),
+    destination: (req, file, cb) => cb(null, os.tmpdir()),
     filename: (req, file, cb) => {
       const timestamp = Date.now();
       const safe = file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_');
@@ -52,23 +53,11 @@ router.post('/start', upload.array('documents', 6), (req, res) => {
     files: (req.files || []).map((f) => ({ path: f.path, originalname: f.originalname, mimetype: f.mimetype })),
   };
 
-  res.redirect('/apply/verify');
+  res.redirect('/auth/idme');
 });
 
 // Step 2: Simulated ID.me verification screen
-router.get('/verify', (req, res) => {
-  if (!req.session.applicationDraft) return res.redirect('/apply');
-  res.render('verify', { email: req.session.applicationDraft.email || '' });
-});
-
-// Step 2 POST: Simulate verification
-router.post('/verify', async (req, res) => {
-  if (!req.session.applicationDraft) return res.redirect('/apply');
-  const { email, password } = req.body;
-  if (!email || !password) return res.status(400).render('verify', { email: req.session.applicationDraft.email || '' });
-  req.session.verified = true;
-  res.redirect('/apply/submit');
-});
+// Verify step now handled by ID.me OAuth in /auth
 
 // Step 3: Submit and email
 router.get('/submit', async (req, res) => {

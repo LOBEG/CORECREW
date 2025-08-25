@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "build:netlify": "mkdir -p dist && cp -r src/public dist/public && node -e \"console.log('skip static build')\""
   },
   "repository": {
     "type": "git",
@@ -28,7 +29,9 @@
     "express-session": "^1.18.2",
     "helmet": "^8.1.0",
     "multer": "^2.0.2",
-    "nodemailer": "^7.0.5"
+    "nodemailer": "^7.0.5",
+    "openid-client": "^6.6.4",
+    "serverless-http": "^3.2.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
