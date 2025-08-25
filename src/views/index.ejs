@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CoreCrew Logistics — Careers</title>
+    <meta name="description" content="Apply for positions at CoreCrew Logistics: dispatch, drivers, warehouse, analysts and more." />
+    <link rel="stylesheet" href="/public/styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "corecrewlogistics",
+        "url": "https://www.corecrewlogistics.com/",
+        "email": "corecrewlogistics@gmail.com",
+        "telephone": "+13105742415",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "4700 stockdale Hwy",
+          "addressLocality": "Bakersfield",
+          "addressRegion": "CA",
+          "postalCode": "93309",
+          "addressCountry": "US"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <h1>CoreCrew Logistics</h1>
+        <nav><a href="/apply" class="btn">Apply for Job Position</a></nav>
+      </div>
+    </header>
+    <main class="container">
+      <section class="hero">
+        <h2>Join our team</h2>
+        <p>We move goods and connect people. Explore roles in operations, driving, warehouse, customer support and more.</p>
+        <a href="/apply" class="btn primary">Start application</a>
+      </section>
+
+      <section class="contact">
+        <h3>Contact</h3>
+        <ul>
+          <li><strong>Address:</strong> <%= COMPANY.address %></li>
+          <li><strong>Email:</strong> <a href="mailto:<%= COMPANY.email %>"><%= COMPANY.email %></a></li>
+          <li><strong>Phone:</strong> <a href="tel:+13105742415"><%= COMPANY.phone %></a></li>
+        </ul>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="container">© <%= new Date().getFullYear() %> CoreCrew Logistics</div>
+    </footer>
+  </body>
+  </html>
+

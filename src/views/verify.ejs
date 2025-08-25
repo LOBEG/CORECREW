@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Verify Identity — CoreCrew Logistics</title>
+    <link rel="stylesheet" href="/public/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <h1>Verify your identity</h1>
+      </div>
+    </header>
+    <main class="container">
+      <form class="card" action="/apply/verify" method="post">
+        <p>Secure sign-in simulated with ID.me. Enter your email and password to proceed.</p>
+        <label>Email
+          <input required type="email" name="email" value="<%= email %>" />
+        </label>
+        <label>Password
+          <input required type="password" name="password" />
+        </label>
+        <div class="actions">
+          <button class="btn primary" type="submit">Continue</button>
+        </div>
+      </form>
+    </main>
+    <footer class="site-footer">
+      <div class="container">© <%= new Date().getFullYear() %> CoreCrew Logistics</div>
+    </footer>
+  </body>
+  </html>
+

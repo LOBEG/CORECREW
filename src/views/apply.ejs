@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Apply — CoreCrew Logistics</title>
+    <meta name="description" content="Apply for roles at CoreCrew Logistics and upload your resume." />
+    <link rel="stylesheet" href="/public/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <h1>Apply for Job Position</h1>
+        <nav><a href="/" class="btn">Home</a></nav>
+      </div>
+    </header>
+    <main class="container">
+      <form class="card" action="/apply/start" method="post" enctype="multipart/form-data">
+        <h2>Personal Information</h2>
+        <div class="grid-2">
+          <label>First name
+            <input required name="firstName" type="text" />
+          </label>
+          <label>Last name
+            <input required name="lastName" type="text" />
+          </label>
+        </div>
+        <div class="grid-2">
+          <label>Email address
+            <input required name="email" type="email" />
+          </label>
+          <label>Phone number
+            <input required name="phone" type="tel" />
+          </label>
+        </div>
+
+        <h2>Resume & Documents</h2>
+        <p>Upload your resume and any supporting documents (PDF, DOCX). Up to 6 files.</p>
+        <input type="file" name="documents" multiple accept=".pdf,.doc,.docx,.txt,.rtf,image/*" />
+
+        <h2>Cover Letter</h2>
+        <label>Tell us why you are interested in this position
+          <textarea name="coverLetter" rows="6" placeholder="Write a short cover letter..."></textarea>
+        </label>
+
+        <h2>Job Position</h2>
+        <label>Choose your desired position
+          <select required name="position">
+            <% positions.forEach(function(p){ %>
+              <option value="<%= p %>"><%= p %></option>
+            <% }) %>
+          </select>
+        </label>
+
+        <div class="actions">
+          <button class="btn primary" type="submit">Submit application</button>
+        </div>
+      </form>
+    </main>
+    <footer class="site-footer">
+      <div class="container">© <%= new Date().getFullYear() %> CoreCrew Logistics</div>
+    </footer>
+  </body>
+  </html>
+
