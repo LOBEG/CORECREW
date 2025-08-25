@@ -14,14 +14,32 @@
       </div>
     </header>
     <main class="container">
-      <div class="card">
-        <h2>Contact</h2>
-        <p><strong>Address:</strong> 4700 stockdale Hwy, Bakersfield, CA 93309</p>
-        <p><strong>Email:</strong> <a href="mailto:corecrewlogistics@gmail.com">corecrewlogistics@gmail.com</a></p>
-        <p><strong>Phone:</strong> <a href="tel:+13105742415">+1 (310) 574-2415</a></p>
+      <div class="grid-2">
+        <form class="card" action="/contact" method="post">
+          <h2>Get Started</h2>
+          <label>Name
+            <input type="text" name="name" required />
+          </label>
+          <label>Email
+            <input type="email" name="email" required />
+          </label>
+          <label>Subject
+            <input type="text" name="subject" />
+          </label>
+          <label>Message
+            <textarea name="message" rows="6" required></textarea>
+          </label>
+          <div class="actions"><button class="btn primary" type="submit">Send</button></div>
+        </form>
+        <div class="card">
+          <h2>Contact</h2>
+          <p><strong>Address:</strong> 4700 stockdale Hwy, Bakersfield, CA 93309</p>
+          <p><strong>Email:</strong> <a href="mailto:corecrewlogistics@gmail.com">corecrewlogistics@gmail.com</a></p>
+          <p><strong>Phone:</strong> <a href="tel:+13105742415">+1 (310) 574-2415</a></p>
+        </div>
       </div>
     </main>
-    <footer class="site-footer"><div class="container">© <%= new Date().getFullYear() %> CoreCrew Logistics</div></footer>
+    <%- include('partials/footer') %>
   </body>
   </html>
 

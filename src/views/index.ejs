@@ -91,6 +91,15 @@
         </div>
       </section>
 
+      <section class="section">
+        <h3>Testimonials</h3>
+        <div class="grid-3">
+          <div class="card"><p>“I’ve been a driver for 8 years. CoreCrew’s routes and support team keep me moving and safe.”</p><p style="color:var(--muted)">— Marcus, CDL Driver</p></div>
+          <div class="card"><p>“Fast-paced but organized. The warehouse crew and tools make the job smooth.”</p><p style="color:var(--muted)">— Elena, Forklift Operator</p></div>
+          <div class="card"><p>“I work remotely in dispatch. Great training, flexible schedule, strong team culture.”</p><p style="color:var(--muted)">— Tyler, Remote Dispatcher</p></div>
+        </div>
+      </section>
+
       <section id="contact" class="section card">
         <h3>Contact</h3>
         <ul>
@@ -100,9 +109,7 @@
         </ul>
       </section>
     </main>
-    <footer class="site-footer">
-      <div class="container">© <%= new Date().getFullYear() %> CoreCrew Logistics</div>
-    </footer>
+    <%- include('partials/footer') %>
   </body>
   </html>
 
