@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Review & Submit — CoreCrew Logistics</title>
+    <link rel="stylesheet" href="/public/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <div class="brand">
+          <div class="logo"></div>
+          <strong>CoreCrew Logistics</strong>
+        </div>
+      </div>
+    </header>
+    <main class="container">
+      <form class="card" action="/apply/submit" method="post">
+        <p>Click submit to send your application to our hiring team.</p>
+        <div class="actions">
+          <button class="btn primary" type="submit">Submit now</button>
+        </div>
+      </form>
+    </main>
+    <footer class="site-footer">
+      <div class="container">© <%= new Date().getFullYear() %> CoreCrew Logistics</div>
+    </footer>
+  </body>
+  </html>
+
