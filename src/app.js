@@ -1,6 +1,7 @@
 require('dotenv').config();
 const path = require('path');
 const express = require('express');
+const ejs = require('ejs');
 const session = require('express-session');
 const helmet = require('helmet');
 const compression = require('compression');
@@ -14,6 +15,7 @@ app.use(compression());
 app.use(cors());
 
 // Views and static
+app.engine('ejs', ejs.__express);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use('/public', express.static(path.join(__dirname, 'public')));

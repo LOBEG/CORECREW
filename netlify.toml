@@ -3,6 +3,10 @@
   publish = "dist"
   functions = "netlify/functions"
 
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["ejs", "openid-client"]
+
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/server"
