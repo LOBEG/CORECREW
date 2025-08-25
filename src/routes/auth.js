@@ -28,6 +28,9 @@ async function getClient() {
 router.get('/idme', async (req, res, next) => {
   try {
     if (!req.session.applicationDraft) return res.redirect('/apply');
+    if (!process.env.IDME_ISSUER || !process.env.IDME_CLIENT_ID || !process.env.IDME_REDIRECT_URI) {
+      return res.redirect('/apply/verify');
+    }
     const client = await getClient();
     const { generators } = await getOpenIdLib();
     const codeVerifier = generators.codeVerifier();

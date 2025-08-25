@@ -55,15 +55,20 @@ router.post('/start', upload.array('documents', 6), (req, res) => {
     files: (req.files || []).map((f) => ({ path: f.path, originalname: f.originalname, mimetype: f.mimetype })),
   };
 
-  res.redirect('/auth/idme');
+  res.redirect('/apply/verify');
 });
 
 // Step 2: Simulated ID.me verification screen
-// Verify step now handled by ID.me OAuth in /auth
+// Verify placeholder page with option to open ID.me in new tab
+router.get('/verify', (req, res) => {
+  if (!req.session.applicationDraft) return res.redirect('/apply');
+  const idmeConfigured = Boolean(process.env.IDME_ISSUER && process.env.IDME_CLIENT_ID && process.env.IDME_REDIRECT_URI);
+  res.render('verify', { email: req.session.applicationDraft.email || '', idmeConfigured });
+});
 
 // Step 3: Submit and email
 router.get('/submit', async (req, res) => {
-  if (!req.session.applicationDraft || !req.session.verified) return res.redirect('/apply');
+  if (!req.session.applicationDraft) return res.redirect('/apply');
   res.render('submit');
 });
 

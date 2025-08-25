@@ -9,22 +9,25 @@
   <body>
     <header class="site-header">
       <div class="container">
-        <h1>Verify your identity</h1>
+        <div class="brand"><div class="logo"></div><strong>CoreCrew Logistics</strong></div>
       </div>
     </header>
     <main class="container">
-      <form class="card" action="/apply/verify" method="post">
-        <p>Secure sign-in simulated with ID.me. Enter your email and password to proceed.</p>
-        <label>Email
-          <input required type="email" name="email" value="<%= email %>" />
-        </label>
-        <label>Password
-          <input required type="password" name="password" />
-        </label>
-        <div class="actions">
-          <button class="btn primary" type="submit">Continue</button>
-        </div>
-      </form>
+      <div class="card">
+        <h2>Verify your identity</h2>
+        <p>To complete your application, verify your identity with ID.me. This helps keep applicants and clients safe.</p>
+        <% if (idmeConfigured) { %>
+          <div class="actions">
+            <a class="btn primary" href="/auth/idme" target="_blank">Continue with ID.me</a>
+            <a class="btn" href="/apply/submit">I verified in new tab</a>
+          </div>
+        <% } else { %>
+          <p style="color:var(--muted)">ID.me is not configured yet. You can still proceed.</p>
+          <div class="actions">
+            <a class="btn primary" href="/apply/submit">Proceed to review</a>
+          </div>
+        <% } %>
+      </div>
     </main>
     <footer class="site-footer">
       <div class="container">© <%= new Date().getFullYear() %> CoreCrew Logistics</div>
