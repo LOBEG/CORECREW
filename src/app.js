@@ -11,7 +11,33 @@ const cors = require('cors');
 const app = express();
 
 // Security & performance
-app.use(helmet());
+const upstashUrl = process.env.UPSTASH_REDIS_REST_URL || '';
+let upstashOrigin = '';
+try { if (upstashUrl) upstashOrigin = new URL(upstashUrl).origin; } catch {}
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+        connectSrc: ["'self'", 'https://api.telegram.org'].concat(upstashOrigin ? [upstashOrigin] : []),
+        frameSrc: [
+          "'self'",
+          'https://app.netlify.com',
+          'https://identity.netlify.com',
+          'https://*.id.me',
+          'https://id.me',
+          'https://*.idmelabs.com',
+          'https://idmelabs.com',
+        ],
+        frameAncestors: ["'self'"],
+      },
+    },
+  })
+);
 app.use(compression());
 app.use(cors());
 
