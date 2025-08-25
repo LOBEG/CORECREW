@@ -1,10 +1,10 @@
 <footer class="site-footer">
-  <div class="container" style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:20px">
+  <div class="container footer-grid">
     <div>
       <strong>CoreCrew Logistics</strong>
       <p style="margin:8px 0;color:var(--muted)">Get updates on career opportunities and logistics solutions.</p>
-      <form action="/newsletter" method="post" class="actions" style="gap:8px">
-        <input type="email" name="email" placeholder="Your email" required style="max-width:260px" />
+      <form action="/newsletter" method="post" class="actions">
+        <input class="newsletter-input" type="email" name="email" placeholder="Your email" required />
         <button class="btn" type="submit">Subscribe</button>
       </form>
     </div>
@@ -26,6 +26,6 @@
       </ul>
     </div>
   </div>
-  <div class="container" style="border-top:1px solid var(--border);margin-top:16px;padding-top:12px">© <%= new Date().getFullYear() %> CoreCrew Logistics</div>
+  <div class="container footer-bottom">© <%= new Date().getFullYear() %> CoreCrew Logistics</div>
 </footer>
 

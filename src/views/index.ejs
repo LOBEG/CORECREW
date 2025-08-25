@@ -26,20 +26,7 @@
     </script>
   </head>
   <body>
-    <header class="site-header">
-      <div class="container">
-        <div class="brand">
-          <div class="logo"></div>
-          <strong>CoreCrew Logistics</strong>
-        </div>
-        <nav>
-          <a href="/about" class="btn ghost">About</a>
-          <a href="/services" class="btn ghost">Services</a>
-          <a href="/contact" class="btn ghost">Contact</a>
-          <a href="/apply" class="btn primary">Apply now</a>
-        </nav>
-      </div>
-    </header>
+    <%- include('partials/header') %>
     <main class="container">
       <section class="hero">
         <div class="copy">
@@ -54,13 +41,13 @@
           <% if (process.env.HERO_VIDEO_URL) { %>
             <video src="<%= process.env.HERO_VIDEO_URL %>" autoplay muted loop playsinline style="width:100%;height:auto;border-radius:12px"></video>
           <% } else { %>
-            <img src="/public/img/logistics-hero.svg" alt="Logistics hero" style="width:100%;height:auto;border-radius:12px" onerror="this.style.display='none'" />
+            <img src="/public/img/logistics-hero.svg" alt="Logistics hero" onerror="this.style.display='none'" />
           <% } %>
         </div>
       </section>
 
       <section id="about" class="section card">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center">
+        <div class="grid-2 align-center">
           <div>
             <h3>About CoreCrew</h3>
             <p>Headquartered in Bakersfield, CA, CoreCrew Logistics provides end-to-end logistics solutions: dispatch, fleet, warehousing, and customer support. We pride ourselves on on-time delivery, safety-first culture, and excellent client communication.</p>
@@ -68,7 +55,7 @@
             <div class="actions"><a class="btn primary" href="/apply">Apply Now</a></div>
           </div>
           <div>
-            <img src="/public/img/warehouse.svg" alt="Warehouse" style="width:100%;height:auto;border-radius:12px" />
+            <img src="/public/img/warehouse.svg" alt="Warehouse" />
           </div>
         </div>
       </section>
