@@ -1,5 +1,6 @@
 require('dotenv').config();
 const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const ejs = require('ejs');
 const session = require('express-session');
@@ -17,7 +18,15 @@ app.use(cors());
 // Views and static
 app.engine('ejs', ejs.__express);
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+const viewCandidates = [
+  path.join(__dirname, 'views'),
+  path.join(process.cwd(), 'src', 'views'),
+  path.join(__dirname, '..', 'views'),
+];
+const resolvedViews = viewCandidates.find((p) => {
+  try { return fs.existsSync(p); } catch { return false; }
+});
+app.set('views', resolvedViews || path.join(__dirname, 'views'));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
 // Body parsing
