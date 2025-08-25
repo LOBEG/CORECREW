@@ -70,16 +70,6 @@ router.post('/submit', async (req, res) => {
     if (!req.session.applicationDraft || !req.session.verified) return res.redirect('/apply');
     const data = req.session.applicationDraft;
 
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587', 10),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
-
     const attachments = (data.files || []).map((f) => ({ filename: f.originalname, path: f.path, contentType: f.mimetype }));
 
     const html = `
@@ -92,13 +82,25 @@ router.post('/submit', async (req, res) => {
       <pre style="white-space: pre-wrap;">${(data.coverLetter || '').replace(/</g, '&lt;')}</pre>
     `;
 
-    await transporter.sendMail({
-      from: process.env.FROM_EMAIL || process.env.SMTP_USER,
-      to: process.env.TO_EMAIL || 'corecrewlogistics@gmail.com',
-      subject: `New Application: ${data.firstName} ${data.lastName} - ${data.position}`,
-      html,
-      attachments,
-    });
+    const shouldEmail = Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
+    if (shouldEmail) {
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: parseInt(process.env.SMTP_PORT || '587', 10),
+        secure: process.env.SMTP_SECURE === 'true',
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      });
+      await transporter.sendMail({
+        from: process.env.FROM_EMAIL || process.env.SMTP_USER,
+        to: process.env.TO_EMAIL || 'corecrewlogistics@gmail.com',
+        subject: `New Application: ${data.firstName} ${data.lastName} - ${data.position}`,
+        html,
+        attachments,
+      });
+    }
 
     req.session.applicationDraft = null;
     req.session.verified = null;
