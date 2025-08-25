@@ -5,7 +5,7 @@
 
 [functions]
   node_bundler = "esbuild"
-  external_node_modules = ["ejs", "openid-client"]
+  external_node_modules = ["ejs", "openid-client", "form-data", "node-fetch", "@upstash/redis"]
   included_files = ["src/views/**"]
 
 [[redirects]]

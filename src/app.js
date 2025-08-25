@@ -58,6 +58,7 @@ app.get('/', (req, res) => {
 
 app.use('/apply', require('./routes/apply'));
 app.use('/auth', require('./routes/auth'));
+app.use('/', require('./routes/pages'));
 
 // SEO routes
 app.get('/robots.txt', (req, res) => {
