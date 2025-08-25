@@ -53,7 +53,7 @@
 
         <h2>Job Position</h2>
         <label>Choose your desired position
-          <select required name="position">
+          <select required name="position" id="positionSelect">
             <% positions.forEach(function(p){ %>
               <option value="<%= p %>"><%= p %></option>
             <% }) %>
@@ -69,6 +69,14 @@
     <footer class="site-footer">
       <div class="container">© <%= new Date().getFullYear() %> CoreCrew Logistics</div>
     </footer>
+    <script>
+      (function(){
+        var params = new URLSearchParams(location.search);
+        var sel = document.getElementById('positionSelect');
+        var q = params.get('position');
+        if (q && sel) { sel.value = q; }
+      })();
+    </script>
   </body>
   </html>
 
