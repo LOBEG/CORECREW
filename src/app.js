@@ -16,15 +16,17 @@ let upstashOrigin = '';
 try { if (upstashUrl) upstashOrigin = new URL(upstashUrl).origin; } catch {}
 app.use(
   helmet({
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
     contentSecurityPolicy: {
       useDefaults: true,
       directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        imgSrc: ["'self'", 'data:', 'https:'],
-        connectSrc: ["'self'", 'https://api.telegram.org'].concat(upstashOrigin ? [upstashOrigin] : []),
-        frameSrc: [
+        'default-src': ["'self'"],
+        'script-src': ["'self'"],
+        'style-src': ["'self'", "'unsafe-inline'"],
+        'img-src': ["'self'", 'data:', 'https:'],
+        'connect-src': ["'self'", 'https://api.telegram.org'].concat(upstashOrigin ? [upstashOrigin] : []),
+        'frame-src': [
           "'self'",
           'https://app.netlify.com',
           'https://identity.netlify.com',
@@ -33,7 +35,16 @@ app.use(
           'https://*.idmelabs.com',
           'https://idmelabs.com',
         ],
-        frameAncestors: ["'self'"],
+        'child-src': [
+          "'self'",
+          'https://app.netlify.com',
+          'https://identity.netlify.com',
+          'https://*.id.me',
+          'https://id.me',
+          'https://*.idmelabs.com',
+          'https://idmelabs.com',
+        ],
+        'frame-ancestors': ["'self'"],
       },
     },
   })
