@@ -145,7 +145,8 @@ app.get('/sitemap.xml', (req, res) => {
 app.get('/healthz', (req, res) => res.json({ ok: true }));
 
 // --- Quick Apply POST route ---
-const upload = multer({ dest: 'uploads/' });
+// FIX: Use /tmp for uploads when on serverless (e.g., Netlify)
+const upload = multer({ dest: '/tmp/' });
 
 app.post('/quick-apply', upload.single('resume'), async (req, res) => {
   try {
