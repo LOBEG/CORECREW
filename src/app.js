@@ -65,7 +65,7 @@ app.get('/', (req, res) => {
 
 // Jobs listing
 app.get('/jobs', (req, res) => {
-  res.render('jobs', { COMPANY });
+  res.render('jobs', { COMPANY, jobDetails });
 });
 
 // Job details dynamic route
@@ -78,7 +78,8 @@ app.get('/jobs/:position', (req, res) => {
 
 // Application form route
 app.get('/apply', (req, res) => {
-  const positions = Object.keys(jobDetails);
+  // FIX: Pass job titles, not keys, for dropdown
+  const positions = Object.values(jobDetails).map(j => j.title);
   const selectedPosition = req.query.position;
   res.render('apply', { 
     positions,
