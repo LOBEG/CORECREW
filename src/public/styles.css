@@ -31,7 +31,7 @@ body {
   background: #fff;
   color: var(--text);
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 16px;
+  font-size: 16px; /* Professional base font size */
   min-height: 100vh;
 }
 
@@ -73,105 +73,15 @@ a:hover {
 .section {
   margin: 32px 0;
 }
-.section-centered {
-  text-align: center;
-}
-.section-centered .section-title {
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-/* --- HERO SECTION FIXES --- */
-.hero {
-  padding: 38px 0 22px 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  background: #fff;
-  font-size: 0.92rem;
-  width: 100%;
-  gap: 28px;
-}
-.hero .copy {
-  flex: 1 1 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-width: 0;
-}
-.hero-title {
-  font-size: 2.1rem;
-  font-weight: 900;
-  color: var(--primary);
-  margin-bottom: 13px;
-  white-space: nowrap;
-  /* Prevent breaking on medium/large screens */
-}
-.hero-desc {
-  font-size: 1.05rem;
-  color: var(--text-muted);
-  margin-bottom: 0.9em;
-  max-width: 700px;
-  width: 100%;
-  /* Spread text in one line if possible */
-  white-space: normal;
-}
-.hero .actions {
-  display: flex;
-  flex-direction: row;
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
-  margin-top: 18px;
-  width: 100%;
-  flex-wrap: wrap;
 }
-.hero .actions .btn {
-  margin-right: 0;
-}
-.hero .panel {
-  flex: 1 1 0;
-}
-@media (max-width: 900px) {
-  .hero {
-    flex-direction: column;
-    gap: 20px;
-    padding: 24px 0 14px 0;
-  }
-  .hero-title {
-    font-size: 1.4rem;
-    white-space: normal;
-  }
-  .hero-desc {
-    font-size: 1rem;
-  }
-  .hero .actions {
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
-    width: 100%;
-  }
-}
-
-/* --- What We Do grid centering --- */
-.grid-3.what-we-do-grid {
-  display: flex;
-  justify-content: center;
-  align-items: stretch;
-  gap: 24px;
-  max-width: 950px;
-  margin: 0 auto;
-  width: 100%;
-}
-.grid-3.what-we-do-grid .card {
-  flex: 1 1 270px;
-  max-width: 320px;
-  min-width: 210px;
-}
-@media (max-width: 900px) {
-  .grid-3.what-we-do-grid {
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-  }
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
 }
 
 /* --- Stats Section --- */
@@ -416,11 +326,41 @@ textarea:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 2px var(--accent-green);
 }
+
 input[type="file"] {
   background: none;
   border: none;
   padding: 0;
   margin: 0;
+}
+
+/* --- Hero section --- */
+.hero {
+  padding: 38px 0 22px 0;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 28px;
+  align-items: center;
+  background: #fff;
+  font-size: 0.92rem;
+}
+.hero .copy h2 {
+  font-size: 1.3rem;
+  line-height: 1.12;
+  color: var(--primary);
+  margin-bottom: 13px;
+}
+.hero .copy p {
+  font-size: 0.97rem;
+  color: var(--text-muted);
+}
+.hero .actions {
+  margin-top: 18px;
+}
+.hero .panel img {
+  border-radius: 14px;
+  box-shadow: 0 4px 22px 0 rgba(24, 70, 163, 0.11);
+  background: #fff;
 }
 
 /* --- Featured Images & Responsive Images --- */
@@ -449,14 +389,11 @@ input[type="file"] {
 .footer-flex {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: flex-start;
-  width: 100vw;
-  max-width: 100vw;
-  padding: 0 32px;
+  padding: 10px 0 3px 0;
   gap: 0 28px;
   font-size: 0.92rem;
-  box-sizing: border-box;
 }
 .footer-brand {
   min-width: 110px;
@@ -534,12 +471,13 @@ input[type="file"] {
   margin-top: 7px;
 }
 
+/* --- Responsive Footer Fix --- */
 @media (max-width: 900px) {
   .footer-flex {
     flex-direction: column;
     align-items: stretch;
     gap: 6px 0;
-    padding: 7px 10vw 1px 10vw;
+    padding: 7px 0 1px 0;
     font-size: 0.9rem;
   }
   .footer-brand {
@@ -567,11 +505,9 @@ input[type="file"] {
   }
 }
 @media (max-width: 600px) {
-  .footer-flex {
-    padding: 7px 2vw 1px 2vw;
-  }
   .footer-brand {
     margin-bottom: 6px;
+    /* ensure flush left */
   }
   .footer-nav {
     width: 100%;
@@ -635,6 +571,7 @@ td {
   transition: right 0.3s;
   display: flex;
   flex-direction: column;
+  /* --- PATCH: Add these lines --- */
   max-height: 80vh;
   overflow-y: auto;
 }
@@ -689,6 +626,7 @@ td {
     box-shadow: none;
     padding: 18px 7vw 20px 7vw;
     height: auto;
+    /* --- PATCH: Add these lines --- */
     max-height: 94vh;
     overflow-y: auto;
   }
@@ -699,6 +637,8 @@ td {
 }
 
 /* --- PATCH: Responsive header and stats fixes for mobile --- */
+
+/* 1. Header: Brand (logo + name) flush left on mobile */
 @media (max-width: 600px) {
   .site-header .container {
     flex-direction: row;
@@ -716,11 +656,14 @@ td {
   .logo {
     margin-left: 0 !important;
   }
+  /* Ensure nav doesn't push brand to the right */
   .site-header nav {
     margin-left: auto;
     gap: 6px;
   }
 }
+
+/* 2. Stats Section: Stack stats vertically and center on mobile */
 @media (max-width: 700px) {
   .stats-section .stats-grid {
     flex-direction: column !important;
@@ -757,6 +700,8 @@ td {
     font-weight: 500;
   }
 }
+
+/* Optional: Further tighten header spacing on very small screens */
 @media (max-width: 400px) {
   .site-header .container {
     padding: 5px 0;
