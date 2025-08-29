@@ -399,6 +399,9 @@ input[type="file"] {
   min-width: 110px;
   margin-bottom: 7px;
   margin-right: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 .footer-logo-row {
   display: flex;
@@ -467,78 +470,60 @@ input[type="file"] {
   border-top: 1.2px solid rgba(255,255,255,0.08);
   margin-top: 7px;
 }
+
+/* --- Responsive Footer Fix --- */
 @media (max-width: 900px) {
   .footer-flex {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 6px 0;
     padding: 7px 0 1px 0;
     font-size: 0.9rem;
   }
+  .footer-brand {
+    align-items: flex-start;
+    margin-bottom: 12px;
+    margin-right: 0;
+  }
   .footer-nav {
-    gap: 0 10px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
     margin-top: 8px;
     font-size: 0.9rem;
+    text-align: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0 10px;
   }
   .footer-nav > div {
     min-width: 62px;
     margin-bottom: 9px;
+    display: inline-block;
+    vertical-align: top;
+    padding-right: 5px;
   }
 }
 @media (max-width: 600px) {
-  h1 { font-size: 1.2rem; }
-  h2 { font-size: 1rem; }
-  .site-header .container {
-    flex-direction: column;
-    gap: 8px;
-    padding: 8px 2px;
-    font-size: 0.88rem;
-  }
-  .brand {
-    font-size: 0.95rem;
-  }
-  .card {
-    padding: 10px 2px;
-    font-size: 0.88rem;
-  }
-  .site-footer .container {
-    font-size: 0.88rem;
-    padding: 5px 1px;
-  }
-  .featured-image {
-    max-width: 94vw;
-    margin: 9px auto;
-    border-radius: 5px;
-    box-shadow: 0 1px 6px rgba(24, 70, 163, 0.05);
-  }
-  .footer-flex {
-    gap: 5px 0;
-    padding: 4px 0 0 0;
-    font-size: 0.88rem;
-  }
   .footer-brand {
-    margin-bottom: 2px;
+    margin-bottom: 6px;
+    /* ensure flush left */
   }
   .footer-nav {
+    width: 100%;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: flex-start;
+    font-size: 0.88rem;
+    text-align: center;
     flex-direction: column;
     gap: 0;
-    margin-top: 7px;
-    font-size: 0.88rem;
   }
   .footer-nav > div {
-    margin-bottom: 9px;
+    margin-bottom: 8px;
     min-width: 0;
     padding-right: 0;
-  }
-  .contact-plain {
-    padding: 0 2vw;
-    font-size: 0.88rem;
-  }
-  .contact-info-list {
-    width: 100%;
-    text-align: center;
     display: block;
-    font-size: 0.88rem;
   }
 }
 

