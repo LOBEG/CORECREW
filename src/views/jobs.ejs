@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jobs & Careers — Core Crew Logistics</title>
+    <link rel="stylesheet" href="/public/styles.css" />
+    <style>
+      .job-listing {
+        border-bottom: 1.5px solid var(--border);
+        padding: 28px 0 22px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .job-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+      .job-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+      }
+      .job-type {
+        background: var(--surface-dark);
+        color: var(--primary);
+        font-size: 0.99rem;
+        font-weight: 600;
+        border-radius: 6px;
+        padding: 2px 12px;
+        margin-left: 0;
+      }
+      .job-actions {
+        margin-top: 10px;
+        display: flex;
+        gap: 12px;
+      }
+      .job-actions a {
+        border-radius: 8px;
+        padding: 7px 18px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.18s;
+        font-size: 1rem;
+        background: var(--primary);
+        color: #fff;
+      }
+      .job-actions a.details {
+        background: var(--accent-green);
+        color: #fff;
+      }
+      @media (max-width: 600px) {
+        .job-header { flex-direction: column; gap: 8px; }
+        .job-actions { flex-direction: column; gap: 7px; }
+        .job-listing { padding: 18px 0 14px 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <div class="brand">
+          <img class="logo" src="/public/img/logo.jpg" alt="Core Logistics Logo" />
+          <span>Core Crew Logistics</span>
+        </div>
+        <nav>
+          <a class="btn ghost" href="/">Home</a>
+          <a class="btn ghost" href="/about">About</a>
+          <a class="btn ghost" href="/services">Services</a>
+          <a class="btn primary" href="/apply">Apply Now</a>
+          <a class="btn ghost" href="/jobs">Jobs</a>
+        </nav>
+      </div>
+    </header>
+    <main class="container">
+      <!-- PATCH: Add Back to Homepage button above job listings -->
+      <div style="margin-top:36px; margin-bottom:36px;">
+        <a href="/" class="btn ghost">
+          &larr; Back to Homepage
+        </a>
+      </div>
+      <section class="card">
+        <h2>Open Positions</h2>
+        <p>Click the position title to view details or apply. All positions may be available as <strong>Full Time</strong> or <strong>Part Time</strong>.</p>
+        <div class="job-listing">
+          <div class="job-header">
+            <a href="/jobs/logistics-coordinator" class="job-title">Logistics Coordinator / Dispatcher</a>
+            <span class="job-type">Full Time / Part Time</span>
+          </div>
+          <div class="job-actions">
+            <a href="/jobs/logistics-coordinator" class="details">View Details</a>
+            <a href="/apply?position=Logistics%20Coordinator%20%2F%20Dispatcher" class="btn primary">Apply Now</a>
+          </div>
+        </div>
+        <div class="job-listing">
+          <div class="job-header">
+            <a href="/jobs/supply-chain-analyst" class="job-title">Supply Chain Analyst</a>
+            <span class="job-type">Full Time / Part Time</span>
+          </div>
+          <div class="job-actions">
+            <a href="/jobs/supply-chain-analyst" class="details">View Details</a>
+            <a href="/apply?position=Supply%20Chain%20Analyst" class="btn primary">Apply Now</a>
+          </div>
+        </div>
+        <div class="job-listing">
+          <div class="job-header">
+            <a href="/jobs/customer-support-client-relations" class="job-title">Customer Support / Client Relations</a>
+            <span class="job-type">Full Time / Part Time</span>
+          </div>
+          <div class="job-actions">
+            <a href="/jobs/customer-support-client-relations" class="details">View Details</a>
+            <a href="/apply?position=Customer%20Support%20%2F%20Client%20Relations" class="btn primary">Apply Now</a>
+          </div>
+        </div>
+        <div class="job-listing">
+          <div class="job-header">
+            <a href="/jobs/hr-recruitment" class="job-title">HR / Recruitment / Talent Acquisition</a>
+            <span class="job-type">Full Time / Part Time</span>
+          </div>
+          <div class="job-actions">
+            <a href="/jobs/hr-recruitment" class="details">View Details</a>
+            <a href="/apply?position=HR%20%2F%20Recruitment%20%2F%20Talent%20Acquisition" class="btn primary">Apply Now</a>
+          </div>
+        </div>
+        <div class="job-listing">
+          <div class="job-header">
+            <a href="/jobs/it-software-support" class="job-title">IT / Software Support</a>
+            <span class="job-type">Full Time / Part Time</span>
+          </div>
+          <div class="job-actions">
+            <a href="/jobs/it-software-support" class="details">View Details</a>
+            <a href="/apply?position=IT%20%2F%20Software%20Support" class="btn primary">Apply Now</a>
+          </div>
+        </div>
+        <div class="job-listing">
+          <div class="job-header">
+            <a href="/jobs/drivers" class="job-title">Drivers (truck, delivery, fleet)</a>
+            <span class="job-type">Full Time / Part Time</span>
+          </div>
+          <div class="job-actions">
+            <a href="/jobs/drivers" class="details">View Details</a>
+            <a href="/apply?position=Drivers" class="btn primary">Apply Now</a>
+          </div>
+        </div>
+        <div class="job-listing">
+          <div class="job-header">
+            <a href="/jobs/warehouse-staff-forklift" class="job-title">Warehouse Staff & Forklift Operators</a>
+            <span class="job-type">Full Time / Part Time</span>
+          </div>
+          <div class="job-actions">
+            <a href="/jobs/warehouse-staff-forklift" class="details">View Details</a>
+            <a href="/apply?position=Warehouse%20Staff%20%26%20Forklift%20Operators" class="btn primary">Apply Now</a>
+          </div>
+        </div>
+        <div class="job-listing">
+          <div class="job-header">
+            <a href="/jobs/fleet-maintenance-supervisors" class="job-title">Fleet & Maintenance Supervisors</a>
+            <span class="job-type">Full Time / Part Time</span>
+          </div>
+          <div class="job-actions">
+            <a href="/jobs/fleet-maintenance-supervisors" class="details">View Details</a>
+            <a href="/apply?position=Fleet%20%26%20Maintenance%20Supervisors" class="btn primary">Apply Now</a>
+          </div>
+        </div>
+        <div class="job-listing">
+          <div class="job-header">
+            <a href="/jobs/virtual-assistance" class="job-title">Virtual Assistance</a>
+            <span class="job-type">Full Time / Part Time</span>
+          </div>
+          <div class="job-actions">
+            <a href="/jobs/virtual-assistance" class="details">View Details</a>
+            <a href="/apply?position=Virtual%20Assistance" class="btn primary">Apply Now</a>
+          </div>
+        </div>
+        <div class="job-listing">
+          <div class="job-header">
+            <a href="/jobs/account-manager" class="job-title">Account Manager</a>
+            <span class="job-type">Full Time / Part Time</span>
+          </div>
+          <div class="job-actions">
+            <a href="/jobs/account-manager" class="details">View Details</a>
+            <a href="/apply?position=Account%20Manager" class="btn primary">Apply Now</a>
+          </div>
+        </div>
+        <div class="job-listing">
+          <div class="job-header">
+            <a href="/jobs/project-manager" class="job-title">Project Manager</a>
+            <span class="job-type">Full Time / Part Time</span>
+          </div>
+          <div class="job-actions">
+            <a href="/jobs/project-manager" class="details">View Details</a>
+            <a href="/apply?position=Project%20Manager" class="btn primary">Apply Now</a>
+          </div>
+        </div>
+        <div class="job-listing">
+          <div class="job-header">
+            <a href="/jobs/data-entry" class="job-title">Data Entry</a>
+            <span class="job-type">Full Time / Part Time</span>
+          </div>
+          <div class="job-actions">
+            <a href="/jobs/data-entry" class="details">View Details</a>
+            <a href="/apply?position=Data%20Entry" class="btn primary">Apply Now</a>
+          </div>
+        </div>
+        <div class="job-listing">
+          <div class="job-header">
+            <a href="/jobs/customer-support" class="job-title">Customer Support</a>
+            <span class="job-type">Full Time / Part Time</span>
+          </div>
+          <div class="job-actions">
+            <a href="/jobs/customer-support" class="details">View Details</a>
+            <a href="/apply?position=Customer%20Support" class="btn primary">Apply Now</a>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="container">© <%= new Date().getFullYear() %> Core Crew Logistics</div>
+    </footer>
+  </body>
+</html>

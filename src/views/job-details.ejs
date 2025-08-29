@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title><%= job.title %> — Job Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/public/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="brand">
+        <img class="logo" src="/public/img/logo.jpg" alt="Core Logistics Logo" />
+        <span>Core Crew Logistics</span>
+      </div>
+      <nav>
+        <a class="btn ghost" href="/">Home</a>
+        <a class="btn ghost" href="/jobs">Jobs</a>
+        <a class="btn primary" href="/apply">Apply Now</a>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    <!-- PATCH: Back button outside and above card with extra spacing -->
+    <div style="margin-top:36px; margin-bottom:38px;">
+      <a href="/jobs" class="btn ghost">
+        &larr; Back to Open Positions
+      </a>
+    </div>
+    <section class="card">
+      <div class="job-header" style="margin-bottom:16px;">
+        <span class="job-title" style="font-size:1.3rem;"><%= job.title %></span>
+        <span class="job-type"><%= job.type %></span>
+        <% if (job.category) { %>
+          <span class="job-type" style="background:var(--accent-orange);color:#fff;"><%= job.category %></span>
+        <% } %>
+      </div>
+      <div style="color:var(--text-muted);margin-bottom:8px;"><%= job.posted %> &bullet; <%= job.location %></div>
+      <div style="color:var(--primary-dark);font-weight:500;margin-bottom:10px;"><%= job.salary %> &bullet; <%= job.experience %> experience</div>
+      <p><%= job.description %></p>
+      <div style="margin:14px 0;">
+        <strong>Key Benefits:</strong>
+        <ul>
+          <% job.benefits.forEach(function(benefit){ %>
+            <li><%= benefit %></li>
+          <% }); %>
+        </ul>
+      </div>
+      <div style="color:var(--text-muted);margin-bottom:12px;"><%= job.applicants %> applicants</div>
+      <div class="job-actions">
+        <a href="/apply?position=<%= encodeURIComponent(job.title) %>" class="btn primary">Apply Now</a>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="container">© <%= new Date().getFullYear() %> Core Crew Logistics</div>
+  </footer>
+</body>
+</html>

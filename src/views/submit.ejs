@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Application Submitted — Core Crew Logistics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/public/styles.css" />
+  <style>
+    body {
+      min-height: 100vh;
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+      background: rgba(16,20,30,0.89);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .submission-card {
+      background: rgba(16,20,30,0.30);
+      border-radius: 20px;
+      max-width: 430px;
+      padding: 44px 32px 36px 32px;
+      text-align: center;
+      margin: 0 auto;
+      animation: fadeIn 1.2s cubic-bezier(.63,.34,.26,1.04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(255,255,255,0.12);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(18px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .submission-card .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .submission-card .logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: transparent;
+      object-fit: cover;
+    }
+    .submission-card h1 {
+      color: #fff;
+      font-size: 2.1rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      letter-spacing: -0.8px;
+      font-family: 'Inter', system-ui, sans-serif;
+      text-shadow: 0 2px 8px rgba(16,20,30,0.18);
+    }
+    .submission-card h2 {
+      color: #2ecc71;
+      font-size: 1.22rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      letter-spacing: 0.2px;
+      text-shadow: 0 2px 8px rgba(16,20,30,0.14);
+    }
+    .submission-card p {
+      color: #e2e8f0;
+      font-size: 1.11rem;
+      margin-bottom: 24px;
+      line-height: 1.7;
+      text-shadow: 0 2px 8px rgba(16,20,30,0.10);
+    }
+    .submission-card .actions {
+      margin-top: 18px;
+    }
+    .submission-card .btn-home {
+      padding: 13px 34px;
+      font-size: 1.14rem;
+      font-weight: 700;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(90deg, #1846a3 70%, #2ecc71 100%);
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.18s;
+      display: inline-block;
+      text-decoration: none;
+    }
+    .submission-card .btn-home:hover {
+      background: linear-gradient(90deg, #2ecc71 10%, #1846a3 90%);
+      color: #fff;
+    }
+    @media (max-width: 600px) {
+      .submission-card {
+        max-width: 98vw;
+        padding: 18px 5vw 18px 5vw;
+      }
+      .submission-card h1 { font-size: 1.5rem; }
+      .submission-card h2 { font-size: 1rem; }
+      .submission-card .logo { width: 38px; height: 38px; }
+    }
+  </style>
+  <script>
+    // Auto redirect after 4 seconds
+    setTimeout(function() {
+      window.location.href = "/";
+    }, 4000);
+    // This ensures the button always works, even if JS loaded after DOM
+    function goHome() {
+      window.location.href = "/";
+    }
+  </script>
+</head>
+<body>
+  <div class="submission-card">
+    <div class="logo-row">
+      <img src="/public/img/logo.jpg" alt="Core Crew Logistics" class="logo" />
+      <span style="font-weight:700;font-size:1.13rem;color:#fff;">Core Crew Logistics</span>
+    </div>
+    <h1>Application Submitted Successfully</h1>
+    <h2>Dear <%= firstName %>,</h2>
+    <p>
+      Your application has been submitted.<br>
+      Please await a response from our team at <span style="font-weight:600;color:#2ecc71;">Core Crew Logistics</span>.<br>
+      <span style="color:#2ecc71;font-weight:500;">Thank you for choosing us!</span>
+    </p>
+    <div class="actions">
+      <button type="button" class="btn-home" onclick="goHome()">Go to Homepage Now</button>
+      <div style="margin-top:8px;font-size:0.97em;color:#e2e8f0;">You will be redirected automatically.</div>
+    </div>
+  </div>
+</body>
+</html>

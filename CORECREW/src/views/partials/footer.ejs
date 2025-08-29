@@ -1,0 +1,31 @@
+<footer class="site-footer">
+  <div class="container" style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:20px">
+    <div>
+      <strong>CoreCrew Logistics</strong>
+      <p style="margin:8px 0;color:var(--muted)">Get updates on career opportunities and logistics solutions.</p>
+      <form action="/newsletter" method="post" class="actions" style="gap:8px">
+        <input type="email" name="email" placeholder="Your email" required style="max-width:260px" />
+        <button class="btn" type="submit">Subscribe</button>
+      </form>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/services">Services</a></li>
+        <li><a href="/jobs">Careers</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="/privacy">Privacy Policy</a></li>
+        <li><a href="/terms">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="container" style="border-top:1px solid var(--border);margin-top:16px;padding-top:12px">© <%= new Date().getFullYear() %> CoreCrew Logistics</div>
+</footer>
+
