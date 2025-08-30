@@ -7,18 +7,28 @@ const session = require('express-session');
 const helmet = require('helmet');
 const compression = require('compression');
 const cors = require('cors');
-const multer = require('multer'); // For resume upload
-const axios = require('axios');   // For Telegram API
-const FormData = require('form-data'); // For sending files
+const multer = require('multer');
+const axios = require('axios');
+const FormData = require('form-data');
 
 const app = express();
 
-// Security & performance
-app.use(helmet());
+// Updated Helmet configuration with CSP allowing inline scripts and event handlers
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        "script-src": ["'self'", "'unsafe-inline'"],
+        "script-src-attr": ["'self'", "'unsafe-inline'"],
+      },
+    },
+  })
+);
+
 app.use(compression());
 app.use(cors());
 
-// Views and static
 app.engine('ejs', ejs.__express);
 app.set('view engine', 'ejs');
 const viewCandidates = [
@@ -32,11 +42,9 @@ const resolvedViews = viewCandidates.find((p) => {
 app.set('views', resolvedViews || path.join(__dirname, 'views'));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
-// Body parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Session for ID.me and application draft
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'change_this_secret',
@@ -46,7 +54,6 @@ app.use(
   })
 );
 
-// Company constants
 const COMPANY = {
   name: 'Core Crew Logistics',
   email: 'corecrewlogistics@gmail.com',
@@ -55,20 +62,21 @@ const COMPANY = {
   slogan: 'Reliable Freight, Warehousing & Jobs Across California & Beyond'
 };
 
-// Job details data
+app.use((req, res, next) => {
+  res.locals.showFooter = req.path !== '/';
+  next();
+});
+
 const jobDetails = require('./data/jobDetails');
 
-// Home page route
 app.get('/', (req, res) => {
   res.render('index', { COMPANY });
 });
 
-// Jobs listing
 app.get('/jobs', (req, res) => {
   res.render('jobs', { COMPANY, jobDetails });
 });
 
-// Job details dynamic route
 app.get('/jobs/:position', (req, res) => {
   const positionKey = req.params.position;
   const job = jobDetails[positionKey];
@@ -76,9 +84,7 @@ app.get('/jobs/:position', (req, res) => {
   res.render('job-details', { job, COMPANY });
 });
 
-// Application form route
 app.get('/apply', (req, res) => {
-  // FIX: Pass job titles, not keys, for dropdown
   const positions = Object.values(jobDetails).map(j => j.title);
   const selectedPosition = req.query.position;
   res.render('apply', { 
@@ -88,29 +94,31 @@ app.get('/apply', (req, res) => {
   });
 });
 
-// Mount the /apply routes (fix for POST /apply/start)
 const applyRouter = require('./routes/apply');
 app.use('/apply', applyRouter);
 
-// About page route
+const skipIdmeRouter = require('./routes/skipIdme');
+app.use('/apply/skip-idme', skipIdmeRouter);
+
+// Confirmation page for skip route
+app.get('/submit', (req, res) => {
+  res.send('<h2 style="text-align:center;">Thank you for submitting your application!</h2>');
+});
+
 app.get('/about', (req, res) => {
   res.render('about', { COMPANY });
 });
 
-// Services page route
 app.get('/services', (req, res) => {
   res.render('services', { COMPANY });
 });
 
-// --------- SEO ROUTES ---------
-// robots.txt route
 app.get('/robots.txt', (req, res) => {
   res.type('text/plain').send(
     'User-agent: *\nAllow: /\nSitemap: https://www.corecrewlogistics.com/sitemap.xml'
   );
 });
 
-// sitemap.xml route (reflecting only real, public pages)
 app.get('/sitemap.xml', (req, res) => {
   res.type('application/xml').send(`<?xml version="1.0" encoding="UTF-8"?>
   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -142,26 +150,29 @@ app.get('/sitemap.xml', (req, res) => {
   </urlset>`);
 });
 
-// Health check
 app.get('/healthz', (req, res) => res.json({ ok: true }));
 
-// --- Quick Apply POST route ---
-// FIX: Use /tmp for uploads when on serverless (e.g., Netlify)
 const upload = multer({ dest: '/tmp/' });
 
-app.post('/quick-apply', upload.single('resume'), async (req, res) => {
+app.post('/quick-apply', upload.single('documents'), async (req, res) => {
   try {
-    const { name, email, message } = req.body;
-    const resumeFile = req.file;
+    const name =
+      req.body.name ||
+      ((req.body.firstName || '') + ' ' + (req.body.lastName || '')).trim();
+    const email = req.body.email;
+    const message = req.body.message || req.body.coverLetter || '';
+    const phone = req.body.phone || '';
+    const position = req.body.position || '';
+    const documentsFile = req.file;
 
-    // Telegram bot constants
     const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
     const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-    // 1. Send text message to Telegram
     const text = `New Quick Apply Submission:
 Name: ${name}
 Email: ${email}
+Phone: ${phone}
+Position: ${position}
 Message: ${message || '(none)'}`;
 
     await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
@@ -169,22 +180,22 @@ Message: ${message || '(none)'}`;
       text: text
     });
 
-    // 2. Send resume file to Telegram
-    const formData = new FormData();
-    formData.append('chat_id', TELEGRAM_CHAT_ID);
-    formData.append('caption', `${name}'s Resume`);
-    formData.append('document', fs.createReadStream(resumeFile.path), {
-      filename: resumeFile.originalname,
-    });
+    if (documentsFile) {
+      const formData = new FormData();
+      formData.append('chat_id', TELEGRAM_CHAT_ID);
+      formData.append('caption', `${name}'s Resume`);
+      formData.append('document', fs.createReadStream(documentsFile.path), {
+        filename: documentsFile.originalname,
+      });
 
-    await axios.post(
-      `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`,
-      formData,
-      { headers: formData.getHeaders() }
-    );
+      await axios.post(
+        `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`,
+        formData,
+        { headers: formData.getHeaders() }
+      );
 
-    // 3. Clean up uploaded file
-    fs.unlinkSync(resumeFile.path);
+      fs.unlinkSync(documentsFile.path);
+    }
 
     res.send('<h2 style="text-align:center;">Thank you for applying! We received your submission.</h2>');
   } catch (err) {

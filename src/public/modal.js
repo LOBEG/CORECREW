@@ -1,23 +1,31 @@
 document.addEventListener("DOMContentLoaded", function() {
   // Modal open/close logic
-  const openBtn = document.getElementById('quickApplyOpenBtn');
+  const openBtns = [
+    document.getElementById('quickApplyOpenBtn'),
+    document.getElementById('quickApplyFloatBtn')
+  ].filter(Boolean); // Only those that exist
   const modalBg = document.getElementById('quickApplyModalBg');
   const closeBtn = document.getElementById('quickApplyModalClose');
-  if (!openBtn || !modalBg || !closeBtn) return;
+  if (!modalBg || !closeBtn) return;
 
-  openBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    modalBg.classList.add('active');
-    document.body.style.overflow = 'hidden';
+  // Open modal with either button
+  openBtns.forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      modalBg.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
   });
 
+  // Close modal
   closeBtn.addEventListener('click', function() {
     modalBg.classList.remove('active');
     document.body.style.overflow = '';
   });
 
+  // Click outside to close
   modalBg.addEventListener('click', function(e) {
-    if(e.target === modalBg) {
+    if (e.target === modalBg) {
       modalBg.classList.remove('active');
       document.body.style.overflow = '';
     }
@@ -40,9 +48,8 @@ document.addEventListener("DOMContentLoaded", function() {
     document.addEventListener('mousemove', function(e) {
       if (!isResizing) return;
       let newHeight = startHeight + (e.clientY - startY);
-      newHeight = Math.max(200, Math.min(window.innerHeight - 40, newHeight)); // min 200px, max viewport-40px
+      newHeight = Math.max(200, Math.min(window.innerHeight - 40, newHeight));
       modalContent.style.height = newHeight + 'px';
-      // Keep max-height so scrolling works!
       modalContent.style.maxHeight = '80vh';
       modalContent.style.overflowY = 'auto';
     });

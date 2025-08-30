@@ -18,6 +18,128 @@
     <link rel="stylesheet" href="/public/styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+      /* Font size increase for better readability */
+      html, body {
+        font-size: 15px;
+      }
+      @media (max-width: 768px) {
+        html, body {
+          font-size: 13px;
+        }
+      }
+      @media (max-width: 480px) {
+        html, body {
+          font-size: 12px;
+        }
+      }
+      /* Footer background color change to black */
+      .site-footer {
+        background: #000 !important;
+      }
+      /* Center the copyright text */
+      .footer-bottom {
+        width: 100%;
+        text-align: center !important;
+        margin: 0 auto;
+        padding: 10px 0 4px 0;
+        color: #fff;
+        font-size: .95rem;
+      }
+      /* Floating Quick Apply button styles */
+      .quick-apply-float-btn {
+        position: fixed;
+        right: 22px;
+        bottom: 40px;
+        z-index: 2001;
+        background: var(--accent-green);
+        color: #fff;
+        border-radius: 100px;
+        padding: 13px 26px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        box-shadow: 0 6px 24px 0 rgba(24, 70, 163, 0.22);
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s, box-shadow 0.2s;
+      }
+      .quick-apply-float-btn:hover {
+        background: var(--primary-light);
+        color: #fff;
+        box-shadow: 0 12px 32px 0 rgba(24, 70, 163, 0.18);
+      }
+      /* Modal override for floating quick apply */
+      .quick-apply-modal-bg {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: rgba(24, 70, 163, 0.2);
+        backdrop-filter: blur(4px);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+        padding: var(--space-md);
+      }
+      .quick-apply-modal-bg.active {
+        display: flex;
+      }
+      .quick-apply-modal-content {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 12px 38px rgba(24, 70, 163, 0.17);
+        padding: var(--space-md);
+        width: 100%;
+        max-width: 320px;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+      }
+      .quick-apply-modal-close {
+        position: absolute;
+        right: var(--space-sm);
+        top: var(--space-sm);
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        cursor: pointer;
+        background: none;
+        border: none;
+        font-weight: 700;
+        transition: color 0.2s ease;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .quick-apply-modal-close:hover {
+        color: var(--primary);
+      }
+      /* Hide the old quick-apply card on desktop */
+      .quick-apply-card {
+        display: none !important;
+      }
+      /* Responsive fixes for floating button */
+      @media (max-width: 768px) {
+        .quick-apply-float-btn {
+          right: 10px;
+          bottom: 10px;
+          font-size: 1rem;
+          padding: 10px 15px;
+        }
+        .quick-apply-modal-content {
+          max-width: 95vw;
+        }
+      }
+      @media (max-width: 600px) {
+        .quick-apply-float-btn {
+          font-size: 0.98rem;
+          padding: 8px 10px;
+        }
+      }
+    </style>
   </head>
   <body>
     <header class="site-header">
@@ -131,81 +253,18 @@
           </ul>
         </div>
       </section>
-      <style>
-      .contact-left-extreme {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 0;
-        margin: 54px 0 54px 0;
-      }
-      .contact-heading-left {
-        font-size: 2rem;
-        font-weight: 800;
-        color: #1846a3;
-        margin-bottom: 12px;
-        text-align: left;
-        margin-left: 0;
-      }
-      .contact-content-left {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .contact-intro-left {
-        color: #1846a3;
-        font-size: 1.12rem;
-        margin-bottom: 22px;
-        font-weight: 500;
-        text-align: left;
-        max-width: 440px;
-      }
-      .contact-info-list-left {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 18px;
-      }
-      .contact-label-left {
-        font-weight: 700;
-        color: #1846a3;
-        margin-right: 12px;
-      }
-      .contact-link-left {
-        color: #1846a3;
-        text-decoration: none;
-        font-weight: 600;
-        letter-spacing: 0.03em;
-      }
-      .contact-link-left:hover {
-        color: #2ecc71;
-        text-decoration: underline;
-      }
-      @media (max-width: 600px) {
-        .contact-heading-left {
-          font-size: 1.2rem;
-        }
-        .contact-intro-left {
-          font-size: 1rem;
-          max-width: 98vw;
-        }
-      }
-      </style>
-      <div class="quick-apply-card" id="quickApplyCard">
-        <div class="quick-apply-card-title">Quick Apply</div>
-        <div class="quick-apply-card-desc">
-          Don't see the perfect role? Submit your resume and we'll reach out when opportunities arise.
-        </div>
-        <button class="btn primary" id="quickApplyOpenBtn" style="margin-top: 9px;">Submit Resume</button>
-      </div>
+
+      <!-- Quick Apply Floating Button & Modal -->
+      <button class="quick-apply-float-btn" id="quickApplyFloatBtn" aria-label="Quick Apply">
+        Quick Apply
+      </button>
       <div class="quick-apply-modal-bg" id="quickApplyModalBg">
         <div class="quick-apply-modal-content">
           <button class="quick-apply-modal-close" id="quickApplyModalClose" aria-label="Close">&times;</button>
           <h3 style="color:#1846a3;margin-bottom:10px;">Quick Apply</h3>
+          <div style="color:#1846a3; font-weight: 600; font-size: 1.01rem; margin-bottom:7px;">
+            Don't see the perfect role? Submit your resume and we'll reach out when opportunities arise.
+          </div>
           <form action="/apply/start" method="POST" enctype="multipart/form-data" class="quick-apply-form">
             <label for="qa-firstName">First Name</label>
             <input type="text" id="qa-firstName" name="firstName" required />
@@ -225,6 +284,21 @@
           </form>
         </div>
       </div>
+      <script>
+        // Modal logic for floating button
+        const floatBtn = document.getElementById('quickApplyFloatBtn');
+        const modalBg = document.getElementById('quickApplyModalBg');
+        const modalClose = document.getElementById('quickApplyModalClose');
+        floatBtn.addEventListener('click', function() {
+          modalBg.classList.add('active');
+        });
+        modalClose.addEventListener('click', function() {
+          modalBg.classList.remove('active');
+        });
+        modalBg.addEventListener('click', function(e) {
+          if (e.target === modalBg) modalBg.classList.remove('active');
+        });
+      </script>
       <script src="/public/modal.js"></script>
     </main>
     <footer class="site-footer">

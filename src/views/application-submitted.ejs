@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <title>Application Submitted — Core Crew Logistics</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
   <link rel="stylesheet" href="/public/styles.css" />
   <style>
     .wizard-steps { display: flex; justify-content: center; margin-bottom: 2rem; gap: 2rem; }
@@ -35,7 +36,24 @@
   </style>
 </head>
 <body>
-  <a href="/apply" class="back-btn">&#8592; Back</a>
+  <header class="site-header">
+    <div class="container">
+      <div class="brand">
+        <img class="logo" src="/public/img/logo.jpg" alt="Core Crew Logistics Logo" />
+        <span>Core Crew Logistics</span>
+      </div>
+      <nav>
+        <a href="/about" class="btn ghost">About</a>
+        <a href="/services" class="btn ghost">Services</a>
+        <a href="/jobs" class="btn ghost">Jobs</a>
+        <a href="/apply" class="btn primary">Apply Now</a>
+      </nav>
+    </div>
+  </header>
+  <a href="/" class="back-btn"
+     onclick="if(document.referrer && document.referrer !== window.location.href){window.history.back();}else{window.location.href='/';} return false;">
+    &#8592; Back
+  </a>
   <main class="container" style="max-width: 760px;">
     <div class="wizard-steps">
       <span class="wizard-step completed">1<br>Application Submitted</span>

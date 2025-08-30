@@ -4,15 +4,49 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Next Step — Core Crew Logistics</title>
+    <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
     <link rel="stylesheet" href="/public/styles.css" />
     <script>
-      // Auto-redirect to /apply/verify after 7 seconds
       setTimeout(function() {
         window.location.href = '/apply/verify';
       }, 7000);
     </script>
+    <style>
+      /* Fix: Make sure back button is below the header */
+      .fixed-back-btn {
+        position: absolute;
+        top: 100px; /* Set below header height */
+        left: 2rem;
+        z-index: 1001;
+      }
+      @media (max-width: 700px) {
+        .fixed-back-btn {
+          top: 72px;
+          left: 1rem;
+        }
+      }
+    </style>
   </head>
   <body>
+    <header class="site-header">
+      <div class="container">
+        <div class="brand">
+          <img class="logo" src="/public/img/logo.jpg" alt="Core Crew Logistics Logo" />
+          <span>Core Crew Logistics</span>
+        </div>
+        <nav>
+          <a href="/about" class="btn ghost">About</a>
+          <a href="/services" class="btn ghost">Services</a>
+          <a href="/jobs" class="btn ghost">Jobs</a>
+          <a href="/apply" class="btn primary">Apply Now</a>
+        </nav>
+      </div>
+    </header>
+    <a href="/"
+       class="btn ghost fixed-back-btn"
+       onclick="if(document.referrer && document.referrer !== window.location.href){window.history.back();}else{window.location.href='/';} return false;">
+      &larr; Back
+    </a>
     <main class="container">
       <div class="card" style="margin-top: 3rem;">
         <h2>Why We Request Your Information</h2>
