@@ -185,6 +185,24 @@ a:hover {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
+  /* fix: allow nav items to wrap on small screens */
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .site-header nav {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .site-header nav a,
+  .site-header nav .btn {
+    font-size: 0.99rem;
+    padding: 8px 10px;
+    max-width: 100vw;
+    white-space: normal;
+    word-break: break-word;
+    box-sizing: border-box;
+  }
 }
 
 .mobile-menu-toggle {
@@ -761,6 +779,30 @@ a:focus {
     font-size: 0.97rem;
     padding: 0.6rem 1.1rem;
   }
+
+  /* --- FIX 1: Allow Apply Now button in header to show fully --- */
+  .site-header nav {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .site-header nav a,
+  .site-header nav .btn {
+    font-size: 1rem;
+    padding: 8px 12px;
+    max-width: 100vw;
+    white-space: normal;
+    word-break: break-word;
+    box-sizing: border-box;
+  }
+
+  /* --- FIX 2: Add spacing below header for hero section --- */
+  .hero {
+    margin-top: 18px;
+    padding-top: var(--space-lg);
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    min-height: 180px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -775,5 +817,25 @@ a:focus {
     top: 66px !important;
     font-size: 0.95rem;
     padding: 0.45rem 0.9rem;
+  }
+
+  /* --- FIX 1: Allow Apply Now button in header to show fully --- */
+  .site-header nav a,
+  .site-header nav .btn {
+    font-size: 0.97rem;
+    padding: 8px 10px;
+    max-width: 100vw;
+    white-space: normal;
+    word-break: break-word;
+    box-sizing: border-box;
+  }
+
+  /* --- FIX 2: Add spacing below header for hero section --- */
+  .hero {
+    margin-top: 14px;
+    padding-top: var(--space-md);
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+    min-height: 120px;
   }
 }
