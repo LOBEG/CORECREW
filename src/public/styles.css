@@ -797,11 +797,19 @@ a:focus {
 
   /* --- FIX 2: Add spacing below header for hero section --- */
   .hero {
-    margin-top: 18px;
-    padding-top: var(--space-lg);
+    margin-top: 50px; /* INCREASED spacing below header for mobile */
+    padding-top: var(--space-xl); /* More padding above hero content */
     grid-template-columns: 1fr;
     gap: var(--space-lg);
     min-height: 180px;
+  }
+
+  /* --- FIX 3: Larger text for hero-title and section-titles (What We Do, Get in touch) --- */
+  .hero-title {
+    font-size: 2.1rem; /* Increase font size for "Drive the Future of Logistics" */
+  }
+  .section-title {
+    font-size: 1.6rem; /* Increase font size for "What We Do", "Get in touch" */
   }
 }
 
@@ -832,10 +840,18 @@ a:focus {
 
   /* --- FIX 2: Add spacing below header for hero section --- */
   .hero {
-    margin-top: 14px;
-    padding-top: var(--space-md);
+    margin-top: 50px; /* INCREASED spacing below header for mobile */
+    padding-top: var(--space-xl); /* More padding above hero content */
     grid-template-columns: 1fr;
     gap: var(--space-md);
     min-height: 120px;
+  }
+
+  /* --- FIX 3: Larger text for hero-title and section-titles (What We Do, Get in touch) --- */
+  .hero-title {
+    font-size: 2rem; /* Increase font size for "Drive the Future of Logistics" */
+  }
+  .section-title {
+    font-size: 1.4rem; /* Increase font size for "What We Do", "Get in touch" */
   }
 }
