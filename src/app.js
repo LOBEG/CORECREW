@@ -14,7 +14,27 @@ const FormData = require('form-data');
 // --- Redis session store setup ---
 // Always use Upstash REST HTTPS URL (never redis:// or rediss://)
 const { Redis } = require('@upstash/redis');
-const RedisStore = require('connect-redis')(session); // v6.x: factory function
+
+// Handle different versions of connect-redis with fallback
+let RedisStore;
+try {
+  const connectRedis = require('connect-redis');
+  // Try v7+ API first
+  if (typeof connectRedis.default === 'function') {
+    RedisStore = connectRedis.default;
+  } 
+  // Try v6.x factory pattern
+  else if (typeof connectRedis === 'function') {
+    RedisStore = connectRedis(session);
+  }
+  // Try direct constructor
+  else if (connectRedis.RedisStore) {
+    RedisStore = connectRedis.RedisStore;
+  }
+} catch (err) {
+  console.warn('connect-redis not available, using memory store');
+  RedisStore = null;
+}
 
 let upstashRestUrl = process.env.UPSTASH_REDIS_REST_URL;
 const upstashRestToken = process.env.UPSTASH_REDIS_REST_TOKEN;
@@ -34,10 +54,16 @@ if (!upstashRestUrl) {
   upstashRestUrl = 'https://hopeful-mink-15758.upstash.io';
 }
 
-const redisClient = new Redis({
-  url: upstashRestUrl,
-  token: upstashRestToken,
-});
+let redisClient;
+try {
+  redisClient = new Redis({
+    url: upstashRestUrl,
+    token: upstashRestToken,
+  });
+} catch (err) {
+  console.warn('Redis client initialization failed, using memory store');
+  redisClient = null;
+}
 
 const app = express();
 
@@ -76,20 +102,31 @@ app.use(express.json());
 
 // --- Use Redis for session store ---
 // For connect-redis@6.x, use RedisStore constructor
-app.use(
-  session({
-    store: new RedisStore({ client: redisClient, prefix: 'sess:' }),
-    secret: process.env.SESSION_SECRET || 'change_this_secret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 24 * 60 * 60 * 1000,
-      httpOnly: true,
-      sameSite: 'lax',
-    },
-  })
-);
+const sessionConfig = {
+  secret: process.env.SESSION_SECRET || 'change_this_secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    sameSite: 'lax',
+  },
+};
+
+// Add Redis store if available
+if (RedisStore && redisClient) {
+  try {
+    sessionConfig.store = new RedisStore({ client: redisClient, prefix: 'sess:' });
+    console.log('Using Redis session store');
+  } catch (err) {
+    console.warn('Failed to create Redis store, using memory store:', err.message);
+  }
+} else {
+  console.warn('Using memory session store (not recommended for production)');
+}
+
+app.use(session(sessionConfig));
 
 const COMPANY = {
   name: 'Core Crew Logistics',
