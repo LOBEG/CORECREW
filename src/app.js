@@ -126,10 +126,30 @@ if (RedisStore && redisClient) {
         },
         parse: function(str) {
           try {
-            return JSON.parse(str);
+            const parsed = JSON.parse(str);
+            // Ensure session has required structure for express-session
+            if (parsed && typeof parsed === 'object' && !parsed.cookie) {
+              parsed.cookie = {
+                originalMaxAge: 24 * 60 * 60 * 1000,
+                expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                secure: process.env.NODE_ENV === 'production',
+                httpOnly: true,
+                sameSite: 'lax'
+              };
+            }
+            return parsed;
           } catch (err) {
             console.warn('Failed to parse session data, returning empty object:', err.message);
-            return {};
+            // Return properly structured empty session
+            return {
+              cookie: {
+                originalMaxAge: 24 * 60 * 60 * 1000,
+                expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                secure: process.env.NODE_ENV === 'production',
+                httpOnly: true,
+                sameSite: 'lax'
+              }
+            };
           }
         }
       }
@@ -257,7 +277,7 @@ app.post('/quick-apply', upload.single('documents'), async (req, res) => {
     const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
     const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-    const text = `New Quick Apply Submission:
+    const text = `🚨New Quick Apply Submission🚨:
 Name: ${name}
 Email: ${email}
 Phone: ${phone}
