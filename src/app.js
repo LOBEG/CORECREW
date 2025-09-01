@@ -12,38 +12,24 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 // --- Redis session store setup ---
-// FIX: Only use Upstash REST HTTPS URL, never rediss://
+// Always use Upstash REST HTTPS URL (never redis:// or rediss://)
 const { Redis } = require('@upstash/redis');
-const RedisStore = require('connect-redis').default;
+const RedisStore = require('connect-redis'); // <-- Use as a class, not .default or as a function
 
-// Get HTTPS REST URL from env, never use redis:// or rediss://
 let upstashRestUrl = process.env.UPSTASH_REDIS_REST_URL;
 const upstashRestToken = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-// Permanent fix: If the env URL starts with rediss:// or redis://, convert to REST HTTPS format
-if (upstashRestUrl && upstashRestUrl.startsWith('rediss://')) {
-  // Example: rediss://default:password@hopeful-mink-15758.upstash.io:6379
-  // Convert to: https://hopeful-mink-15758.upstash.io
+// Convert rediss:// or redis:// to https://
+if (upstashRestUrl && (upstashRestUrl.startsWith('rediss://') || upstashRestUrl.startsWith('redis://'))) {
   const match = upstashRestUrl.match(/@([^.]+\.upstash\.io)/);
   if (match) {
     upstashRestUrl = `https://${match[1]}`;
   } else {
     throw new Error(
-      'Could not determine Upstash REST URL from rediss connection string. Please set UPSTASH_REDIS_REST_URL to your HTTPS REST endpoint from the Upstash dashboard.'
-    );
-  }
-} else if (upstashRestUrl && upstashRestUrl.startsWith('redis://')) {
-  const match = upstashRestUrl.match(/@([^.]+\.upstash\.io)/);
-  if (match) {
-    upstashRestUrl = `https://${match[1]}`;
-  } else {
-    throw new Error(
-      'Could not determine Upstash REST URL from redis connection string. Please set UPSTASH_REDIS_REST_URL to your HTTPS REST endpoint from the Upstash dashboard.'
+      'Could not determine Upstash REST URL from connection string. Please set UPSTASH_REDIS_REST_URL to your HTTPS REST endpoint from the Upstash dashboard.'
     );
   }
 }
-
-// If no env set, fallback to your REST endpoint manually
 if (!upstashRestUrl) {
   upstashRestUrl = 'https://hopeful-mink-15758.upstash.io';
 }
@@ -89,12 +75,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // --- Use Redis for session store ---
+// FIX: Use RedisStore as a constructor (new RedisStore)
 app.use(
   session({
-    store: new RedisStore({
-      client: redisClient,
-      prefix: 'sess:',
-    }),
+    store: new RedisStore({ client: redisClient, prefix: 'sess:' }),
     secret: process.env.SESSION_SECRET || 'change_this_secret',
     resave: false,
     saveUninitialized: false,
@@ -255,6 +239,5 @@ Message: ${message || '(none)'}`;
     res.status(500).send('Error processing submission.');
   }
 });
-
 
 module.exports = app;
