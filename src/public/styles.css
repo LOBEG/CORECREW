@@ -194,6 +194,12 @@ a:hover {
   display: none;
 }
 
+/* --- Adjust brand gap and add margin to prevent overlap --- */
+.site-header .brand {
+  margin-right: 16px; /* Add space between brand and nav */
+}
+
+/* Responsive: reduce gap and margin further on smaller screens */
 @media (max-width: 768px) {
   .site-header nav {
     flex-wrap: nowrap;
@@ -208,6 +214,16 @@ a:hover {
     white-space: nowrap;
     word-break: normal;
     box-sizing: border-box;
+  }
+  .site-header .brand {
+    font-size: 1.1rem;
+    gap: 4px;
+    margin-right: 10px;
+  }
+  .site-header .logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
   }
 }
 @media (max-width: 480px) {
@@ -224,6 +240,16 @@ a:hover {
     white-space: nowrap;
     word-break: normal;
     box-sizing: border-box;
+  }
+  .site-header .brand {
+    font-size: 0.9rem;
+    gap: 3px;
+    margin-right: 6px;
+  }
+  .site-header .logo {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
   }
 }
 
@@ -817,16 +843,7 @@ a:focus {
     word-break: normal;
     box-sizing: border-box;
   }
-  .site-header .brand {
-    font-size: 1.1rem;
-    gap: 7px;
-  }
-  .site-header .logo {
-    width: 28px;
-    height: 28px;
-    border-radius: 7px;
-  }
-
+  /* .site-header .brand already set above for margin and gap on mobile */
   .hero {
     margin-top: 50px; /* INCREASED spacing below header for mobile */
     padding-top: var(--space-xl); /* More padding above hero content */
@@ -871,16 +888,7 @@ a:focus {
     word-break: normal;
     box-sizing: border-box;
   }
-  .site-header .brand {
-    font-size: 0.9rem;
-    gap: 5px;
-  }
-  .site-header .logo {
-    width: 20px;
-    height: 20px;
-    border-radius: 5px;
-  }
-
+  /* .site-header .brand already set above for margin and gap on mobile */
   .hero {
     margin-top: 50px;
     padding-top: var(--space-xl);
