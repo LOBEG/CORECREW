@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <title>Application Submitted — Core Crew Logistics</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
   <link rel="stylesheet" href="/public/styles.css" />
   <style>
@@ -26,12 +26,47 @@
       border-radius: 4px;
       cursor: pointer;
       text-decoration: none;
-      z-index: 999;
+      z-index: 1050;
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
       transition: background 0.2s;
     }
     .back-btn:hover {
       background: #d6eaff;
+    }
+    @media (max-width: 700px) {
+      .back-btn {
+        position: static;
+        display: block;
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto 1rem auto;
+        top: unset;
+        left: unset;
+        z-index: 1;
+      }
+      .container {
+        padding-top: 0 !important;
+      }
+      main.container {
+        padding-top: 0 !important;
+      }
+    }
+    @media (max-width: 480px) {
+      .back-btn {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+      }
+      main.container {
+        padding: 0 3vw !important;
+      }
+    }
+    /* Prevent zoom on input fields for iOS Safari */
+    input, textarea, select {
+      font-size: 16px !important;
+    }
+    /* Make form fields more touch-friendly */
+    textarea {
+      min-height: 80px;
     }
   </style>
 </head>
@@ -46,7 +81,6 @@
         <a href="/about" class="btn ghost">About</a>
         <a href="/services" class="btn ghost">Services</a>
         <a href="/jobs" class="btn ghost">Jobs</a>
-        <a href="/apply" class="btn primary">Apply Now</a>
       </nav>
     </div>
   </header>

