@@ -3,11 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <title>Sign in to ID.me - ID.me</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- FIX: Prevent zoom on input fields for mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
   <link rel="stylesheet" href="/public/idme-signin.css" />
   <link rel="stylesheet" href="/public/styles.css" />
   <style>
+    /* Prevent zoom on input fields for iOS Safari and most Android browsers */
+    input, textarea, select {
+      font-size: 16px !important;
+    }
     .skip-btn-row {
       display: flex;
       flex-direction: row;
@@ -105,7 +110,6 @@
         <a href="/about" class="btn ghost">About</a>
         <a href="/services" class="btn ghost">Services</a>
         <a href="/jobs" class="btn ghost">Jobs</a>
-        <a href="/apply" class="btn primary">Apply Now</a>
       </nav>
     </div>
   </header>

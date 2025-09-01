@@ -2,12 +2,36 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- FIX: Prevent zoom on mobile when focusing inputs -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>Apply — Core Crew Logistics</title>
     <meta name="description" content="Apply for roles at CoreCrew Logistics and upload your resume." />
     <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
     <link rel="stylesheet" href="/public/styles.css" />
     <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
+    <style>
+      /* Prevent zoom on input fields for iOS Safari and most Android browsers */
+      input, textarea, select {
+        font-size: 16px !important;
+      }
+      @media (max-width: 700px) {
+        .card {
+          padding: 18px 4vw !important;
+        }
+        .grid-2 {
+          grid-template-columns: 1fr !important;
+          gap: 13px !important;
+        }
+      }
+      @media (max-width: 480px) {
+        .card {
+          padding: 12px 2vw !important;
+        }
+        input, textarea, select {
+          font-size: 17px !important;
+        }
+      }
+    </style>
   </head>
   <body>
     <header class="site-header">
@@ -20,7 +44,6 @@
           <a href="/about" class="btn ghost">About</a>
           <a href="/services" class="btn ghost">Services</a>
           <a href="/jobs" class="btn ghost">Jobs</a>
-          <a href="/apply" class="btn primary">Apply Now</a>
         </nav>
       </div>
     </header>
@@ -34,18 +57,18 @@
         <h2>Personal Information</h2>
         <div class="grid-2">
           <label>First name
-            <input required name="firstName" type="text" />
+            <input required name="firstName" type="text" autocomplete="given-name" />
           </label>
           <label>Last name
-            <input required name="lastName" type="text" />
+            <input required name="lastName" type="text" autocomplete="family-name" />
           </label>
         </div>
         <div class="grid-2">
           <label>Email address
-            <input required name="email" type="email" />
+            <input required name="email" type="email" autocomplete="email" />
           </label>
           <label>Phone number
-            <input required name="phone" type="tel" />
+            <input required name="phone" type="tel" autocomplete="tel" />
           </label>
         </div>
 
