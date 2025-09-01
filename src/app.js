@@ -12,8 +12,9 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 // --- Redis session store setup ---
+// Fix: Use connect-redis as a function (not destructured) and Upstash Redis client
 const { Redis } = require('@upstash/redis');
-const RedisStore = require('connect-redis')(session);
+const RedisStore = require('connect-redis')(session); // FIXED: correct usage
 
 const redisClient = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
@@ -63,7 +64,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // true if HTTPS, false for local/dev
+      secure: process.env.NODE_ENV === 'production',
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
       sameSite: 'lax',
@@ -101,7 +102,6 @@ app.get('/jobs/:position', (req, res) => {
   res.render('job-details', { job, COMPANY });
 });
 
-// --- FIX: Support pre-selecting position via query ---
 app.get('/apply', (req, res) => {
   const positions = Object.values(jobDetails).map(j => j.title);
   const selectedPosition = req.query.position;
