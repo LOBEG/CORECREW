@@ -12,13 +12,18 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 // --- Redis session store setup ---
+// FIX: Upstash Redis client MUST use HTTPS REST URL, not "rediss://..."!
+// Only use URLs that start with https:// as documented by Upstash!
 const { Redis } = require('@upstash/redis');
 const RedisStore = require('connect-redis').default;
 
-// Create Redis client using REST API endpoint
+// Prefer environment variable UPSTASH_REDIS_REST_URL, fallback to Upstash dashboard REST URL, NOT rediss://
+const upstashRestUrl = process.env.UPSTASH_REDIS_REST_URL || 'https://hopeful-mink-15758.upstash.io'; // HTTPS, not rediss://
+const upstashRestToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+
 const redisClient = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || 'https://hopeful-mink-15758.upstash.io',
-  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+  url: upstashRestUrl,
+  token: upstashRestToken,
 });
 
 const app = express();
