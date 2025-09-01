@@ -12,17 +12,17 @@
       }, 7000);
     </script>
     <style>
-      /* Fix: Make sure back button is below the header */
+      /* Fix: Back button is always visible below header on all devices */
       .fixed-back-btn {
-        position: absolute;
-        top: 100px; /* Set below header height */
-        left: 2rem;
-        z-index: 1001;
+        position: fixed;
+        top: 80px; /* Adjust this if your header is taller/shorter on mobile */
+        left: 1rem;
+        z-index: 1200;
       }
-      @media (max-width: 700px) {
+      @media (min-width: 701px) {
         .fixed-back-btn {
-          top: 72px;
-          left: 1rem;
+          top: 100px; /* Desktop header is taller */
+          left: 2rem;
         }
       }
     </style>

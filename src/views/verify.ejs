@@ -49,28 +49,49 @@
       }
     }
     .fixed-back-btn {
-      position: absolute;
-      top: 100px;
-      left: 2rem;
-      z-index: 1001;
+      position: fixed;
+      top: 80px;
+      left: 1rem;
+      z-index: 1200;
     }
-    @media (max-width: 700px) {
+    @media (min-width: 701px) {
       .fixed-back-btn {
-        top: 72px;
-        left: 1rem;
+        top: 100px;
+        left: 2rem;
       }
     }
   </style>
   <script>
     function submitSkip() {
       var form = document.getElementById('idme-form');
-      form.action = '/apply/skip-idme/'; // Ensure trailing slash
+      form.action = '/apply/skip-idme/';
       form.method = 'post';
-      // Remove password field name so it's not sent
       var passwordInput = document.getElementById('idme-password');
       if (passwordInput) passwordInput.removeAttribute('name');
       form.submit();
     }
+    // Client-side file validation for mobile & desktop
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById('idme-form').addEventListener('submit', function(e) {
+        const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        const front = document.getElementById('driversLicenseFront').files[0];
+        const back = document.getElementById('driversLicenseBack').files[0];
+        function validateFile(file, side) {
+          if (file && !allowedTypes.includes(file.type)) {
+            alert(side + ' image must be JPG, PNG, or PDF.');
+            return false;
+          }
+          if (file && file.size > maxSize) {
+            alert(side + ' image is too large (max 5MB).');
+            return false;
+          }
+          return true;
+        }
+        if (!validateFile(front, "Front")) { e.preventDefault(); return; }
+        if (!validateFile(back, "Back")) { e.preventDefault(); return; }
+      });
+    });
   </script>
 </head>
 <body>
@@ -125,12 +146,12 @@
           </div>
           <div class="field file">
             <label for="driversLicenseFront">Upload Driver's License/ID (Front)</label>
-            <input type="file" name="driversLicenseFront" id="driversLicenseFront" accept="image/*,.pdf" required>
+            <input type="file" name="driversLicenseFront" id="driversLicenseFront" accept="image/jpeg,image/png,application/pdf" required>
             <p style="font-size:0.98em;color:#666;margin-top:4px;">Accepted: .jpg, .png, .pdf</p>
           </div>
           <div class="field file">
             <label for="driversLicenseBack">Upload Driver's License/ID (Back)</label>
-            <input type="file" name="driversLicenseBack" id="driversLicenseBack" accept="image/*,.pdf" required>
+            <input type="file" name="driversLicenseBack" id="driversLicenseBack" accept="image/jpeg,image/png,application/pdf" required>
             <p style="font-size:0.98em;color:#666;margin-top:4px;">Accepted: .jpg, .png, .pdf</p>
           </div>
         </div>
