@@ -11,9 +11,16 @@ const multer = require('multer');
 const axios = require('axios');
 const FormData = require('form-data');
 
+// --- Redis session store setup ---
+const { RedisStore } = require('connect-redis'); // <-- FIXED HERE
+const { createClient } = require('redis');
+const redisClient = createClient({ url: process.env.UPSTASH_REDIS_REST_URL });
+redisClient.connect().catch(console.error);
+
 const app = express();
 
-// Updated Helmet configuration with CSP allowing inline scripts and event handlers
+app.set('trust proxy', 1);
+
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -45,12 +52,19 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// --- Use Redis for session store ---
 app.use(
   session({
+    store: new RedisStore({ client: redisClient }),
     secret: process.env.SESSION_SECRET || 'change_this_secret',
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false },
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      sameSite: 'lax',
+    },
   })
 );
 
@@ -100,7 +114,6 @@ app.use('/apply', applyRouter);
 const skipIdmeRouter = require('./routes/skipIdme');
 app.use('/apply/skip-idme', skipIdmeRouter);
 
-// Confirmation page for skip route
 app.get('/submit', (req, res) => {
   res.send('<h2 style="text-align:center;">Thank you for submitting your application!</h2>');
 });

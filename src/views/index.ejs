@@ -5,7 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Core Crew Logistics — Freight, Warehousing, Jobs, Careers</title>
     <meta name="description" content="Core Crew Logistics: Reliable freight, dispatch, warehousing, and job opportunities across California and beyond. Apply now!" />
-    <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
+    <!-- FAVICON FOR BROWSERS -->
+    <link rel="icon" type="image/png" href="/public/img/logo.jpg" />
+    <link rel="icon" type="image/x-icon" href="/public/favicon.ico" />
+    <!-- Organization Logo for Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Core Crew Logistics",
+      "url": "https://www.corecrewlogistics.com/",
+      "logo": "https://www.corecrewlogistics.com/public/img/logo.jpg"
+    }
+    </script>
     <!-- Open Graph & Twitter Card for rich results -->
     <meta property="og:title" content="Core Crew Logistics — Freight, Warehousing, Jobs" />
     <meta property="og:description" content="Reliable logistics and career opportunities. Apply now!" />
@@ -19,7 +31,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <style>
-      /* Font size increase for better readability */
       html, body {
         font-size: 15px;
       }
@@ -37,7 +48,7 @@
       .site-footer {
         background: #000 !important;
       }
-      /* Center the copyright text */
+      /* Center copyright text */
       .footer-bottom {
         width: 100%;
         text-align: center !important;
@@ -46,7 +57,7 @@
         color: #fff;
         font-size: .95rem;
       }
-      /* Floating Quick Apply button styles */
+      /* Quick Apply Floating Button styles */
       .quick-apply-float-btn {
         position: fixed;
         right: 22px;
@@ -68,7 +79,6 @@
         color: #fff;
         box-shadow: 0 12px 32px 0 rgba(24, 70, 163, 0.18);
       }
-      /* Modal override for floating quick apply */
       .quick-apply-modal-bg {
         display: none;
         position: fixed;
@@ -117,11 +127,9 @@
       .quick-apply-modal-close:hover {
         color: var(--primary);
       }
-      /* Hide the old quick-apply card on desktop */
       .quick-apply-card {
         display: none !important;
       }
-      /* Responsive fixes for floating button */
       @media (max-width: 768px) {
         .quick-apply-float-btn {
           right: 10px;
@@ -137,6 +145,69 @@
         .quick-apply-float-btn {
           font-size: 0.98rem;
           padding: 8px 10px;
+        }
+      }
+
+      /* --- NOW HIRING BANNER --- */
+      .now-hiring-banner {
+        width: 100%;
+        background: linear-gradient(90deg, #f7b731 0%, #2ecc71 100%);
+        color: #1846a3;
+        text-align: center;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        font-size: 1.13rem;
+        padding: 11px 0 10px 0;
+        margin: 0 auto;
+        border-bottom: 1px solid #e5e9f2;
+        position: relative;
+        z-index: 999;
+      }
+      .now-hiring-banner span {
+        display: inline-block;
+        vertical-align: middle;
+      }
+      @media (max-width: 768px) {
+        .now-hiring-banner {
+          font-size: 1.01rem;
+          padding: 10px 0 9px 0;
+        }
+      }
+      @media (max-width: 480px) {
+        .now-hiring-banner {
+          font-size: 0.98rem;
+          padding: 8px 0 7px 0;
+        }
+      }
+
+      /* --- HEADER LOGO & TEXT SIZE OVERRIDE --- */
+      .site-header .brand {
+        font-size: 1.45rem;
+        gap: 11px;
+      }
+      .site-header .logo {
+        width: 44px;
+        height: 44px;
+        border-radius: 8px;
+      }
+      @media (max-width: 768px) {
+        .site-header .brand {
+          font-size: 1.18rem;
+          gap: 8px;
+        }
+        .site-header .logo {
+          width: 34px;
+          height: 34px;
+        }
+      }
+      @media (max-width: 480px) {
+        .site-header .brand {
+          font-size: 1.05rem;
+          gap: 7px;
+        }
+        .site-header .logo {
+          width: 27px;
+          height: 27px;
         }
       }
     </style>
@@ -156,6 +227,11 @@
         </nav>
       </div>
     </header>
+    <!-- NOW HIRING BANNER START -->
+    <div class="now-hiring-banner">
+      <span>🚚 NOW HIRING: Drivers, Dispatchers, Warehouse Staff &amp; More! <a href="/apply" style="color:#1846a3;text-decoration:underline;font-weight:700;margin-left:8px;">Apply Today</a></span>
+    </div>
+    <!-- NOW HIRING BANNER END -->
     <main class="container">
       <section class="hero">
         <div class="copy">
@@ -181,7 +257,7 @@
                 <path stroke-width="2" d="M16 3v4M8 3v4"/>
               </svg>
             </div>
-            <div class="stat-number">10+</div>
+            <div class="stat-number" data-target="10">0</div>
             <div class="stat-label">Years of Service</div>
           </div>
           <div class="stat">
@@ -193,7 +269,7 @@
                 <path stroke-width="2" d="M17 15c2.21 0 4 1.343 4 3"/>
               </svg>
             </div>
-            <div class="stat-number">300+</div>
+            <div class="stat-number" data-target="300">0</div>
             <div class="stat-label">Employees</div>
           </div>
           <div class="stat">
@@ -203,7 +279,7 @@
                 <path stroke-width="2" d="M2 12h20M12 2c3.866 0 7 4.477 7 10s-3.134 10-7 10-7-4.477-7-10 3.134-10 7-10z"/>
               </svg>
             </div>
-            <div class="stat-number">50</div>
+            <div class="stat-number" data-target="50">0</div>
             <div class="stat-label">States Served</div>
           </div>
           <div class="stat">
@@ -213,7 +289,7 @@
                 <path stroke-width="2" d="M16 7V5a4 4 0 00-8 0v2"/>
               </svg>
             </div>
-            <div class="stat-number">500+</div>
+            <div class="stat-number" data-target="500">0</div>
             <div class="stat-label">Clients</div>
           </div>
         </div>
@@ -300,6 +376,7 @@
         });
       </script>
       <script src="/public/modal.js"></script>
+      <script src="/public/stat-counter.js"></script>
     </main>
     <footer class="site-footer">
       <div class="footer-flex">
