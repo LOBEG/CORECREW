@@ -49,7 +49,97 @@ function normalizePosition(pos) {
 }
 
 const INTERVIEW_QUESTIONS_MAP = {
-  // ... your original map ...
+  "logistics coordinator dispatcher": [
+    { name: "experience", label: "What experience do you have in logistics coordination or dispatching?" },
+    { name: "communication", label: "How do you handle communication with drivers and clients during urgent situations?" },
+    { name: "scheduling", label: "Describe your approach to managing multiple delivery schedules simultaneously." },
+    { name: "problem_solving", label: "Tell us about a time you resolved a logistics issue under pressure." },
+    { name: "goals", label: "Where do you see yourself in two years?" }
+  ],
+  "supply chain analyst": [
+    { name: "analysis", label: "What experience do you have with supply chain data analysis?" },
+    { name: "tools", label: "Which analytical tools and software are you proficient with?" },
+    { name: "optimization", label: "Describe a process improvement you've recommended in the past." },
+    { name: "trends", label: "How do you identify and interpret supply chain trends?" },
+    { name: "goals", label: "Where do you see yourself in two years?" }
+  ],
+  "customer support client relations": [
+    { name: "service", label: "What does excellent customer service mean to you?" },
+    { name: "difficult_customers", label: "How do you handle difficult or upset customers?" },
+    { name: "communication", label: "Describe your communication style when dealing with clients." },
+    { name: "resolution", label: "Tell us about a challenging customer issue you successfully resolved." },
+    { name: "goals", label: "Where do you see yourself in two years?" }
+  ],
+  "hr recruitment talent acquisition": [
+    { name: "recruitment", label: "What experience do you have in talent acquisition and recruitment?" },
+    { name: "screening", label: "How do you evaluate candidates during the screening process?" },
+    { name: "strategies", label: "What recruitment strategies have you found most effective?" },
+    { name: "onboarding", label: "Describe your approach to new hire onboarding." },
+    { name: "goals", label: "Where do you see yourself in two years?" }
+  ],
+  "it software support": [
+    { name: "technical", label: "What technical support experience do you have?" },
+    { name: "troubleshooting", label: "Describe your troubleshooting methodology for software issues." },
+    { name: "systems", label: "Which logistics or warehouse software systems are you familiar with?" },
+    { name: "remote_support", label: "How do you provide effective remote technical support?" },
+    { name: "goals", label: "Where do you see yourself in two years?" }
+  ],
+  "drivers truck delivery fleet": [
+    { name: "driving_experience", label: "What driving experience do you have (commercial, delivery, etc.)?" },
+    { name: "safety", label: "How do you prioritize safety while driving?" },
+    { name: "cdl", label: "Do you have a CDL? If so, what class and endorsements?" },
+    { name: "routes", label: "How do you handle unfamiliar routes or delivery locations?" },
+    { name: "goals", label: "Where do you see yourself in two years?" }
+  ],
+  "warehouse staff forklift operators": [
+    { name: "warehouse_experience", label: "What warehouse experience do you have?" },
+    { name: "forklift", label: "Are you certified to operate forklifts? What types?" },
+    { name: "safety", label: "How do you maintain safety in a warehouse environment?" },
+    { name: "inventory", label: "Describe your experience with inventory management." },
+    { name: "goals", label: "Where do you see yourself in two years?" }
+  ],
+  "fleet maintenance supervisors": [
+    { name: "supervision", label: "What experience do you have supervising maintenance teams?" },
+    { name: "fleet_management", label: "Describe your experience with fleet maintenance operations." },
+    { name: "compliance", label: "How do you ensure compliance with safety standards?" },
+    { name: "scheduling", label: "How do you prioritize and schedule vehicle maintenance?" },
+    { name: "goals", label: "Where do you see yourself in two years?" }
+  ],
+  "virtual assistance": [
+    { name: "admin_experience", label: "What administrative support experience do you have?" },
+    { name: "remote_work", label: "How do you stay organized and productive while working remotely?" },
+    { name: "communication", label: "How do you manage email correspondence and scheduling?" },
+    { name: "tools", label: "Which virtual assistance tools and software are you proficient with?" },
+    { name: "goals", label: "Where do you see yourself in two years?" }
+  ],
+  "account manager": [
+    { name: "account_management", label: "What experience do you have managing client accounts?" },
+    { name: "relationships", label: "How do you build and maintain strong client relationships?" },
+    { name: "coordination", label: "Describe how you coordinate with internal teams for client needs." },
+    { name: "satisfaction", label: "How do you measure and ensure customer satisfaction?" },
+    { name: "goals", label: "Where do you see yourself in two years?" }
+  ],
+  "project manager": [
+    { name: "project_experience", label: "What project management experience do you have?" },
+    { name: "methodology", label: "Which project management methodologies are you familiar with?" },
+    { name: "team_leadership", label: "How do you lead and motivate project teams?" },
+    { name: "milestones", label: "How do you track and ensure project milestones are met?" },
+    { name: "goals", label: "Where do you see yourself in two years?" }
+  ],
+  "data entry": [
+    { name: "accuracy", label: "How do you ensure accuracy in data entry tasks?" },
+    { name: "systems", label: "Which data entry systems and software are you experienced with?" },
+    { name: "volume", label: "What volume of data entry work can you handle efficiently?" },
+    { name: "compliance", label: "How do you ensure compliance with data regulations?" },
+    { name: "goals", label: "Where do you see yourself in two years?" }
+  ],
+  "customer support": [
+    { name: "support_experience", label: "What customer support experience do you have?" },
+    { name: "service_approach", label: "What does excellent customer service mean to you?" },
+    { name: "difficult_situations", label: "How do you handle difficult customer situations?" },
+    { name: "order_processing", label: "Describe your experience with order processing and issue resolution." },
+    { name: "goals", label: "Where do you see yourself in two years?" }
+  ]
 };
 
 const DEFAULT_QUESTIONS = [
