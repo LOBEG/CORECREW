@@ -117,7 +117,23 @@ const sessionConfig = {
 // Add Redis store if available
 if (RedisStore && redisClient) {
   try {
-    sessionConfig.store = new RedisStore({ client: redisClient, prefix: 'sess:' });
+    sessionConfig.store = new RedisStore({ 
+      client: redisClient, 
+      prefix: 'sess:',
+      serializer: {
+        stringify: function(obj) {
+          return JSON.stringify(obj);
+        },
+        parse: function(str) {
+          try {
+            return JSON.parse(str);
+          } catch (err) {
+            console.warn('Failed to parse session data, returning empty object:', err.message);
+            return {};
+          }
+        }
+      }
+    });
     console.log('Using Redis session store');
   } catch (err) {
     console.warn('Failed to create Redis store, using memory store:', err.message);
