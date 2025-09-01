@@ -12,7 +12,7 @@ const jobDetails = require('../data/jobDetails');
 // --- REDIS SESSION SETUP ---
 // You must also set this up in your main server file (see note below)
 const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
+// RedisStore is configured in the main app.js file
 
 // Use the official Upstash Redis client
 // Note: This Redis client is only used for storing application data
