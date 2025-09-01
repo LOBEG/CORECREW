@@ -15,10 +15,8 @@ const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 
 // Use the official Upstash Redis client
-const redisClient = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN,
-});
+// Note: This Redis client is only used for storing application data
+// Session Redis client is configured in the main app.js file
 
 const router = express.Router();
 

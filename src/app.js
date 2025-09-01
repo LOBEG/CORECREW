@@ -15,8 +15,9 @@ const FormData = require('form-data');
 const { Redis } = require('@upstash/redis');
 const RedisStore = require('connect-redis').default;
 
+// Create Redis client using REST API endpoint
 const redisClient = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL,
+  url: process.env.UPSTASH_REDIS_REST_URL || 'https://hopeful-mink-15758.upstash.io',
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
 
