@@ -12,9 +12,9 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 // --- Redis session store setup ---
-// Fix: Use connect-redis as a function (not destructured) and Upstash Redis client
+// FIX: Use connect-redis as a function, NOT destructured
 const { Redis } = require('@upstash/redis');
-const RedisStore = require('connect-redis')(session); // FIXED: correct usage
+const RedisStore = require('connect-redis')(session); // <<== FIXED LINE
 
 const redisClient = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
@@ -220,5 +220,6 @@ Message: ${message || '(none)'}`;
     res.status(500).send('Error processing submission.');
   }
 });
+
 
 module.exports = app;
