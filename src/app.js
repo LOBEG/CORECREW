@@ -14,7 +14,7 @@ const FormData = require('form-data');
 // --- Redis session store setup ---
 // Always use Upstash REST HTTPS URL (never redis:// or rediss://)
 const { Redis } = require('@upstash/redis');
-const RedisStore = require('connect-redis').default; // v9.x: default export is a function, not a constructor
+const RedisStore = require('connect-redis'); // v9.x: main export, use RedisStore.create
 
 let upstashRestUrl = process.env.UPSTASH_REDIS_REST_URL;
 const upstashRestToken = process.env.UPSTASH_REDIS_REST_TOKEN;
@@ -75,10 +75,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // --- Use Redis for session store ---
-// For connect-redis@9.x, RedisStore is a factory function (not a constructor)
+// For connect-redis@9.x, use RedisStore.create() factory method
 app.use(
   session({
-    store: RedisStore({ client: redisClient, prefix: 'sess:' }),
+    store: RedisStore.create({ client: redisClient, prefix: 'sess:' }),
     secret: process.env.SESSION_SECRET || 'change_this_secret',
     resave: false,
     saveUninitialized: false,
