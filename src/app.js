@@ -12,9 +12,8 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 // --- Redis session store setup ---
-// FIX: Use connect-redis as a function, NOT destructured
 const { Redis } = require('@upstash/redis');
-const RedisStore = require('connect-redis')(session); // <<== FIXED LINE
+const RedisStore = require('connect-redis').default;
 
 const redisClient = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL,
@@ -59,7 +58,10 @@ app.use(express.json());
 // --- Use Redis for session store ---
 app.use(
   session({
-    store: new RedisStore({ client: redisClient }),
+    store: new RedisStore({
+      client: redisClient,
+      prefix: 'sess:',
+    }),
     secret: process.env.SESSION_SECRET || 'change_this_secret',
     resave: false,
     saveUninitialized: false,
