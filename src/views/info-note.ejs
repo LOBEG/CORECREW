@@ -25,6 +25,12 @@
           left: 2rem;
         }
       }
+      /* Add margin to .card to prevent overlap with back button on mobile */
+      @media (max-width: 700px) {
+        main.container .card {
+          margin-top: 6.5rem !important; /* Push content further down */
+        }
+      }
     </style>
   </head>
   <body>

