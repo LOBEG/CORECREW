@@ -180,13 +180,8 @@ app.get('/jobs/:position', (req, res) => {
   const positionKey = req.params.position;
   const job = jobDetails[positionKey];
   if (!job) return res.status(404).render('404', { COMPANY });
-  res.render('job-details', { job, COMPANY });
-});
-
-// Mount the apply router - all /apply routes are handled by the router
-const applyRouter = require('./routes/apply');
-app.use('/apply', applyRouter);
-
+}
+)
 app.get('/about', (req, res) => {
   res.render('about', { COMPANY });
 });
