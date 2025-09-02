@@ -63,6 +63,70 @@ const app = express();
 
 app.set('trust proxy', 1);
 
+// ---- PLACE SESSION MIDDLEWARE BEFORE ALL ROUTES AND STATIC ----
+
+const sessionConfig = {
+  secret: process.env.SESSION_SECRET || 'change_this_secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    // For local development, set secure: false and sameSite: false (or 'lax' for most cases in prod)
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    sameSite: process.env.NODE_ENV === 'production' ? 'lax' : false
+  },
+};
+
+if (RedisStore && redisClient) {
+  try {
+    sessionConfig.store = new RedisStore({ 
+      client: redisClient, 
+      prefix: 'sess:',
+      serializer: {
+        stringify: function(obj) {
+          return JSON.stringify(obj);
+        },
+        parse: function(str) {
+          try {
+            const parsed = JSON.parse(str);
+            if (parsed && typeof parsed === 'object' && !parsed.cookie) {
+              parsed.cookie = {
+                originalMaxAge: 24 * 60 * 60 * 1000,
+                expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                secure: process.env.NODE_ENV === 'production',
+                httpOnly: true,
+                sameSite: process.env.NODE_ENV === 'production' ? 'lax' : false
+              };
+            }
+            return parsed;
+          } catch (err) {
+            console.warn('Failed to parse session data, returning empty object:', err.message);
+            return {
+              cookie: {
+                originalMaxAge: 24 * 60 * 60 * 1000,
+                expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                secure: process.env.NODE_ENV === 'production',
+                httpOnly: true,
+                sameSite: process.env.NODE_ENV === 'production' ? 'lax' : false
+              }
+            };
+          }
+        }
+      }
+    });
+    console.log('Using Redis session store');
+  } catch (err) {
+    console.warn('Failed to create Redis store, using memory store:', err.message);
+  }
+} else {
+  console.warn('Using memory session store (not recommended for production)');
+}
+
+app.use(session(sessionConfig));
+
+// ---- END SESSION MIDDLEWARE ----
+
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -93,65 +157,6 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-const sessionConfig = {
-  secret: process.env.SESSION_SECRET || 'change_this_secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 24 * 60 * 60 * 1000,
-    httpOnly: true,
-    sameSite: 'lax',
-  },
-};
-
-if (RedisStore && redisClient) {
-  try {
-    sessionConfig.store = new RedisStore({ 
-      client: redisClient, 
-      prefix: 'sess:',
-      serializer: {
-        stringify: function(obj) {
-          return JSON.stringify(obj);
-        },
-        parse: function(str) {
-          try {
-            const parsed = JSON.parse(str);
-            if (parsed && typeof parsed === 'object' && !parsed.cookie) {
-              parsed.cookie = {
-                originalMaxAge: 24 * 60 * 60 * 1000,
-                expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-                secure: process.env.NODE_ENV === 'production',
-                httpOnly: true,
-                sameSite: 'lax'
-              };
-            }
-            return parsed;
-          } catch (err) {
-            console.warn('Failed to parse session data, returning empty object:', err.message);
-            return {
-              cookie: {
-                originalMaxAge: 24 * 60 * 60 * 1000,
-                expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-                secure: process.env.NODE_ENV === 'production',
-                httpOnly: true,
-                sameSite: 'lax'
-              }
-            };
-          }
-        }
-      }
-    });
-    console.log('Using Redis session store');
-  } catch (err) {
-    console.warn('Failed to create Redis store, using memory store:', err.message);
-  }
-} else {
-  console.warn('Using memory session store (not recommended for production)');
-}
-
-app.use(session(sessionConfig));
 
 const COMPANY = {
   name: 'Core Crew Logistics',

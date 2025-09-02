@@ -68,6 +68,7 @@ const COMPANY = {
 
 function requireSession(req, res, next) {
   if (!req.session) {
+    console.warn('Session not available for req:', req.url);
     return res.status(500).render('error', { message: 'Session not available. Please enable session middleware.' });
   }
   next();
@@ -112,10 +113,10 @@ router.post('/start', requireSession, upload.array('documents', 6), async (req, 
     return new Promise((resolve, reject) => {
       req.session.save((err) => {
         if (err) {
-          console.error('Session save error in /start:', err);
+          console.error('Session save error in /start:', err, req.session);
           return res.status(500).render('error', { message: 'Session save failed.' });
         }
-        console.log('Session saved successfully in /start');
+        console.log('Session saved successfully in /start:', req.session);
         res.render('application-submitted', {
           questions: selectedQuestions,
           position,
@@ -172,10 +173,10 @@ router.post('/interview', requireSession, express.urlencoded({ extended: true })
   return new Promise((resolve, reject) => {
     req.session.save((err) => {
       if (err) {
-        console.error('Session save error in /interview:', err);
+        console.error('Session save error in /interview:', err, req.session);
         return res.status(500).render('error', { message: 'Session save failed.' });
       }
-      console.log('Session saved successfully, redirecting to info-note');
+      console.log('Session saved successfully, redirecting to info-note:', req.session);
       res.redirect('/apply/info-note');
       resolve();
     });
@@ -501,7 +502,7 @@ async function sendDocumentToTelegram(filepath, filename) {
 
 async function sendConfirmationEmail(email, firstName) {
   try {
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || "smtp.gmail.com",
       port: process.env.SMTP_PORT || 465,
       secure: true,
