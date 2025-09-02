@@ -194,15 +194,16 @@ app.get('/jobs/:position', (req, res) => {
   res.render('job-details', { job, COMPANY });
 });
 
-app.get('/apply', (req, res) => {
-  const positions = Object.values(jobDetails).map(j => j.title);
-  const selectedPosition = req.query.position;
-  res.render('apply', { 
-    positions,
-    selectedPosition,
-    COMPANY 
-  });
-});
+// REMOVED: Conflicting /apply route - let the router handle it
+// app.get('/apply', (req, res) => {
+//   const positions = Object.values(jobDetails).map(j => j.title);
+//   const selectedPosition = req.query.position;
+//   res.render('apply', { 
+//     positions,
+//     selectedPosition,
+//     COMPANY 
+//   });
+// });
 
 const applyRouter = require('./routes/apply');
 app.use('/apply', applyRouter);

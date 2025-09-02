@@ -9,15 +9,6 @@ const { Redis } = require('@upstash/redis');
 const nodemailer = require('nodemailer');
 const jobDetails = require('../data/jobDetails');
 
-// --- REDIS SESSION SETUP ---
-// You must also set this up in your main server file (see note below)
-const session = require('express-session');
-// RedisStore is configured in the main app.js file
-
-// Use the official Upstash Redis client
-// Note: This Redis client is only used for storing application data
-// Session Redis client is configured in the main app.js file
-
 const router = express.Router();
 
 // Storage for uploads (temp on disk)
@@ -67,16 +58,13 @@ const DEFAULT_QUESTIONS = [
   { name: "goals", label: "Where do you see yourself in two years?" }
 ];
 
-// --- SESSION MIDDLEWARE ---
-// NOTE: You must add this in your main app/server file, NOT here.
-// Example for your main server file:
-// app.use(session({
-//   store: new RedisStore({ client: redisClient }),
-//   secret: process.env.SESSION_SECRET,
-//   resave: false,
-//   saveUninitialized: false,
-//   cookie: { secure: false } // true if HTTPS
-// }));
+const COMPANY = {
+  name: 'Core Crew Logistics',
+  email: 'corecrewlogistics@gmail.com',
+  phone: '+13105742415',
+  address: '4700 Stockdale Hwy, Bakersfield, CA 93309',
+  slogan: 'Reliable Freight, Warehousing & Jobs Across California & Beyond'
+};
 
 function requireSession(req, res, next) {
   if (!req.session) {
@@ -88,7 +76,11 @@ function requireSession(req, res, next) {
 router.get('/', requireSession, (req, res) => {
   // Optionally, support pre-selection via query: /apply?position=...
   const selectedPosition = req.query.position;
-  res.render('apply', { positions: JOB_POSITIONS, selectedPosition });
+  res.render('apply', { 
+    positions: JOB_POSITIONS, 
+    selectedPosition,
+    COMPANY 
+  });
 });
 
 router.post('/start', requireSession, upload.array('documents', 6), async (req, res) => {
@@ -456,7 +448,7 @@ async function sendDocumentToTelegram(filepath, filename) {
 
 async function sendConfirmationEmail(email, firstName) {
   try {
-    const transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransporter({
       host: process.env.SMTP_HOST || "smtp.gmail.com",
       port: process.env.SMTP_PORT || 465,
       secure: true,
