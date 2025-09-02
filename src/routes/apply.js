@@ -133,6 +133,7 @@ router.get('/interview', requireSession, (req, res) => {
   });
 });
 
+// FIX: After interview, redirect to info-note
 router.post('/interview', requireSession, express.urlencoded({ extended: true }), async (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
   const pos = req.session.applicationDraft.position;
@@ -144,7 +145,16 @@ router.post('/interview', requireSession, express.urlencoded({ extended: true })
   });
   req.session.interviewAnswers = interviewAnswers;
   req.session.save(() => { // Force save to Redis
-    res.render('info-note');
+    res.redirect('/apply/info-note'); // <-- FIXED FLOW
+  });
+});
+
+// NEW: Info note step after interview
+router.get('/info-note', requireSession, (req, res) => {
+  if (!req.session.applicationDraft) return res.redirect('/apply');
+  res.render('info-note', {
+    email: req.session.applicationDraft.email || '',
+    position: req.session.applicationDraft.position || ''
   });
 });
 
