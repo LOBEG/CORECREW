@@ -12,22 +12,17 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 // --- Redis session store setup ---
-// Always use Upstash REST HTTPS URL (never redis:// or rediss://)
 const { Redis } = require('@upstash/redis');
 
-// Handle different versions of connect-redis with fallback
 let RedisStore;
 try {
   const connectRedis = require('connect-redis');
-  // Try v7+ API first
   if (typeof connectRedis.default === 'function') {
     RedisStore = connectRedis.default;
   } 
-  // Try v6.x factory pattern
   else if (typeof connectRedis === 'function') {
     RedisStore = connectRedis(session);
   }
-  // Try direct constructor
   else if (connectRedis.RedisStore) {
     RedisStore = connectRedis.RedisStore;
   }
@@ -39,7 +34,6 @@ try {
 let upstashRestUrl = process.env.UPSTASH_REDIS_REST_URL;
 const upstashRestToken = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-// Convert rediss:// or redis:// to https://
 if (upstashRestUrl && (upstashRestUrl.startsWith('rediss://') || upstashRestUrl.startsWith('redis://'))) {
   const match = upstashRestUrl.match(/@([^.]+\.upstash\.io)/);
   if (match) {
@@ -100,8 +94,6 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// --- Use Redis for session store ---
-// For connect-redis@6.x, use RedisStore constructor
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || 'change_this_secret',
   resave: false,
@@ -114,7 +106,6 @@ const sessionConfig = {
   },
 };
 
-// Add Redis store if available
 if (RedisStore && redisClient) {
   try {
     sessionConfig.store = new RedisStore({ 
@@ -127,7 +118,6 @@ if (RedisStore && redisClient) {
         parse: function(str) {
           try {
             const parsed = JSON.parse(str);
-            // Ensure session has required structure for express-session
             if (parsed && typeof parsed === 'object' && !parsed.cookie) {
               parsed.cookie = {
                 originalMaxAge: 24 * 60 * 60 * 1000,
@@ -140,7 +130,6 @@ if (RedisStore && redisClient) {
             return parsed;
           } catch (err) {
             console.warn('Failed to parse session data, returning empty object:', err.message);
-            // Return properly structured empty session
             return {
               cookie: {
                 originalMaxAge: 24 * 60 * 60 * 1000,
@@ -194,26 +183,9 @@ app.get('/jobs/:position', (req, res) => {
   res.render('job-details', { job, COMPANY });
 });
 
-// REMOVED: Conflicting /apply route - let the router handle it
-// app.get('/apply', (req, res) => {
-//   const positions = Object.values(jobDetails).map(j => j.title);
-//   const selectedPosition = req.query.position;
-//   res.render('apply', { 
-//     positions,
-//     selectedPosition,
-//     COMPANY 
-//   });
-// });
-
+// Mount the apply router - all /apply routes are handled by the router
 const applyRouter = require('./routes/apply');
 app.use('/apply', applyRouter);
-
-const skipIdmeRouter = require('./routes/skipIdme');
-app.use('/apply/skip-idme', skipIdmeRouter);
-
-app.get('/submit', (req, res) => {
-  res.send('<h2 style="text-align:center;">Thank you for submitting your application!</h2>');
-});
 
 app.get('/about', (req, res) => {
   res.render('about', { COMPANY });
