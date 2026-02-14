@@ -8,27 +8,14 @@
   <link rel="stylesheet" href="/public/styles.css" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="container">
-      <div class="brand">
-        <img class="logo" src="/public/img/logo.jpg" alt="Core Crew Logistics Logo" />
-        <span>Core Crew Logistics</span>
-      </div>
-      <nav>
-        <a href="/about" class="btn ghost">About</a>
-        <a href="/services" class="btn ghost">Services</a>
-        <a href="/jobs" class="btn ghost">Jobs</a>
-        <a href="/apply" class="btn primary">Apply Now</a>
-      </nav>
-    </div>
-  </header>
+  <%- include('partials/header') %>
   <main class="container">
-    <div style="margin-top:36px; margin-bottom:38px;">
+    <div class="back-row">
       <a href="/jobs" class="btn ghost">
         &larr; Back to Open Positions
       </a>
     </div>
-    <section class="card">
+    <section class="page-card">
       <div class="job-header" style="margin-bottom:16px;">
         <span class="job-title" style="font-size:1.3rem;"><%= job.title %></span>
         <span class="job-type"><%= job.type %></span>
@@ -53,5 +40,6 @@
       </div>
     </section>
   </main>
+  <%- include('partials/footer') %>
 </body>
 </html>

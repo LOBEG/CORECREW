@@ -71,19 +71,7 @@
   </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container">
-      <div class="brand">
-        <img class="logo" src="/public/img/logo.jpg" alt="Core Crew Logistics Logo" />
-        <span>Core Crew Logistics</span>
-      </div>
-      <nav>
-        <a href="/about" class="btn ghost">About</a>
-        <a href="/services" class="btn ghost">Services</a>
-        <a href="/jobs" class="btn ghost">Jobs</a>
-      </nav>
-    </div>
-  </header>
+  <%- include('partials/header') %>
   <a href="/" class="back-btn"
      onclick="if(document.referrer && document.referrer !== window.location.href){window.history.back();}else{window.location.href='/';} return false;">
     &#8592; Back

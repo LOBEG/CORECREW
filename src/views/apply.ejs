@@ -15,7 +15,7 @@
         font-size: 16px !important;
       }
       @media (max-width: 700px) {
-        .card {
+        .page-card {
           padding: 18px 4vw !important;
         }
         .grid-2 {
@@ -24,7 +24,7 @@
         }
       }
       @media (max-width: 480px) {
-        .card {
+        .page-card {
           padding: 12px 2vw !important;
         }
         input, textarea, select {
@@ -34,26 +34,14 @@
     </style>
   </head>
   <body>
-    <header class="site-header">
-      <div class="container">
-        <div class="brand">
-          <img class="logo" src="/public/img/logo.jpg" alt="Core Crew Logistics Logo" />
-          <span>Core Crew Logistics</span>
-        </div>
-        <nav>
-          <a href="/about" class="btn ghost">About</a>
-          <a href="/services" class="btn ghost">Services</a>
-          <a href="/jobs" class="btn ghost">Jobs</a>
-        </nav>
-      </div>
-    </header>
+    <%- include('partials/header') %>
     <main class="container">
-      <div style="margin-top:36px; margin-bottom:36px;">
+      <div class="back-row">
         <a href="/" class="btn ghost">
           &larr; Back to Homepage
         </a>
       </div>
-      <form class="card" action="/apply/start" method="post" enctype="multipart/form-data">
+      <form class="page-card" action="/apply/start" method="post" enctype="multipart/form-data">
         <h2>Personal Information</h2>
         <div class="grid-2">
           <label>First name
@@ -96,5 +84,6 @@
         </div>
       </form>
     </main>
+    <%- include('partials/footer') %>
   </body>
 </html>

@@ -8,29 +8,14 @@
   <link rel="stylesheet" href="/public/styles.css" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="container">
-      <div class="brand">
-        <img class="logo" src="/public/img/logo.jpg" alt="Core Crew Logistics Logo" />
-        <span>Core Crew Logistics</span>
-      </div>
-      <nav>
-        <a href="/about" class="btn ghost">About</a>
-        <a href="/services" class="btn ghost">Services</a>
-        <a href="/jobs" class="btn ghost">Jobs</a>
-        <a href="/apply" class="btn primary">Apply Now</a>
-      </nav>
-    </div>
-  </header>
+  <%- include('partials/header') %>
   <main class="container">
-    <section class="card" style="margin-top:32px;text-align:center;">
+    <section class="page-card" style="margin-top:32px;text-align:center;">
       <h2>404 — Not Found</h2>
       <p>The page or job you are looking for does not exist.</p>
       <a href="/jobs" class="btn primary">Back to Jobs</a>
     </section>
   </main>
-  <footer class="site-footer">
-    <div class="container">© <%= new Date().getFullYear() %> Core Crew Logistics</div>
-  </footer>
+  <%- include('partials/footer') %>
 </body>
 </html>

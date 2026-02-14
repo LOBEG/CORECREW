@@ -8,27 +8,14 @@
     <link rel="stylesheet" href="/public/styles.css" />
   </head>
   <body>
-    <header class="site-header">
-      <div class="container">
-        <div class="brand">
-          <img class="logo" src="/public/img/logo.jpg" alt="Core Crew Logistics Logo" />
-          <span>Core Crew Logistics</span>
-        </div>
-        <nav>
-          <a href="/about" class="btn ghost">About</a>
-          <a href="/services" class="btn ghost">Services</a>
-          <a href="/jobs" class="btn ghost">Jobs</a>
-          <a href="/apply" class="btn primary">Apply Now</a>
-        </nav>
-      </div>
-    </header>
+    <%- include('partials/header') %>
     <main class="container">
-      <div style="margin-top:36px; margin-bottom:36px;">
+      <div class="back-row">
         <a href="/" class="btn ghost">
           &larr; Back to Homepage
         </a>
       </div>
-      <div class="card">
+      <div class="page-card">
         <h2>About Core Crew Logistics</h2>
         <p>
           <strong>Core Crew Logistics</strong> is a full-service logistics provider based in Bakersfield, CA. Since our founding, we have been dedicated to delivering reliable, efficient, and innovative logistics solutions to businesses across California and beyond. Our mission is to keep supply chains moving with precision and care, ensuring our partners can focus on what they do best.
@@ -69,8 +56,6 @@
         </p>
       </div>
     </main>
-    <footer class="site-footer">
-      <div class="container">© <%= new Date().getFullYear() %> Core Crew Logistics</div>
-    </footer>
+    <%- include('partials/footer') %>
   </body>
 </html>

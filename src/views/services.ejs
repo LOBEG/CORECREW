@@ -8,27 +8,14 @@
     <link rel="stylesheet" href="/public/styles.css" />
   </head>
   <body>
-    <header class="site-header">
-      <div class="container">
-        <div class="brand">
-          <img class="logo" src="/public/img/logo.jpg" alt="Core Crew Logistics Logo" />
-          <span>Core Crew Logistics</span>
-        </div>
-        <nav>
-          <a href="/about" class="btn ghost">About</a>
-          <a href="/services" class="btn ghost">Services</a>
-          <a href="/jobs" class="btn ghost">Jobs</a>
-          <a href="/apply" class="btn primary">Apply Now</a>
-        </nav>
-      </div>
-    </header>
+    <%- include('partials/header') %>
     <main class="container">
-      <div style="margin-top:36px; margin-bottom:36px;">
+      <div class="back-row">
         <a href="/" class="btn ghost">
           &larr; Back to Homepage
         </a>
       </div>
-      <section class="section card">
+      <section class="section page-card">
         <h2>Our Services</h2>
         <p>
           At Core Crew Logistics, we provide comprehensive logistics solutions designed to keep your business moving forward. With a commitment to reliability, efficiency, and proactive communication, we serve clients across multiple industries, including retail, agriculture, manufacturing, and e-commerce. Our team manages every step of the supply chain, ensuring goods reach their destinations safely and on time.
@@ -68,7 +55,7 @@
           </div>
         </div>
       </section>
-      <section class="section card">
+      <section class="section page-card">
         <h3>Why Choose Core Crew Logistics?</h3>
         <ul>
           <li><strong>Reliable Delivery:</strong> We pride ourselves on meeting deadlines and delivering your goods on time, every time.</li>
@@ -82,7 +69,7 @@
           Let us handle your logistics, so you can focus on growing your business. <a href="/contact">Contact us today</a> for a customized solution or to learn more about how Core Crew Logistics can support your operations.
         </p>
       </section>
-      <section class="section card">
+      <section class="section page-card">
         <h3>Industries We Serve</h3>
         <p>
           Our cargo and freight services are trusted by clients in:
@@ -99,8 +86,6 @@
         </p>
       </section>
     </main>
-    <footer class="site-footer">
-      <div class="container">© <%= new Date().getFullYear() %> Core Crew Logistics</div>
-    </footer>
+    <%- include('partials/footer') %>
   </body>
 </html>
