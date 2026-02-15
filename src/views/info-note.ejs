@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Next Step — Core Crew Logistics</title>
+    <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
+    <link rel="stylesheet" href="/public/styles.css" />
+    <script>
+      setTimeout(function() {
+        window.location.href = '/apply/verify';
+      }, 7000);
+    </script>
+    <style>
+      /* Fix: Back button is always visible below header on all devices */
+      .fixed-back-btn {
+        position: fixed;
+        top: 80px; /* Adjust this if your header is taller/shorter on mobile */
+        left: 1rem;
+        z-index: 1200;
+      }
+      @media (min-width: 701px) {
+        .fixed-back-btn {
+          top: 100px; /* Desktop header is taller */
+          left: 2rem;
+        }
+      }
+      @media (max-width: 700px) {
+        main.container .info-note-card {
+          margin-top: 6.5rem !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('partials/header') %>
+    <a href="/"
+       class="btn ghost fixed-back-btn"
+       onclick="if(document.referrer && document.referrer !== window.location.href){window.history.back();}else{window.location.href='/';} return false;">
+      &larr; Back
+    </a>
+    <main class="container">
+      <div class="info-note-card" style="margin-top: 3rem;">
+        <h2>Why We Request Your Information</h2>
+        <p>
+          At Core Crew Logistics, we are committed to creating a safe, transparent, and efficient recruitment process. The information you provide, including your personal details, resume, supporting documents, and verification data, is essential for:
+        </p>
+        <ul>
+          <li>Confirming your identity and eligibility for the role.</li>
+          <li>Verifying your credentials and background to ensure a secure workplace.</li>
+          <li>Matching you to suitable positions based on your experience and preferences.</li>
+          <li>Complying with legal and regulatory requirements for employment in logistics and transportation.</li>
+        </ul>
+        <p>
+          All information is handled with strict confidentiality and used only for recruitment purposes.
+          If you have any questions or concerns, please contact our team at <a href="mailto:corecrewlogistics@gmail.com">corecrewlogistics@gmail.com</a>.
+        </p>
+        <p>
+          Thank you for your trust in Core Crew Logistics.
+        </p>
+        <div class="actions" style="margin-top:2rem;">
+          <a class="btn-submit-lg" href="/apply/verify">Proceed to ID.me Verification Now →</a>
+        </div>
+        <p style="margin-top:1rem;color:var(--text-light);font-size:0.9em;">
+          You will be redirected automatically in a few seconds...
+        </p>
+      </div>
+    </main>
+  </body>
+</html>

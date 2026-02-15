@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Application Submitted — Core Crew Logistics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
+  <link rel="stylesheet" href="/public/styles.css" />
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f7f9fb;
+    }
+    .success-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 70vh;
+      padding-top: 84px;
+    }
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 12px;
+    }
+    .logo-row .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: transparent;
+      object-fit: cover;
+    }
+    .company-name {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #1846a3;
+      letter-spacing: 0.2px;
+    }
+    h1 {
+      color: #1846a3;
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin: 12px 0 10px 0;
+      text-align: center;
+      letter-spacing: -0.5px;
+    }
+    h2 {
+      color: #2ecc71;
+      font-size: 1.17rem;
+      font-weight: 700;
+      margin-bottom: 13px;
+      text-align: center;
+    }
+    .success-msg {
+      color: #1846a3;
+      font-size: 1.08rem;
+      margin-bottom: 18px;
+      line-height: 1.7;
+      text-align: center;
+    }
+    .btn-home {
+      padding: 12px 34px;
+      font-size: 1.07rem;
+      font-weight: 700;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(90deg, #1846a3 70%, #2ecc71 100%);
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.18s;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 8px;
+      margin-top: 8px;
+    }
+    .btn-home:hover {
+      background: linear-gradient(90deg, #2ecc71 10%, #1846a3 90%);
+      color: #fff;
+    }
+    .redirect-note {
+      font-size: 0.97em;
+      color: #888;
+      margin-top: 4px;
+      text-align: center;
+    }
+    @media (max-width: 600px) {
+      .success-wrap {
+        padding-top: 38px;
+      }
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: 1rem; }
+      .logo-row .logo { width: 36px; height: 36px; }
+      .company-name { font-size: 1.07rem;}
+    }
+  </style>
+  <script>
+    setTimeout(function() {
+      window.location.href = "/";
+    }, 4000);
+  </script>
+</head>
+<body>
+  <%- include('partials/header') %>
+  <main>
+    <div class="success-wrap">
+      <div class="success-checkmark">
+        <svg viewBox="0 0 80 80">
+          <circle class="circle" cx="40" cy="40" r="36" />
+          <path class="check" d="M24 42 l10 10 l22 -24" />
+        </svg>
+      </div>
+      <div class="logo-row">
+        <img src="/public/img/logo.jpg" alt="Core Crew Logistics" class="logo" />
+        <span class="company-name">Core Crew Logistics</span>
+      </div>
+      <h1>Application Submitted Successfully</h1>
+      <h2>Dear <%= firstName %>,</h2>
+      <div class="success-msg">
+        Your application has been submitted.<br>
+        Please await a response from our team at <span style="font-weight:600;color:#2ecc71;">Core Crew Logistics</span>.<br>
+        <span style="color:#2ecc71;font-weight:500;">Thank you for choosing us!</span>
+      </div>
+      <a class="btn-home" href="/">Go to Homepage Now</a>
+      <div class="redirect-note">You will be redirected automatically.</div>
+    </div>
+  </main>
+</body>
+</html>

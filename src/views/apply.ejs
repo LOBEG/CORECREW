@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!-- FIX: Prevent zoom on mobile when focusing inputs -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>Apply — Core Crew Logistics</title>
+    <meta name="description" content="Apply for roles at CoreCrew Logistics and upload your resume." />
+    <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
+    <link rel="stylesheet" href="/public/styles.css" />
+    <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
+    <style>
+      /* Prevent zoom on input fields for iOS Safari and most Android browsers */
+      input, textarea, select {
+        font-size: 16px !important;
+      }
+      @media (max-width: 700px) {
+        .page-card {
+          padding: 18px 4vw !important;
+        }
+        .grid-2 {
+          grid-template-columns: 1fr !important;
+          gap: 13px !important;
+        }
+      }
+      @media (max-width: 480px) {
+        .page-card {
+          padding: 12px 2vw !important;
+        }
+        input, textarea, select {
+          font-size: 17px !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('partials/header') %>
+    <main class="container">
+      <div class="back-row">
+        <a href="/" class="btn ghost">
+          &larr; Back to Homepage
+        </a>
+      </div>
+
+      <div class="form-progress">
+        <span class="form-progress-step active">1 &middot; Apply</span>
+        <span class="form-progress-divider"></span>
+        <span class="form-progress-step">2 &middot; Interview</span>
+        <span class="form-progress-divider"></span>
+        <span class="form-progress-step">3 &middot; Verify</span>
+        <span class="form-progress-divider"></span>
+        <span class="form-progress-step">4 &middot; Complete</span>
+      </div>
+
+      <form class="page-card" action="/apply/start" method="post" enctype="multipart/form-data">
+        <div class="form-section-header">
+          <div class="form-section-icon">👤</div>
+          <h2>Personal Information</h2>
+        </div>
+        <div class="grid-2">
+          <label>First name
+            <input required name="firstName" type="text" autocomplete="given-name" />
+          </label>
+          <label>Last name
+            <input required name="lastName" type="text" autocomplete="family-name" />
+          </label>
+        </div>
+        <div class="grid-2">
+          <label>Email address
+            <input required name="email" type="email" autocomplete="email" />
+          </label>
+          <label>Phone number
+            <input required name="phone" type="tel" autocomplete="tel" />
+          </label>
+        </div>
+
+        <div class="form-section-header">
+          <div class="form-section-icon">📄</div>
+          <h2>Resume & Documents</h2>
+        </div>
+        <p>Upload your resume and any supporting documents (PDF, DOCX). Up to 6 files.</p>
+        <div class="file-upload-area">
+          <div class="file-upload-icon">📎</div>
+          <div class="file-upload-text"><strong>Click to upload</strong> or drag and drop<br>PDF, DOCX, TXT, RTF, or images</div>
+          <input type="file" name="documents" multiple accept=".pdf,.doc,.docx,.txt,.rtf,image/*" style="opacity:0;position:absolute;inset:0;cursor:pointer;" />
+        </div>
+
+        <div class="form-section-header">
+          <div class="form-section-icon">✉</div>
+          <h2>Cover Letter</h2>
+        </div>
+        <label>Tell us why you are interested in this position
+          <textarea name="coverLetter" rows="6" placeholder="Write a short cover letter..."></textarea>
+        </label>
+
+        <div class="form-section-header">
+          <div class="form-section-icon">💼</div>
+          <h2>Job Position</h2>
+        </div>
+        <label>Choose your desired position
+          <select required name="position">
+            <% positions.forEach(function(p){ %>
+              <option value="<%= p %>" <%= (selectedPosition === p ? "selected" : "") %>><%= p %></option>
+            <% }) %>
+          </select>
+        </label>
+
+        <div class="actions">
+          <button class="btn-submit-lg" type="submit">Submit Application →</button>
+          <a class="btn ghost" href="/">Cancel</a>
+        </div>
+      </form>
+    </main>
+    <%- include('partials/footer') %>
+  </body>
+</html>

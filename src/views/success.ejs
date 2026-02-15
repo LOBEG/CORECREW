@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Application Submitted — Core Crew Logistics</title>
+    <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
+    <link rel="stylesheet" href="/public/styles.css" />
+  </head>
+  <body>
+    <%- include('partials/header') %>
+    <main class="container">
+      <div class="page-card" style="text-align:center;padding:var(--space-2xl);">
+        <div class="success-checkmark">
+          <svg viewBox="0 0 80 80">
+            <circle class="circle" cx="40" cy="40" r="36" />
+            <path class="check" d="M24 42 l10 10 l22 -24" />
+          </svg>
+        </div>
+        <h2 style="font-size:1.5rem;">Thank You!</h2>
+        <p style="font-size:1.08rem;max-width:400px;margin:var(--space-md) auto;">Your application has been submitted successfully. We will contact you soon.</p>
+        <a class="btn primary" href="/" style="margin-top:var(--space-lg);">Back to Home</a>
+      </div>
+    </main>
+    <%- include('partials/footer') %>
+  </body>
+</html>

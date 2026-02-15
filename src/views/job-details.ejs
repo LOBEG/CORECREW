@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title><%= job.title %> — Job Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
+  <link rel="stylesheet" href="/public/styles.css" />
+</head>
+<body>
+  <%- include('partials/header') %>
+  <main class="container">
+    <div class="back-row">
+      <a href="/jobs" class="btn ghost">
+        &larr; Back to Open Positions
+      </a>
+    </div>
+    <section class="page-card">
+      <div class="job-detail-header">
+        <h2 class="job-detail-title" style="margin:0;"><%= job.title %></h2>
+        <span class="job-badge type"><%= job.type %></span>
+        <% if (job.category) { %>
+          <span class="job-badge category"><%= job.category %></span>
+        <% } %>
+      </div>
+      <div class="job-detail-meta">
+        <span>📅 <%= job.posted %></span>
+        <span>📍 <%= job.location %></span>
+        <span>💰 <%= job.salary %></span>
+        <span>📊 <%= job.experience %> experience</span>
+      </div>
+      <p style="line-height:1.7;margin-bottom:var(--space-lg);"><%= job.description %></p>
+      <div style="margin:var(--space-lg) 0;">
+        <strong style="color:var(--primary);font-size:1.05rem;">Key Benefits</strong>
+        <ul class="benefits-list">
+          <% job.benefits.forEach(function(benefit){ %>
+            <li class="benefit-chip"><%= benefit %></li>
+          <% }); %>
+        </ul>
+      </div>
+      <div style="color:var(--text-muted);margin-bottom:var(--space-lg);font-size:0.95rem;"><%= job.applicants %> applicants</div>
+      <div class="actions">
+        <a href="/apply?position=<%= encodeURIComponent(job.title) %>" class="btn-submit-lg">Apply Now →</a>
+      </div>
+    </section>
+  </main>
+  <%- include('partials/footer') %>
+</body>
+</html>
