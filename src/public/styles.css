@@ -1676,6 +1676,7 @@ a:focus {
   transition: all var(--transition-fast);
   cursor: pointer;
   position: relative;
+  overflow: hidden;
 }
 .file-upload-area:hover {
   border-color: var(--primary-light);

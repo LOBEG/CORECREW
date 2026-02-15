@@ -79,11 +79,42 @@
           <h2>Resume & Documents</h2>
         </div>
         <p>Upload your resume and any supporting documents (PDF, DOCX). Up to 6 files.</p>
-        <div class="file-upload-area">
+        <input type="file" id="fileInput" name="documents" multiple accept=".pdf,.doc,.docx,.txt,.rtf,image/*" style="display:none;" />
+        <div class="file-upload-area" id="fileUploadArea" role="button" tabindex="0" aria-label="Click to upload files">
           <div class="file-upload-icon">📎</div>
-          <div class="file-upload-text"><strong>Click to upload</strong> or drag and drop<br>PDF, DOCX, TXT, RTF, or images</div>
-          <input type="file" name="documents" multiple accept=".pdf,.doc,.docx,.txt,.rtf,image/*" style="opacity:0;position:absolute;inset:0;cursor:pointer;" />
+          <div class="file-upload-text" id="fileUploadText"><strong>Click to upload</strong> or drag and drop<br>PDF, DOCX, TXT, RTF, or images</div>
         </div>
+        <script>
+          (function(){
+            var area = document.getElementById('fileUploadArea');
+            var input = document.getElementById('fileInput');
+            var text = document.getElementById('fileUploadText');
+            var defaultHTML = text.innerHTML;
+            function escapeHtml(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+            function updateText() {
+              if(input.files && input.files.length > 0) {
+                var names = Array.from(input.files).map(function(f){return escapeHtml(f.name);});
+                text.innerHTML = '<strong>' + names.length + ' file(s) selected:</strong><br>' + names.join(', ');
+                area.style.borderColor = 'var(--accent-green)';
+                area.style.background = 'rgba(46,204,113,0.05)';
+              } else {
+                text.innerHTML = defaultHTML;
+                area.style.borderColor = '';
+                area.style.background = '';
+              }
+            }
+            area.addEventListener('click', function(e) { e.preventDefault(); input.click(); });
+            area.addEventListener('keydown', function(e) { if(e.key==='Enter'||e.key===' '){e.preventDefault();input.click();} });
+            input.addEventListener('change', updateText);
+            area.addEventListener('dragover', function(e) { e.preventDefault(); area.style.borderColor='var(--primary-light)'; area.style.background='rgba(37,99,235,0.05)'; });
+            area.addEventListener('dragleave', function(e) { e.preventDefault(); if(!input.files||!input.files.length){area.style.borderColor='';area.style.background='';} });
+            area.addEventListener('drop', function(e) {
+              e.preventDefault();
+              try { input.files = e.dataTransfer.files; } catch(err) { /* read-only in some browsers */ }
+              updateText();
+            });
+          })();
+        </script>
 
         <div class="form-section-header">
           <div class="form-section-icon">✉</div>
