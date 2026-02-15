@@ -6,6 +6,88 @@
     <title>Services — Core Crew Logistics</title>
     <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
     <link rel="stylesheet" href="/public/styles.css" />
+    <style>
+      .services-hero-heading {
+        font-size: 1.6rem;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
+      }
+      .services-intro {
+        font-size: 1.05rem;
+        line-height: 1.75;
+        color: var(--text);
+      }
+      .section h3 {
+        font-size: 1.18rem;
+        color: var(--primary-dark);
+        position: relative;
+        padding-bottom: var(--space-sm);
+        margin-bottom: var(--space-xl);
+      }
+      .section h3::after {
+        content: '';
+        display: block;
+        width: 40px;
+        height: 3px;
+        background: var(--gradient-accent);
+        border-radius: 2px;
+        margin-top: var(--space-sm);
+      }
+      .service-card {
+        padding: var(--space-2xl) var(--space-xl) var(--space-xl);
+      }
+      .service-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        font-size: 1.35rem;
+        transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+      }
+      .service-card:hover .service-icon {
+        transform: scale(1.1) rotate(-4deg);
+        box-shadow: 0 6px 20px rgba(24,70,163,0.28);
+      }
+      .service-card h4 {
+        font-size: 1.08rem;
+        margin-top: var(--space-sm);
+      }
+      .why-list li {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border-light);
+        line-height: 1.6;
+      }
+      .why-list li:last-child { border-bottom: none; }
+      .why-list li strong {
+        color: var(--primary);
+      }
+      .services-cta-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 600;
+        color: var(--primary);
+        text-decoration: none;
+        padding: 8px 20px;
+        border-radius: var(--radius-sm);
+        background: rgba(24,70,163,0.06);
+        transition: all var(--transition-fast);
+      }
+      .services-cta-link:hover {
+        background: var(--gradient-primary);
+        color: #fff;
+      }
+      .industries-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border-light);
+      }
+      .industries-list li:last-child { border-bottom: none; }
+      .industries-list li::marker {
+        color: var(--primary-light);
+      }
+    </style>
   </head>
   <body>
     <%- include('partials/header') %>
@@ -16,8 +98,8 @@
         </a>
       </div>
       <section class="section page-card">
-        <h2>Our Services</h2>
-        <p>
+        <h2 class="services-hero-heading">Our Services</h2>
+        <p class="services-intro">
           At Core Crew Logistics, we provide comprehensive logistics solutions designed to keep your business moving forward. With a commitment to reliability, efficiency, and proactive communication, we serve clients across multiple industries, including retail, agriculture, manufacturing, and e-commerce. Our team manages every step of the supply chain, ensuring goods reach their destinations safely and on time.
         </p>
         <p>
@@ -63,7 +145,7 @@
       </section>
       <section class="section page-card">
         <h3>Why Choose Core Crew Logistics?</h3>
-        <ul>
+        <ul class="why-list">
           <li><strong>Reliable Delivery:</strong> We pride ourselves on meeting deadlines and delivering your goods on time, every time.</li>
           <li><strong>End-to-End Cargo Solutions:</strong> We manage the safe, compliant, and efficient transport of your freight, whether by land, air, or sea.</li>
           <li><strong>Custom Solutions:</strong> No two businesses are alike. We develop logistics strategies that fit your unique needs.</li>
@@ -72,7 +154,7 @@
           <li><strong>Transparent Communication:</strong> We keep you informed with regular updates and clear reporting.</li>
         </ul>
         <p>
-          Let us handle your logistics, so you can focus on growing your business. <a href="/contact">Contact us today</a> for a customized solution or to learn more about how Core Crew Logistics can support your operations.
+          Let us handle your logistics, so you can focus on growing your business. <a href="/contact" class="services-cta-link">Contact us today →</a> for a customized solution or to learn more about how Core Crew Logistics can support your operations.
         </p>
       </section>
       <section class="section page-card">
@@ -80,7 +162,7 @@
         <p>
           Our cargo and freight services are trusted by clients in:
         </p>
-        <ul>
+        <ul class="industries-list">
           <li>Agriculture – transporting produce, equipment, and supplies</li>
           <li>Manufacturing – moving raw materials and finished goods</li>
           <li>Retail & E-commerce – fast and reliable delivery for stores and online sellers</li>

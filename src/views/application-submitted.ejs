@@ -7,39 +7,109 @@
   <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
   <link rel="stylesheet" href="/public/styles.css" />
   <style>
-    .wizard-steps { display: flex; justify-content: center; margin-bottom: 2rem; gap: 0; }
-    .wizard-step { font-weight: 600; color: var(--text-light); text-align: center; font-size: 0.9rem; position: relative; flex: 1; padding: 0 var(--space-sm); line-height: 1.3; }
-    .wizard-step::before { content: ''; display: block; width: 36px; height: 36px; border-radius: 50%; background: var(--surface-darker); border: 2px solid var(--border); margin: 0 auto var(--space-sm); position: relative; z-index: 2; }
-    .wizard-step.active::before { background: var(--gradient-primary); border-color: var(--primary); box-shadow: 0 0 0 4px rgba(24,70,163,0.15); }
-    .wizard-step.completed::before { background: var(--gradient-accent); border-color: var(--accent-green); box-shadow: 0 0 0 4px rgba(46,204,113,0.15); }
-    .wizard-step.active { color: var(--primary); }
-    .wizard-step.completed { color: #27ae60; }
-    .wizard-step:not(:last-child)::after { content: ''; position: absolute; top: 18px; left: calc(50% + 22px); right: calc(-50% + 22px); height: 2px; background: var(--border); z-index: 1; }
-    .wizard-step.completed:not(:last-child)::after { background: var(--accent-green); }
-    .question-card { background: var(--surface); border: 1px solid var(--border-light); border-radius: 14px; padding: var(--space-lg); margin-bottom: var(--space-lg); box-shadow: 0 2px 8px rgba(16,42,72,0.04); transition: border-color 0.2s; }
-    .question-card:hover { border-color: var(--primary-light); }
-    .char-count { font-size: 0.85em; color: var(--text-light); margin-top: 4px; transition: color 0.2s; }
-    .important-box { background: linear-gradient(135deg, rgba(24,70,163,0.03), rgba(37,99,235,0.05)); border-left: 4px solid var(--primary); padding: var(--space-lg); margin-bottom: var(--space-xl); border-radius: 0 8px 8px 0; font-size: 0.98rem; line-height: 1.6; }
+    .wizard-steps { display: flex; justify-content: center; margin-bottom: 2.5rem; gap: 0; }
+    .wizard-step { font-weight: 600; color: var(--text-light); text-align: center; font-size: 0.88rem; position: relative; flex: 1; padding: 0 var(--space-sm); line-height: 1.3; transition: color 0.3s; }
+    .wizard-step::before { content: ''; display: block; width: 40px; height: 40px; border-radius: 50%; background: var(--surface-darker); border: 2.5px solid var(--border); margin: 0 auto var(--space-sm); position: relative; z-index: 2; transition: all 0.3s; }
+    .wizard-step.active::before { background: var(--gradient-primary); border-color: var(--primary); box-shadow: 0 0 0 5px rgba(24,70,163,0.12), 0 4px 16px rgba(24,70,163,0.2); }
+    .wizard-step.completed::before { background: var(--gradient-accent); border-color: var(--accent-green); box-shadow: 0 0 0 5px rgba(46,204,113,0.12), 0 4px 16px rgba(46,204,113,0.2); }
+    .wizard-step.active { color: var(--primary); font-weight: 700; }
+    .wizard-step.completed { color: var(--accent-green-dark); }
+    .wizard-step:not(:last-child)::after { content: ''; position: absolute; top: 20px; left: calc(50% + 24px); right: calc(-50% + 24px); height: 2.5px; background: var(--border); z-index: 1; transition: background 0.3s; }
+    .wizard-step.completed:not(:last-child)::after { background: linear-gradient(90deg, var(--accent-green), var(--accent-green-dark)); }
+
+    .interview-heading {
+      font-size: 1.35rem;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-sm);
+    }
+
+    .question-card { background: var(--surface); border: 1.5px solid var(--border-light); border-radius: 16px; padding: var(--space-xl); margin-bottom: var(--space-xl); box-shadow: 0 2px 12px rgba(16,42,72,0.04); transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
+    .question-card:hover { border-color: rgba(37,99,235,0.18); box-shadow: 0 4px 20px rgba(16,42,72,0.08); }
+    .question-card:focus-within { border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,235,0.1), 0 4px 20px rgba(16,42,72,0.08); transform: translateY(-1px); }
+    .question-card label strong {
+      display: block;
+      margin-bottom: var(--space-md);
+      font-size: 1.02rem;
+      color: var(--primary-dark);
+      line-height: 1.5;
+    }
+    .question-card textarea {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: var(--space-md);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+      box-sizing: border-box;
+      resize: vertical;
+    }
+    .question-card textarea:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
+      outline: none;
+    }
+
+    .char-count { font-size: 0.84em; color: var(--text-light); margin-top: 6px; transition: color 0.2s; display: flex; align-items: center; gap: 6px; }
+    .char-count::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.2s; flex-shrink: 0; }
+    .char-count.good { color: var(--accent-green-dark); }
+    .char-count.good::before { background: var(--accent-green); }
+    .char-count.warning { color: var(--accent-orange); }
+    .char-count.warning::before { background: var(--accent-orange); }
+
+    .important-box { background: linear-gradient(135deg, rgba(24,70,163,0.03), rgba(37,99,235,0.05)); border-left: 4px solid var(--primary); padding: var(--space-xl); margin-bottom: var(--space-xl); border-radius: 0 12px 12px 0; font-size: 0.98rem; line-height: 1.7; }
+    .important-box strong { color: var(--primary-dark); font-size: 1.02rem; }
+
+    .submit-btn-interview {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      padding: 16px 40px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 12px;
+      background: var(--gradient-primary);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(24,70,163,0.22), 0 2px 6px rgba(24,70,163,0.10);
+      transition: all var(--transition-smooth);
+      min-height: 54px;
+      letter-spacing: 0.01em;
+    }
+    .submit-btn-interview:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 36px rgba(24,70,163,0.32), 0 4px 10px rgba(24,70,163,0.12);
+    }
+    .submit-btn-interview:focus-visible {
+      outline: 2px solid var(--primary-light);
+      outline-offset: 3px;
+    }
+
     .back-btn {
       position: fixed;
       left: 2rem;
       top: 2rem;
       background: var(--surface);
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border);
       padding: 0.7rem 1.5rem;
       color: var(--primary);
       font-weight: bold;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       text-decoration: none;
       z-index: 1050;
-      box-shadow: var(--shadow-card);
+      box-shadow: 0 2px 12px rgba(16,42,72,0.08);
       transition: all 0.2s;
     }
     .back-btn:hover {
       background: var(--surface-dark);
       border-color: var(--primary-light);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(16,42,72,0.12);
     }
     @media (max-width: 700px) {
       .back-btn {
@@ -67,6 +137,7 @@
       main.container {
         padding: 0 3vw !important;
       }
+      .submit-btn-interview { width: 100%; }
     }
     input, textarea, select {
       font-size: 16px !important;
@@ -90,7 +161,7 @@
       <span class="wizard-step">4<br>Complete</span>
     </div>
 
-    <h2>Interview Questions for <%= position %></h2>
+    <h2 class="interview-heading">Interview Questions for <%= position %></h2>
     <p>Please answer all questions thoroughly. This is a required step in the application process.<br>
     <span style="color:red;">* All questions are required</span></p>
 
@@ -118,7 +189,7 @@
       </div>
 
       <div class="actions" style="margin-bottom: 2rem;">
-        <button class="btn-submit-lg" type="submit">Continue to Verification →</button>
+        <button class="submit-btn-interview" type="submit">Continue to Verification →</button>
       </div>
     </form>
   </main>

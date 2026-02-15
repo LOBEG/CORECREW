@@ -1,25 +1,53 @@
-// Improved stat counter: always animates on every device (mobile & desktop)
+// Stat counter with IntersectionObserver, easing, and "+" suffix appended at target value
 document.addEventListener("DOMContentLoaded", function() {
-  const counters = document.querySelectorAll('.stat-number[data-target]');
-  counters.forEach(counter => {
-    const target = +counter.getAttribute('data-target');
-    let current = 0;
-    const steps = 40; // Faster for mobile, 40 steps
-    const increment = Math.max(1, Math.ceil(target / steps));
-    const duration = 1000; // ms
-    const interval = duration / Math.ceil(target / increment);
+  var counters = document.querySelectorAll('.stat-number[data-target]');
 
-    function updateCounter() {
-      current += increment;
-      if (current > target) current = target;
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  function animateCounter(counter) {
+    var target = +counter.getAttribute('data-target');
+    var duration = 1400;
+    var startTime = null;
+
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var elapsed = timestamp - startTime;
+      var progress = Math.min(elapsed / duration, 1);
+      var easedProgress = easeOutCubic(progress);
+      var current = Math.round(easedProgress * target);
+
       counter.textContent = current.toLocaleString();
 
-      if (current < target) {
-        setTimeout(updateCounter, interval);
+      if (progress < 1) {
+        requestAnimationFrame(step);
       } else {
-        counter.textContent = target.toLocaleString();
+        counter.textContent = target.toLocaleString() + '+';
       }
     }
-    updateCounter();
-  });
+
+    requestAnimationFrame(step);
+  }
+
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    counters.forEach(function(counter) {
+      counter.textContent = '0';
+      observer.observe(counter);
+    });
+  } else {
+    // Fallback for browsers without IntersectionObserver
+    counters.forEach(function(counter) {
+      animateCounter(counter);
+    });
+  }
 });

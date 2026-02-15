@@ -6,6 +6,85 @@
     <title>About — Core Crew Logistics</title>
     <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
     <link rel="stylesheet" href="/public/styles.css" />
+    <style>
+      .about-hero-heading {
+        font-size: 1.6rem;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
+      }
+      .page-card h3 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: var(--space-xl);
+        padding-top: var(--space-lg);
+        border-top: 1px solid var(--border-light);
+        font-size: 1.12rem;
+      }
+      .page-card h3::before {
+        content: '';
+        display: inline-block;
+        width: 4px;
+        height: 20px;
+        background: var(--gradient-accent);
+        border-radius: 2px;
+        flex-shrink: 0;
+      }
+      .about-feature {
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        margin-bottom: var(--space-md);
+        padding: var(--space-lg);
+        background: var(--surface);
+        box-shadow: 0 1px 4px rgba(16,42,72,0.03);
+      }
+      .about-feature:hover {
+        border-color: rgba(37,99,235,0.15);
+        box-shadow: 0 4px 20px rgba(16,42,72,0.08);
+      }
+      .about-feature-icon {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        border-radius: 14px;
+        font-size: 1.25rem;
+      }
+      .page-card ul li {
+        padding: 6px 0 6px 4px;
+        border-bottom: 1px solid var(--border-light);
+      }
+      .page-card ul li:last-child { border-bottom: none; }
+      .page-card ul li::marker {
+        color: var(--primary-light);
+      }
+      .about-cta-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 600;
+        color: var(--primary);
+        text-decoration: none;
+        padding: 8px 20px;
+        border-radius: var(--radius-sm);
+        background: rgba(24,70,163,0.06);
+        transition: all var(--transition-fast);
+      }
+      .about-cta-link:hover {
+        background: var(--gradient-primary);
+        color: #fff;
+      }
+      .about-intro {
+        font-size: 1.05rem;
+        line-height: 1.75;
+        color: var(--text);
+        border-left: 3px solid var(--primary-light);
+        padding-left: var(--space-lg);
+        margin-bottom: var(--space-xl);
+      }
+    </style>
   </head>
   <body>
     <%- include('partials/header') %>
@@ -16,8 +95,8 @@
         </a>
       </div>
       <div class="page-card">
-        <h2>About Core Crew Logistics</h2>
-        <p>
+        <h2 class="about-hero-heading">About Core Crew Logistics</h2>
+        <p class="about-intro">
           <strong>Core Crew Logistics</strong> is a full-service logistics provider based in Bakersfield, CA. Since our founding, we have been dedicated to delivering reliable, efficient, and innovative logistics solutions to businesses across California and beyond. Our mission is to keep supply chains moving with precision and care, ensuring our partners can focus on what they do best.
         </p>
         <h3>Our Story</h3>
@@ -62,7 +141,7 @@
         </p>
         <h3>Let’s Move Forward Together</h3>
         <p>
-          Ready to experience a logistics partner who goes the extra mile? <a href="/contact">Contact us today</a> to learn how Core Crew Logistics can support your business.
+          Ready to experience a logistics partner who goes the extra mile? <a href="/contact" class="about-cta-link">Contact us today →</a> to learn how Core Crew Logistics can support your business.
         </p>
       </div>
     </main>

