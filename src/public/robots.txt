@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://corecrewlogistics.com/sitemap.xml

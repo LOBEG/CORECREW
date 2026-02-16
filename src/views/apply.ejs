@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>Apply — <%= COMPANY.name %></title>
+    <meta name="description" content="Apply for roles at <%= COMPANY.name %> and upload your resume." />
+    <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
+    <link rel="stylesheet" href="/public/styles.css" />
+    <style>
+      /* Prevent zoom on input fields for iOS Safari and Android */
+      input, textarea, select {
+        font-size: 16px !important;
+      }
+
+      .apply-page {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: var(--space-xl) var(--space-md);
+      }
+
+      /* ── Progress Bar ── */
+      .progress-bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        margin-bottom: var(--space-2xl);
+        padding: var(--space-lg) var(--space-md);
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+      }
+      .progress-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        position: relative;
+        flex: 1;
+      }
+      .progress-step-number {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.875rem;
+        border: 2px solid var(--border);
+        background: var(--surface);
+        color: var(--text-light);
+        transition: var(--transition-smooth);
+        position: relative;
+        z-index: 1;
+      }
+      .progress-step.active .progress-step-number {
+        background: var(--gradient-primary);
+        color: #fff;
+        border-color: var(--primary);
+        box-shadow: 0 2px 12px rgba(37, 99, 235, 0.25);
+      }
+      .progress-step-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-light);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+      }
+      .progress-step.active .progress-step-label {
+        color: var(--primary);
+      }
+      .progress-connector {
+        flex: 1;
+        height: 2px;
+        background: var(--border);
+        margin: 0 -4px;
+        margin-bottom: 22px;
+        min-width: 20px;
+      }
+
+      /* ── Form Card ── */
+      .apply-card {
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        padding: var(--space-2xl) var(--space-xl);
+        animation: fadeInUp 0.4s ease;
+      }
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* ── Sections ── */
+      .form-section {
+        margin-bottom: var(--space-2xl);
+        padding-bottom: var(--space-xl);
+        border-bottom: 1px solid var(--border-light);
+      }
+      .form-section:last-of-type {
+        border-bottom: none;
+        margin-bottom: var(--space-lg);
+        padding-bottom: 0;
+      }
+      .section-title {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        margin-bottom: var(--space-lg);
+      }
+      .section-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: var(--radius-sm);
+        background: var(--gradient-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+        flex-shrink: 0;
+      }
+      .section-title h2 {
+        margin: 0;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      /* ── Fields ── */
+      .field-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-md);
+      }
+      .field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .field-grid + .field-grid {
+        margin-top: var(--space-md);
+      }
+      .field-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 2px;
+      }
+      .field-label .required {
+        color: #ef4444;
+        margin-left: 2px;
+      }
+      .field-input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--surface);
+        color: var(--text);
+        font-size: 16px !important;
+        transition: var(--transition-fast);
+        outline: none;
+        box-sizing: border-box;
+      }
+      .field-input:focus {
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+      .field-input::placeholder {
+        color: var(--text-light);
+      }
+      textarea.field-input {
+        resize: vertical;
+        min-height: 120px;
+        line-height: 1.6;
+      }
+      select.field-input {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8.825a.5.5 0 0 1-.354-.146L2.11 5.143a.5.5 0 1 1 .707-.707L6 7.618l3.182-3.182a.5.5 0 1 1 .707.707L6.354 8.679A.5.5 0 0 1 6 8.825z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        background-size: 12px;
+        padding-right: 36px;
+        cursor: pointer;
+      }
+
+      /* ── File Upload ── */
+      .upload-hint {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: var(--space-sm);
+      }
+      .upload-zone {
+        border: 2px dashed var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--space-xl) var(--space-lg);
+        text-align: center;
+        cursor: pointer;
+        transition: var(--transition-fast);
+        background: var(--surface-dark);
+      }
+      .upload-zone:hover,
+      .upload-zone:focus-visible {
+        border-color: var(--primary-light);
+        background: rgba(37, 99, 235, 0.03);
+      }
+      .upload-zone-icon {
+        font-size: 2rem;
+        margin-bottom: var(--space-xs);
+        opacity: 0.7;
+      }
+      .upload-zone-text {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+      }
+      .upload-zone-text strong {
+        color: var(--primary-light);
+      }
+      .upload-zone.has-files {
+        border-color: var(--accent-green);
+        background: rgba(46, 204, 113, 0.04);
+      }
+      .upload-zone.dragging {
+        border-color: var(--primary-light);
+        background: rgba(37, 99, 235, 0.05);
+      }
+
+      /* ── Actions ── */
+      .form-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--space-md);
+        padding-top: var(--space-lg);
+        border-top: 1px solid var(--border-light);
+        margin-top: var(--space-lg);
+      }
+      .submit-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 32px;
+        background: var(--gradient-primary);
+        color: #fff;
+        font-weight: 700;
+        font-size: 1rem;
+        border: none;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: var(--transition-fast);
+        box-shadow: 0 2px 12px rgba(37, 99, 235, 0.2);
+      }
+      .submit-btn:hover {
+        box-shadow: 0 4px 20px rgba(37, 99, 235, 0.35);
+        transform: translateY(-1px);
+      }
+      .cancel-link {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        padding: 10px 18px;
+        border-radius: var(--radius-sm);
+        transition: var(--transition-fast);
+      }
+      .cancel-link:hover {
+        color: var(--text);
+        background: var(--surface-dark);
+      }
+
+      /* ── Back Link ── */
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: var(--space-lg);
+        padding: 6px 12px;
+        border-radius: var(--radius-sm);
+        transition: var(--transition-fast);
+      }
+      .back-link:hover {
+        color: var(--primary);
+        background: var(--surface-dark);
+      }
+      .back-link svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 700px) {
+        .apply-page {
+          padding: var(--space-md) var(--space-sm);
+        }
+        .apply-card {
+          padding: var(--space-lg) var(--space-md);
+        }
+        .field-grid {
+          grid-template-columns: 1fr;
+          gap: var(--space-sm);
+        }
+        .progress-bar {
+          padding: var(--space-md) var(--space-sm);
+          gap: 0;
+        }
+        .progress-step-label {
+          font-size: 0.65rem;
+        }
+        .progress-step-number {
+          width: 30px;
+          height: 30px;
+          font-size: 0.8rem;
+        }
+        .form-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .submit-btn {
+          justify-content: center;
+        }
+        .cancel-link {
+          text-align: center;
+        }
+      }
+      @media (max-width: 480px) {
+        .apply-card {
+          padding: var(--space-md) var(--space-sm);
+        }
+        input, textarea, select {
+          font-size: 17px !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('partials/header') %>
+
+    <main class="apply-page">
+      <a href="/" class="back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        Back to Homepage
+      </a>
+
+      <!-- Progress Steps -->
+      <div class="progress-bar" role="navigation" aria-label="Application progress">
+        <div class="progress-step active">
+          <span class="progress-step-number">1</span>
+          <span class="progress-step-label">Apply</span>
+        </div>
+        <div class="progress-connector"></div>
+        <div class="progress-step">
+          <span class="progress-step-number">2</span>
+          <span class="progress-step-label">Interview</span>
+        </div>
+        <div class="progress-connector"></div>
+        <div class="progress-step">
+          <span class="progress-step-number">3</span>
+          <span class="progress-step-label">Verify</span>
+        </div>
+        <div class="progress-connector"></div>
+        <div class="progress-step">
+          <span class="progress-step-number">4</span>
+          <span class="progress-step-label">Complete</span>
+        </div>
+      </div>
+
+      <!-- Application Form -->
+      <form class="apply-card" action="/apply/start" method="post" enctype="multipart/form-data">
+
+        <!-- Personal Information -->
+        <div class="form-section">
+          <div class="section-title">
+            <div class="section-icon">👤</div>
+            <h2>Personal Information</h2>
+          </div>
+          <div class="field-grid">
+            <div class="field-group">
+              <label class="field-label" for="firstName">First Name <span class="required">*</span></label>
+              <input class="field-input" id="firstName" name="firstName" type="text" required autocomplete="given-name" placeholder="John" />
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="lastName">Last Name <span class="required">*</span></label>
+              <input class="field-input" id="lastName" name="lastName" type="text" required autocomplete="family-name" placeholder="Doe" />
+            </div>
+          </div>
+          <div class="field-grid">
+            <div class="field-group">
+              <label class="field-label" for="email">Email Address <span class="required">*</span></label>
+              <input class="field-input" id="email" name="email" type="email" required autocomplete="email" placeholder="john@example.com" />
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="phone">Phone Number <span class="required">*</span></label>
+              <input class="field-input" id="phone" name="phone" type="tel" required autocomplete="tel" placeholder="(555) 123-4567" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Resume & Documents -->
+        <div class="form-section">
+          <div class="section-title">
+            <div class="section-icon">📄</div>
+            <h2>Resume &amp; Documents</h2>
+          </div>
+          <p class="upload-hint">Upload your resume and any supporting documents. Up to 6 files accepted.</p>
+          <input type="file" id="fileInput" name="documents" multiple accept=".pdf,.doc,.docx,.txt,.rtf,image/*" style="display:none;" />
+          <div class="upload-zone" id="fileUploadArea" role="button" tabindex="0" aria-label="Click to upload files or drag and drop">
+            <div class="upload-zone-icon">📎</div>
+            <div class="upload-zone-text" id="fileUploadText">
+              <strong>Click to upload</strong> or drag and drop<br>
+              PDF, DOCX, TXT, RTF, or images
+            </div>
+          </div>
+        </div>
+
+        <!-- Cover Letter -->
+        <div class="form-section">
+          <div class="section-title">
+            <div class="section-icon">✉️</div>
+            <h2>Cover Letter</h2>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="coverLetter">Tell us why you are interested in this position</label>
+            <textarea class="field-input" id="coverLetter" name="coverLetter" rows="6" placeholder="Write a short cover letter..."></textarea>
+          </div>
+        </div>
+
+        <!-- Job Position -->
+        <div class="form-section">
+          <div class="section-title">
+            <div class="section-icon">💼</div>
+            <h2>Job Position</h2>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="position">Choose your desired position <span class="required">*</span></label>
+            <select class="field-input" id="position" name="position" required>
+              <% positions.forEach(function(p){ %>
+                <option value="<%= p %>" <%= (selectedPosition === p ? "selected" : "") %>><%= p %></option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button class="submit-btn" type="submit">
+            Submit Application
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          </button>
+          <a class="cancel-link" href="/">Cancel</a>
+        </div>
+      </form>
+    </main>
+
+    <!-- File Upload Drag & Drop Script -->
+    <script>
+      (function(){
+        var area = document.getElementById('fileUploadArea');
+        var input = document.getElementById('fileInput');
+        var text = document.getElementById('fileUploadText');
+        var defaultHTML = text.innerHTML;
+
+        function escapeHtml(s) {
+          var d = document.createElement('div');
+          d.textContent = s;
+          return d.innerHTML;
+        }
+
+        function updateText() {
+          if (input.files && input.files.length > 0) {
+            var names = Array.from(input.files).map(function(f){ return escapeHtml(f.name); });
+            text.innerHTML = '<strong>' + names.length + ' file(s) selected:</strong><br>' + names.join(', ');
+            area.classList.add('has-files');
+          } else {
+            text.innerHTML = defaultHTML;
+            area.classList.remove('has-files');
+          }
+        }
+
+        area.addEventListener('click', function(e) { e.preventDefault(); input.click(); });
+        area.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); }
+        });
+        input.addEventListener('change', updateText);
+        area.addEventListener('dragover', function(e) {
+          e.preventDefault();
+          area.classList.add('dragging');
+        });
+        area.addEventListener('dragleave', function(e) {
+          e.preventDefault();
+          area.classList.remove('dragging');
+        });
+        area.addEventListener('drop', function(e) {
+          e.preventDefault();
+          area.classList.remove('dragging');
+          try { input.files = e.dataTransfer.files; } catch(err) { /* read-only in some browsers */ }
+          updateText();
+        });
+      })();
+    </script>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>

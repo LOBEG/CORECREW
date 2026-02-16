@@ -1,0 +1,938 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Core Crew Logistics — Freight, Warehousing, Jobs, Careers</title>
+    <meta name="description" content="Core Crew Logistics: Reliable freight, dispatch, warehousing, and job opportunities across California and beyond. Apply now!" />
+    <link rel="icon" type="image/png" href="/public/img/logo.jpg" />
+    <link rel="icon" type="image/x-icon" href="/public/favicon.ico" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Core Crew Logistics",
+      "url": "https://www.corecrewlogistics.com/",
+      "logo": "https://www.corecrewlogistics.com/public/img/logo.jpg"
+    }
+    </script>
+    <meta property="og:title" content="Core Crew Logistics — Freight, Warehousing, Jobs" />
+    <meta property="og:description" content="Reliable logistics and career opportunities. Apply now!" />
+    <meta property="og:image" content="https://www.corecrewlogistics.com/public/img/logo.jpg" />
+    <meta property="og:url" content="https://www.corecrewlogistics.com/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Core Crew Logistics" />
+    <meta name="twitter:description" content="Reliable logistics and career opportunities. Apply now!" />
+    <meta name="twitter:image" content="https://www.corecrewlogistics.com/public/img/logo.jpg" />
+    <link rel="stylesheet" href="/public/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+      /* ===== BASE ===== */
+      *, *::before, *::after { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      html, body { font-size: 15px; margin: 0; padding: 0; }
+      @media (max-width: 768px) { html, body { font-size: 13px; } }
+      @media (max-width: 480px) { html, body { font-size: 12px; } }
+
+      /* ===== ANIMATIONS ===== */
+      @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(3deg); }
+      }
+      @keyframes floatReverse {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(15px) rotate(-2deg); }
+      }
+      @keyframes pulse-dot {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.8); opacity: 0.4; }
+      }
+      @keyframes gradient-shift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(40px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes bannerPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.85; }
+      }
+      @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+
+      /* ===== NOW HIRING BANNER ===== */
+      .now-hiring-banner {
+        width: 100%;
+        background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 30%, var(--accent-green) 70%, var(--primary) 100%);
+        background-size: 200% 100%;
+        animation: gradient-shift 6s ease infinite, bannerPulse 3s ease-in-out infinite;
+        color: #fff;
+        text-align: center;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        font-size: 1.08rem;
+        padding: 12px 16px;
+        position: relative;
+        z-index: 999;
+        text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+      }
+      .now-hiring-banner span { display: inline-block; vertical-align: middle; }
+      .now-hiring-banner a {
+        color: #fff;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        font-weight: 800;
+        margin-left: 8px;
+        transition: color 0.2s ease;
+      }
+      .now-hiring-banner a:hover { color: #d4f5e0; }
+      @media (max-width: 768px) { .now-hiring-banner { font-size: 0.98rem; padding: 9px 12px; } }
+      @media (max-width: 480px) { .now-hiring-banner { font-size: 0.93rem; padding: 7px 10px; } }
+
+      /* ===== HERO SECTION ===== */
+      .hero {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(168deg, #ffffff 0%, #f8faff 40%, #f0f5ff 100%);
+        padding: 110px 0 90px;
+        min-height: 560px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(ellipse at 30% 50%, rgba(37,99,235,0.07) 0%, transparent 60%),
+                    radial-gradient(ellipse at 70% 20%, rgba(46,204,113,0.05) 0%, transparent 50%),
+                    radial-gradient(ellipse at 80% 80%, rgba(24,70,163,0.04) 0%, transparent 40%);
+        pointer-events: none;
+      }
+      .hero-particles {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+      }
+      .hero-particle {
+        position: absolute;
+        border-radius: 50%;
+        opacity: 0.06;
+      }
+      .hero-particle:nth-child(1) {
+        width: 300px; height: 300px;
+        background: var(--accent-green);
+        top: -60px; right: -80px;
+        animation: float 8s ease-in-out infinite;
+      }
+      .hero-particle:nth-child(2) {
+        width: 200px; height: 200px;
+        background: var(--primary-lighter);
+        bottom: -40px; left: -60px;
+        animation: floatReverse 10s ease-in-out infinite;
+      }
+      .hero-particle:nth-child(3) {
+        width: 120px; height: 120px;
+        background: var(--primary-light);
+        top: 40%; left: 60%;
+        animation: float 12s ease-in-out infinite 2s;
+        opacity: 0.04;
+      }
+      .hero-particle:nth-child(4) {
+        width: 80px; height: 80px;
+        background: var(--accent-green);
+        top: 20%; left: 15%;
+        animation: floatReverse 9s ease-in-out infinite 1s;
+        opacity: 0.05;
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      }
+      .hero-particle:nth-child(5) {
+        width: 160px; height: 160px;
+        background: var(--primary-light);
+        bottom: 10%; right: 20%;
+        animation: float 11s ease-in-out infinite 3s;
+        opacity: 0.04;
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      }
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 820px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 0 24px;
+        animation: slideUp 0.8s ease both;
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(24,70,163,0.06);
+        border: 1px solid rgba(24,70,163,0.12);
+        border-radius: 100px;
+        padding: 6px 16px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 24px;
+        letter-spacing: 0.03em;
+      }
+      .hero-badge-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--accent-green);
+        border-radius: 50%;
+        animation: pulse-dot 2s ease-in-out infinite;
+      }
+      .hero-title {
+        font-size: 3.8rem;
+        font-weight: 900;
+        color: var(--primary-dark);
+        line-height: 1.08;
+        margin: 0 0 24px;
+        letter-spacing: -0.03em;
+      }
+      .hero-title-line {
+        display: block;
+      }
+      .hero-title-accent {
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero-desc {
+        font-size: 1.25rem;
+        color: var(--text-muted);
+        line-height: 1.75;
+        max-width: 620px;
+        margin: 0 auto 40px;
+      }
+      .hero-actions {
+        display: flex;
+        gap: 14px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .hero-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 32px;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: all 0.25s cubic-bezier(.4,0,.2,1);
+        border: none;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        letter-spacing: 0.01em;
+      }
+      .hero-btn-primary {
+        background: var(--primary);
+        color: #fff;
+        box-shadow: 0 4px 14px rgba(24,70,163,0.2);
+      }
+      .hero-btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(24,70,163,0.3);
+        color: #fff;
+        text-decoration: none;
+      }
+      .hero-btn-accent {
+        background: var(--accent-green);
+        color: #fff;
+        box-shadow: 0 4px 14px rgba(46,204,113,0.25);
+      }
+      .hero-btn-accent:hover {
+        background: var(--accent-green-dark);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(46,204,113,0.35);
+        color: #fff;
+        text-decoration: none;
+      }
+      .hero-btn-ghost {
+        background: transparent;
+        color: var(--primary);
+        border: 2px solid var(--border);
+      }
+      .hero-btn-ghost:hover {
+        background: var(--surface-dark);
+        border-color: var(--primary-light);
+        color: var(--primary);
+        transform: translateY(-3px);
+        text-decoration: none;
+      }
+      @media (max-width: 768px) {
+        .hero { padding: 80px 0 60px; min-height: 420px; }
+        .hero-title { font-size: 2.5rem; }
+        .hero-desc { font-size: 1.08rem; }
+        .hero-btn { padding: 12px 24px; font-size: 0.92rem; }
+      }
+      @media (max-width: 480px) {
+        .hero { padding: 60px 0 44px; min-height: 360px; }
+        .hero-title { font-size: 2rem; }
+        .hero-actions { flex-direction: column; align-items: center; }
+      }
+
+      /* ===== STATS SECTION ===== */
+      .stats-section {
+        padding: 70px 24px;
+        background: linear-gradient(180deg, #f8faff 0%, #ffffff 100%);
+        position: relative;
+      }
+      .stats-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--border), transparent);
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .stat-card {
+        background: #fff;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg);
+        padding: 36px 24px;
+        text-align: center;
+        transition: all 0.4s cubic-bezier(.4,0,.2,1);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(16,42,72,0.04);
+      }
+      .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-primary);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .stat-card:hover::before { opacity: 1; }
+      .stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 60px rgba(16,42,72,0.1), 0 4px 12px rgba(16,42,72,0.05);
+      }
+      .stat-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        background: linear-gradient(135deg, rgba(24,70,163,0.08), rgba(37,99,235,0.12));
+        position: relative;
+      }
+      .stat-pulse {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 8px;
+        height: 8px;
+        background: var(--accent-green);
+        border-radius: 50%;
+        animation: pulse-dot 2s ease-in-out infinite;
+      }
+      .stat-card .stat-number {
+        font-size: 2.6rem;
+        font-weight: 900;
+        color: var(--primary);
+        margin-bottom: 4px;
+        letter-spacing: -0.02em;
+      }
+      .stat-card .stat-label {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      @media (max-width: 900px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 480px) {
+        .stats-grid { grid-template-columns: 1fr; gap: 16px; }
+        .stat-card { padding: 28px 20px; }
+      }
+
+      /* ===== SECTION HEADER ===== */
+      .section-header {
+        text-align: center;
+        margin-bottom: 52px;
+        position: relative;
+      }
+      .section-header::before {
+        content: '';
+        display: block;
+        width: 48px;
+        height: 4px;
+        background: var(--gradient-primary);
+        border-radius: 4px;
+        margin: 0 auto 20px;
+      }
+      .section-title {
+        font-size: 2.4rem;
+        font-weight: 800;
+        color: var(--text);
+        margin: 0 0 12px;
+        letter-spacing: -0.02em;
+      }
+      .section-subtitle {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        max-width: 520px;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+
+      /* ===== WHAT WE DO ===== */
+      .services-section {
+        padding: 90px 24px;
+        background: #fff;
+        position: relative;
+      }
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 28px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .service-card {
+        background: #fff;
+        border-radius: var(--radius-lg);
+        padding: 40px 30px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(.4,0,.2,1);
+        box-shadow: 0 2px 16px rgba(16,42,72,0.04);
+        border: 1px solid var(--border-light);
+      }
+      .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        transition: height 0.3s ease;
+      }
+      .service-card:nth-child(1)::before { background: linear-gradient(90deg, var(--primary), var(--primary-lighter)); }
+      .service-card:nth-child(2)::before { background: linear-gradient(90deg, var(--accent-green), #3ee68a); }
+      .service-card:nth-child(3)::before { background: linear-gradient(90deg, var(--accent-orange), #f9c74f); }
+      .service-card:hover {
+        transform: translateY(-8px) scale(1.01);
+        box-shadow: 0 24px 56px rgba(16,42,72,0.1);
+      }
+      .service-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 22px;
+      }
+      .service-card:nth-child(1) .service-icon { background: linear-gradient(135deg, rgba(24,70,163,0.1), rgba(37,99,235,0.15)); }
+      .service-card:nth-child(2) .service-icon { background: linear-gradient(135deg, rgba(46,204,113,0.1), rgba(46,204,113,0.18)); }
+      .service-card:nth-child(3) .service-icon { background: linear-gradient(135deg, rgba(247,183,49,0.1), rgba(247,183,49,0.18)); }
+      .service-card h4 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text);
+        margin: 0 0 12px;
+      }
+      .service-card p {
+        color: var(--text-muted);
+        line-height: 1.75;
+        font-size: 1rem;
+        margin: 0;
+      }
+      @media (max-width: 768px) { .services-grid { grid-template-columns: 1fr; max-width: 480px; } }
+
+      /* ===== CONTACT SECTION ===== */
+      .contact-section {
+        padding: 80px 24px 100px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8faff 100%);
+        position: relative;
+      }
+      .contact-inner {
+        max-width: 720px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      .contact-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--text);
+        margin: 0 0 14px;
+      }
+      .contact-desc {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        line-height: 1.75;
+        margin: 0 auto 36px;
+        max-width: 540px;
+      }
+      .contact-links {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .contact-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 32px;
+        background: rgba(24,70,163,0.04);
+        border: 1px solid var(--border);
+        border-radius: 100px;
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+      .contact-link:hover {
+        background: var(--primary);
+        color: #fff;
+        border-color: var(--primary);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(24,70,163,0.2);
+        text-decoration: none;
+      }
+      .contact-link:hover svg { stroke: #fff; }
+
+      /* ===== QUICK APPLY FLOAT BTN ===== */
+      .quick-apply-float-btn {
+        position: fixed;
+        right: 24px;
+        bottom: 40px;
+        z-index: 2001;
+        background: var(--gradient-primary);
+        color: #fff;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-size: 0.92rem;
+        font-weight: 700;
+        box-shadow: 0 4px 16px rgba(24,70,163,0.25);
+        border: none;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(.4,0,.2,1);
+        letter-spacing: 0.01em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .quick-apply-float-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 28px rgba(24,70,163,0.35);
+      }
+
+      /* ===== QUICK APPLY MODAL ===== */
+      .quick-apply-modal-bg {
+        display: none;
+        position: fixed;
+        top: 0; right: 0; bottom: 0; left: 0;
+        background: rgba(10,22,40,0.45);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+        padding: var(--space-md);
+      }
+      .quick-apply-modal-bg.active { display: flex; }
+      .quick-apply-modal-content {
+        background: rgba(255,255,255,0.98);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 20px;
+        box-shadow: 0 24px 80px rgba(10,22,40,0.25), 0 0 0 1px rgba(255,255,255,0.1);
+        padding: var(--space-xl);
+        width: 100%;
+        max-width: 400px;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        animation: scaleIn 0.3s ease both;
+      }
+      .quick-apply-modal-close {
+        position: absolute;
+        right: var(--space-md);
+        top: var(--space-md);
+        font-size: 1.3rem;
+        color: var(--text-muted);
+        cursor: pointer;
+        background: var(--surface-dark);
+        border: none;
+        font-weight: 700;
+        transition: all 0.2s;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+      }
+      .quick-apply-modal-close:hover {
+        color: var(--primary);
+        background: var(--surface-darker);
+        transform: rotate(90deg);
+      }
+      .quick-apply-modal-title {
+        color: var(--primary);
+        font-size: 1.3rem;
+        font-weight: 800;
+        margin: 0 0 8px;
+      }
+      .quick-apply-modal-desc {
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin: 0 0 16px;
+        line-height: 1.5;
+      }
+      .quick-apply-card { display: none !important; }
+      @media (max-width: 768px) {
+        .quick-apply-float-btn { right: 12px; bottom: 12px; font-size: 0.88rem; padding: 10px 18px; }
+        .quick-apply-modal-content { max-width: 95vw; }
+      }
+      @media (max-width: 600px) {
+        .quick-apply-float-btn { font-size: 0.85rem; padding: 9px 16px; }
+      }
+
+      /* ===== FOOTER ===== */
+      .site-footer { background: #0a1628 !important; }
+      .footer-bottom {
+        width: 100%;
+        text-align: center !important;
+        margin: 0 auto;
+        padding: 16px 0 10px;
+        color: rgba(255,255,255,0.45);
+        font-size: 0.88rem;
+        border-top: 1px solid rgba(255,255,255,0.06);
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="site-header">
+      <div class="container">
+        <a href="/" class="brand">
+          <img class="logo" src="/public/img/logo.jpg" alt="Core Crew Logistics Logo" />
+          <span>Core Crew Logistics</span>
+        </a>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="nav-overlay" id="navOverlay"></div>
+        <nav id="mainNav">
+          <a href="/about" class="btn ghost">About</a>
+          <a href="/services" class="btn ghost">Services</a>
+          <a href="/jobs" class="btn ghost">Jobs</a>
+          <a href="/apply" class="btn primary">Apply Now</a>
+        </nav>
+      </div>
+    </header>
+    <script src="/public/nav.js"></script>
+
+    <!-- ===== NOW HIRING BANNER ===== -->
+    <div class="now-hiring-banner" role="alert">
+      <span><span aria-hidden="true">&#x1F69A;</span> NOW HIRING: Drivers, Dispatchers, Warehouse Staff &amp; More! <a href="/apply">Apply Today</a></span>
+    </div>
+
+    <main>
+
+      <!-- ===== HERO ===== -->
+      <section class="hero">
+        <div class="hero-particles" aria-hidden="true">
+          <div class="hero-particle"></div>
+          <div class="hero-particle"></div>
+          <div class="hero-particle"></div>
+          <div class="hero-particle"></div>
+          <div class="hero-particle"></div>
+        </div>
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            Trusted Logistics Partner
+          </div>
+          <h1 class="hero-title"><span class="hero-title-line">Drive the Future</span> <span class="hero-title-line">of <span class="hero-title-accent">Logistics</span></span></h1>
+          <p class="hero-desc">
+            We streamline freight, warehousing, and last-mile delivery with dependable people and modern technology. Join us to keep supply chains moving smoothly and efficiently.
+          </p>
+          <div class="hero-actions">
+            <a href="/apply" class="hero-btn hero-btn-accent">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+              Apply Now
+            </a>
+            <a href="/jobs" class="hero-btn hero-btn-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+              Browse Open Positions
+            </a>
+            <a href="/about" class="hero-btn hero-btn-ghost">Learn More</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== STATS ===== -->
+      <section class="stats-section" aria-label="Company statistics">
+        <div class="stats-grid">
+          <div class="stat-card stat">
+            <div class="stat-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="var(--primary)" width="32" height="32" stroke-width="2">
+                <rect width="18" height="14" x="3" y="7" rx="2"/>
+                <path d="M16 3v4M8 3v4"/>
+              </svg>
+              <span class="stat-pulse"></span>
+            </div>
+            <div class="stat-number" data-target="10">0</div>
+            <div class="stat-label">Years of Service</div>
+          </div>
+          <div class="stat-card stat">
+            <div class="stat-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="var(--primary)" width="32" height="32" stroke-width="2">
+                <circle cx="9" cy="8" r="4"/>
+                <circle cx="17" cy="12" r="3"/>
+                <path d="M2 20c0-3.314 3.134-6 7-6s7 2.686 7 6"/>
+                <path d="M17 15c2.21 0 4 1.343 4 3"/>
+              </svg>
+              <span class="stat-pulse"></span>
+            </div>
+            <div class="stat-number" data-target="300">0</div>
+            <div class="stat-label">Employees</div>
+          </div>
+          <div class="stat-card stat">
+            <div class="stat-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="var(--primary)" width="32" height="32" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M2 12h20M12 2c3.866 0 7 4.477 7 10s-3.134 10-7 10-7-4.477-7-10 3.134-10 7-10z"/>
+              </svg>
+              <span class="stat-pulse"></span>
+            </div>
+            <div class="stat-number" data-target="50">0</div>
+            <div class="stat-label">States Served</div>
+          </div>
+          <div class="stat-card stat">
+            <div class="stat-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="var(--primary)" width="32" height="32" stroke-width="2">
+                <rect width="18" height="12" x="3" y="7" rx="2"/>
+                <path d="M16 7V5a4 4 0 00-8 0v2"/>
+              </svg>
+              <span class="stat-pulse"></span>
+            </div>
+            <div class="stat-number" data-target="500">0</div>
+            <div class="stat-label">Clients</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== WHAT WE DO ===== -->
+      <section class="services-section">
+        <div class="section-header">
+          <h2 class="section-title">What We Do</h2>
+          <p class="section-subtitle">Industry-leading logistics services powered by experienced teams.</p>
+        </div>
+        <div class="services-grid">
+          <div class="service-card">
+            <div class="service-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="var(--primary)" width="28" height="28" stroke-width="2">
+                <path d="M9 17H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2h-4"/>
+                <path d="M12 15l-3 3 3 3"/>
+                <path d="M12 21V15"/>
+              </svg>
+            </div>
+            <h4>Dispatch &amp; Coordination</h4>
+            <p>Efficient route planning and 24/7 dispatch to keep your freight on schedule.</p>
+          </div>
+          <div class="service-card">
+            <div class="service-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="var(--accent-green-dark)" width="28" height="28" stroke-width="2">
+                <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+              </svg>
+            </div>
+            <h4>Warehousing &amp; Fulfillment</h4>
+            <p>Secure storage, inventory control, and accurate pick/pack for seamless operations.</p>
+          </div>
+          <div class="service-card">
+            <div class="service-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="var(--accent-orange)" width="28" height="28" stroke-width="2">
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+              </svg>
+            </div>
+            <h4>Customer Support</h4>
+            <p>Clear communication and proactive updates for a best-in-class client experience.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CONTACT ===== -->
+      <section class="contact-section">
+        <div class="contact-inner">
+          <h2 class="contact-title">Get in Touch</h2>
+          <p class="contact-desc">
+            Have questions about working at corecrewlogistics? We'd love to hear from you and discuss how you can be part of our mission.
+          </p>
+          <ul class="contact-links">
+            <li>
+              <a href="tel:+13105742415" class="contact-link" aria-label="Call us">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                Call Us
+              </a>
+            </li>
+            <li>
+              <a href="mailto:corecrewlogistics@gmail.com" class="contact-link" aria-label="Email us">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+                Email Us
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ===== QUICK APPLY FLOATING BUTTON & MODAL ===== -->
+      <button class="quick-apply-float-btn" id="quickApplyFloatBtn" aria-label="Quick Apply">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        Quick Apply
+      </button>
+
+      <div class="quick-apply-modal-bg" id="quickApplyModalBg">
+        <div class="quick-apply-modal-content">
+          <button class="quick-apply-modal-close" id="quickApplyModalClose" aria-label="Close">&times;</button>
+          <h3 class="quick-apply-modal-title">Quick Apply</h3>
+          <p class="quick-apply-modal-desc">
+            Don't see the perfect role? Submit your resume and we'll reach out when opportunities arise.
+          </p>
+          <form action="/apply/start" method="POST" enctype="multipart/form-data" class="quick-apply-form">
+            <label for="qa-firstName">First Name</label>
+            <input type="text" id="qa-firstName" name="firstName" required />
+            <label for="qa-lastName">Last Name</label>
+            <input type="text" id="qa-lastName" name="lastName" required />
+            <label for="qa-email">Email</label>
+            <input type="email" id="qa-email" name="email" required />
+            <label for="qa-phone">Phone</label>
+            <input type="text" id="qa-phone" name="phone" required />
+            <label for="qa-position">Position Interested In</label>
+            <input type="text" id="qa-position" name="position" placeholder="E.g. Logistics Coordinator" required />
+            <label for="qa-coverLetter">Message / Cover Letter</label>
+            <textarea id="qa-coverLetter" name="coverLetter" rows="3"></textarea>
+            <label for="qa-resume">Upload Resume</label>
+            <input type="file" id="qa-resume" name="documents" accept=".pdf,.doc,.docx" required />
+            <button type="submit" class="btn primary">Submit Application</button>
+          </form>
+        </div>
+      </div>
+
+      <script>
+        (function() {
+          var floatBtn = document.getElementById('quickApplyFloatBtn');
+          var modalBg = document.getElementById('quickApplyModalBg');
+          var modalClose = document.getElementById('quickApplyModalClose');
+          floatBtn.addEventListener('click', function() {
+            modalBg.classList.add('active');
+          });
+          modalClose.addEventListener('click', function() {
+            modalBg.classList.remove('active');
+          });
+          modalBg.addEventListener('click', function(e) {
+            if (e.target === modalBg) modalBg.classList.remove('active');
+          });
+        })();
+      </script>
+      <script src="/public/modal.js"></script>
+      <script src="/public/stat-counter.js"></script>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer">
+      <div class="footer-flex">
+        <div class="footer-brand">
+          <div class="footer-logo-row">
+            <img class="logo" src="/public/img/logo.jpg" alt="<%= COMPANY.name %> Logo" />
+            <div>
+              <span class="footer-company-name"><%= COMPANY.name %></span><br />
+              <span class="footer-slogan"><%= COMPANY.slogan %></span>
+            </div>
+          </div>
+          <p style="color:rgba(255,255,255,0.5);font-size:0.88rem;margin-top:12px;line-height:1.5;">
+            Delivering dependable logistics solutions with modern technology and experienced teams.
+          </p>
+        </div>
+        <nav class="footer-nav">
+          <div>
+            <span class="footer-section-title">Company</span>
+            <ul>
+              <li><a href="/about">About Us</a></li>
+              <li><a href="/services">Services</a></li>
+            </ul>
+          </div>
+          <div>
+            <span class="footer-section-title">Careers</span>
+            <ul>
+              <li><a href="/jobs">Job Listings</a></li>
+              <li><a href="/apply">Apply Now</a></li>
+            </ul>
+          </div>
+          <div>
+            <span class="footer-section-title">Connect</span>
+            <ul>
+              <li>
+                <a href="https://www.facebook.com/profile.php?id=61574064061373&mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="#4a90d9" style="vertical-align:middle;margin-right:6px;"><path d="M22.675 0h-21.35C.595 0 0 .593 0 1.326v21.348C0 23.406.595 24 1.326 24H12.82v-9.294H9.692v-3.622h3.127V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.797.143v3.24l-1.92.001c-1.504 0-1.797.715-1.797 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116C23.406 24 24 23.406 24 22.674V1.326C24 .593 23.406 0 22.675 0"/></svg>
+                  Facebook
+                </a>
+              </li>
+              <li>
+                <a href="mailto:corecrewlogistics@gmail.com" style="color:rgba(255,255,255,0.7);" aria-label="Email us">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" style="vertical-align:middle;margin-right:6px;"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+                  Email
+                </a>
+              </li>
+              <li>
+                <a href="tel:+13105742415" style="color:rgba(255,255,255,0.7);" aria-label="Call us">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" style="vertical-align:middle;margin-right:6px;"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                  Call
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        &copy; <%= new Date().getFullYear() %> <%= COMPANY.name %>
+      </div>
+    </footer>
+
+  </body>
+</html>
