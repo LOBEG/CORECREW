@@ -7,28 +7,6 @@
   <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
   <link rel="stylesheet" href="/public/styles.css" />
   <style>
-    :root {
-      --primary: #1846a3;
-      --primary-light: #e8eef8;
-      --accent-green: #2ecc71;
-      --accent-green-light: #eafaf1;
-      --text-dark: #2c3e50;
-      --text-muted: #7f8c8d;
-      --bg: #f0f2f5;
-      --card-bg: #ffffff;
-      --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-      --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.12);
-    }
-
-    body {
-      min-height: 100vh;
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text-dark);
-    }
-
     .submit-page {
       display: flex;
       align-items: flex-start;
@@ -38,8 +16,8 @@
     }
 
     .submit-card {
-      background: var(--card-bg);
-      border-radius: 16px;
+      background: #fff;
+      border-radius: var(--radius-lg);
       box-shadow: var(--shadow-lg);
       max-width: 600px;
       width: 100%;
@@ -48,7 +26,7 @@
 
     /* Animated checkmark */
     .checkmark-area {
-      background: linear-gradient(135deg, var(--accent-green) 0%, #27ae60 100%);
+      background: var(--gradient-accent);
       padding: 40px 24px 32px;
       display: flex;
       flex-direction: column;
@@ -112,7 +90,7 @@
     }
 
     /* Card body */
-    .card-body {
+    .submit-card .card-body {
       padding: 32px 32px 28px;
     }
 
@@ -127,7 +105,7 @@
     .brand-logo {
       width: 40px;
       height: 40px;
-      border-radius: 10px;
+      border-radius: var(--radius-sm);
       object-fit: cover;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
@@ -142,7 +120,7 @@
     .greeting {
       font-size: 1.15rem;
       font-weight: 600;
-      color: var(--text-dark);
+      color: var(--text);
       margin: 0 0 6px;
     }
 
@@ -160,8 +138,8 @@
       justify-content: space-between;
       margin: 0 0 28px;
       padding: 20px 0;
-      border-top: 1px solid #ecf0f1;
-      border-bottom: 1px solid #ecf0f1;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
       position: relative;
     }
 
@@ -206,14 +184,14 @@
     .timeline-label {
       font-size: 0.75rem;
       font-weight: 600;
-      color: var(--text-dark);
+      color: var(--text);
       text-align: center;
     }
 
     /* What's Next box */
     .next-steps {
-      background: var(--primary-light);
-      border-radius: 10px;
+      background: var(--surface-dark);
+      border-radius: var(--radius-sm);
       padding: 20px 24px;
       margin-bottom: 24px;
       border-left: 4px solid var(--primary);
@@ -238,7 +216,7 @@
     .next-steps li {
       position: relative;
       font-size: 0.9rem;
-      color: var(--text-dark);
+      color: var(--text);
       line-height: 1.7;
       padding-left: 6px;
     }
@@ -252,7 +230,7 @@
     }
 
     /* Actions */
-    .actions {
+    .submit-actions {
       text-align: center;
       margin-bottom: 20px;
     }
@@ -262,18 +240,18 @@
       padding: 14px 40px;
       font-size: 1rem;
       font-weight: 700;
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       border: none;
       background: var(--primary);
       color: #fff;
       cursor: pointer;
       text-decoration: none;
-      transition: background 0.2s, box-shadow 0.2s;
+      transition: background var(--transition-fast), box-shadow var(--transition-fast);
       box-shadow: 0 2px 12px rgba(24, 70, 163, 0.25);
     }
 
     .btn-home:hover {
-      background: #123b8a;
+      background: var(--primary-dark);
       box-shadow: 0 4px 16px rgba(24, 70, 163, 0.35);
       color: #fff;
     }
@@ -307,7 +285,7 @@
       font-size: 0.82rem;
       color: var(--text-muted);
       padding: 16px 32px 20px;
-      border-top: 1px solid #ecf0f1;
+      border-top: 1px solid var(--border);
     }
 
     .contact-note a {
@@ -339,7 +317,7 @@
         font-size: 1.25rem;
       }
 
-      .card-body {
+      .submit-card .card-body {
         padding: 24px 20px 20px;
       }
 
@@ -449,7 +427,7 @@
           </div>
 
           <!-- CTA -->
-          <div class="actions">
+          <div class="submit-actions">
             <a class="btn-home" href="/">Go to Homepage Now</a>
             <div class="redirect-note">
               <span class="dot"></span>Redirecting to homepage automatically&hellip;
