@@ -95,7 +95,7 @@
       .hero-3d {
         position: relative;
         overflow: hidden;
-        background: var(--gradient-hero);
+        background: #fff;
         padding: 100px 0 80px;
         min-height: 520px;
         display: flex;
@@ -109,8 +109,8 @@
         left: -50%;
         width: 200%;
         height: 200%;
-        background: radial-gradient(ellipse at 30% 50%, rgba(37,99,235,0.15) 0%, transparent 60%),
-                    radial-gradient(ellipse at 70% 20%, rgba(46,204,113,0.1) 0%, transparent 50%);
+        background: radial-gradient(ellipse at 30% 50%, rgba(37,99,235,0.06) 0%, transparent 60%),
+                    radial-gradient(ellipse at 70% 20%, rgba(46,204,113,0.04) 0%, transparent 50%);
         pointer-events: none;
       }
       .hero-particles {
@@ -122,7 +122,7 @@
       .hero-particle {
         position: absolute;
         border-radius: 50%;
-        opacity: 0.12;
+        opacity: 0.06;
       }
       .hero-particle:nth-child(1) {
         width: 300px; height: 300px;
@@ -138,17 +138,17 @@
       }
       .hero-particle:nth-child(3) {
         width: 120px; height: 120px;
-        background: #fff;
+        background: var(--primary-light);
         top: 40%; left: 60%;
         animation: float 12s ease-in-out infinite 2s;
-        opacity: 0.06;
+        opacity: 0.04;
       }
       .hero-particle:nth-child(4) {
         width: 80px; height: 80px;
         background: var(--accent-green);
         top: 20%; left: 15%;
         animation: floatReverse 9s ease-in-out infinite 1s;
-        opacity: 0.08;
+        opacity: 0.05;
         border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
       }
       .hero-particle:nth-child(5) {
@@ -156,7 +156,7 @@
         background: var(--primary-light);
         bottom: 10%; right: 20%;
         animation: float 11s ease-in-out infinite 3s;
-        opacity: 0.07;
+        opacity: 0.04;
         border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
       }
       .hero-inner {
@@ -171,23 +171,21 @@
       .hero-inner .hero-title {
         font-size: 3.6rem;
         font-weight: 900;
-        color: #fff;
+        color: var(--primary-dark);
         line-height: 1.1;
         margin-bottom: 24px;
-        text-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.2);
         letter-spacing: -0.02em;
       }
       .hero-inner .hero-desc {
         font-size: 1.25rem;
-        color: rgba(255,255,255,0.88);
+        color: var(--text-muted);
         line-height: 1.7;
         max-width: 600px;
         margin: 0 auto 36px;
-        text-shadow: 0 1px 8px rgba(0,0,0,0.15);
       }
       .hero-actions {
         display: flex;
-        gap: 16px;
+        gap: 12px;
         justify-content: center;
         flex-wrap: wrap;
       }
@@ -195,55 +193,58 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 16px 32px;
-        border-radius: 100px;
-        font-weight: 700;
-        font-size: 1.05rem;
+        padding: 12px 28px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
         text-decoration: none;
-        transition: all 0.35s cubic-bezier(.4,0,.2,1);
+        transition: all 0.25s cubic-bezier(.4,0,.2,1);
         border: none;
         cursor: pointer;
         position: relative;
         overflow: hidden;
       }
       .hero-btn-primary {
-        background: rgba(255,255,255,0.15);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        background: var(--primary);
         color: #fff;
-        border: 1px solid rgba(255,255,255,0.25);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+        box-shadow: 0 2px 8px rgba(24,70,163,0.18);
       }
       .hero-btn-primary:hover {
-        background: rgba(255,255,255,0.25);
-        transform: translateY(-3px);
-        box-shadow: 0 12px 40px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.15);
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(24,70,163,0.25);
+        color: #fff;
+        text-decoration: none;
       }
       .hero-btn-accent {
         background: var(--accent-green);
         color: #fff;
-        box-shadow: 0 8px 32px rgba(46,204,113,0.3);
+        box-shadow: 0 2px 8px rgba(46,204,113,0.2);
       }
       .hero-btn-accent:hover {
         background: var(--accent-green-dark);
-        transform: translateY(-3px);
-        box-shadow: 0 12px 40px rgba(46,204,113,0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(46,204,113,0.3);
+        color: #fff;
+        text-decoration: none;
       }
       .hero-btn-ghost {
         background: transparent;
-        color: rgba(255,255,255,0.85);
-        border: 1px solid rgba(255,255,255,0.3);
+        color: var(--primary);
+        border: 1.5px solid var(--border);
       }
       .hero-btn-ghost:hover {
-        background: rgba(255,255,255,0.1);
-        color: #fff;
+        background: var(--surface-dark);
+        border-color: var(--primary-light);
+        color: var(--primary);
         transform: translateY(-2px);
+        text-decoration: none;
       }
       @media (max-width: 768px) {
         .hero-3d { padding: 70px 0 60px; min-height: 420px; }
         .hero-inner .hero-title { font-size: 2.4rem; }
         .hero-inner .hero-desc { font-size: 1.05rem; }
-        .hero-btn { padding: 13px 24px; font-size: 0.95rem; }
+        .hero-btn { padding: 10px 22px; font-size: 0.92rem; }
       }
       @media (max-width: 480px) {
         .hero-3d { padding: 50px 0 40px; min-height: 360px; }
@@ -254,7 +255,7 @@
       /* ===== STATS SECTION ===== */
       .stats-3d {
         padding: 60px 24px;
-        background: var(--background);
+        background: #fff;
         position: relative;
       }
       .stats-3d-grid {
@@ -265,17 +266,15 @@
         margin: 0 auto;
       }
       .stat-3d {
-        background: rgba(255,255,255,0.7);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255,255,255,0.6);
+        background: #fff;
+        border: 1px solid var(--border-light);
         border-radius: var(--radius-lg);
         padding: 32px 20px;
         text-align: center;
         transition: all 0.4s cubic-bezier(.4,0,.2,1);
         position: relative;
         overflow: hidden;
-        box-shadow: 0 4px 24px rgba(16,42,72,0.06), 0 1px 3px rgba(16,42,72,0.04);
+        box-shadow: 0 2px 12px rgba(16,42,72,0.05);
         perspective: 1000px;
       }
       .stat-3d::before {
@@ -339,7 +338,7 @@
       /* ===== WHAT WE DO ===== */
       .wwd-section {
         padding: 80px 24px;
-        background: linear-gradient(180deg, var(--background) 0%, #fff 100%);
+        background: #fff;
         position: relative;
       }
       .wwd-section::before {
@@ -489,23 +488,23 @@
         right: 22px;
         bottom: 40px;
         z-index: 2001;
-        background: var(--accent-green);
+        background: var(--primary);
         color: #fff;
-        border-radius: 100px;
-        padding: 15px 30px;
-        font-size: 1.05rem;
-        font-weight: 700;
-        box-shadow: 0 8px 32px rgba(46,204,113,0.3), 0 2px 8px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        padding: 10px 22px;
+        font-size: 0.92rem;
+        font-weight: 600;
+        box-shadow: 0 2px 12px rgba(24,70,163,0.2);
         border: none;
         cursor: pointer;
-        transition: all 0.3s cubic-bezier(.4,0,.2,1);
-        letter-spacing: 0.02em;
+        transition: all 0.25s cubic-bezier(.4,0,.2,1);
+        letter-spacing: 0.01em;
       }
       .quick-apply-float-btn:hover {
-        background: var(--primary-light);
+        background: var(--primary-dark);
         color: #fff;
-        box-shadow: 0 12px 40px rgba(24,70,163,0.25);
-        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 4px 20px rgba(24,70,163,0.3);
+        transform: translateY(-2px);
       }
 
       /* ===== QUICK APPLY MODAL ===== */
@@ -561,11 +560,11 @@
       }
       .quick-apply-card { display: none !important; }
       @media (max-width: 768px) {
-        .quick-apply-float-btn { right: 10px; bottom: 10px; font-size: 1rem; padding: 10px 15px; }
+        .quick-apply-float-btn { right: 10px; bottom: 10px; font-size: 0.88rem; padding: 8px 16px; }
         .quick-apply-modal-content { max-width: 95vw; }
       }
       @media (max-width: 600px) {
-        .quick-apply-float-btn { font-size: 0.98rem; padding: 8px 10px; }
+        .quick-apply-float-btn { font-size: 0.85rem; padding: 7px 14px; }
       }
 
       /* ===== FOOTER ===== */

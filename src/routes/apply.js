@@ -149,7 +149,7 @@ router.get('/interview', requireSession, (req, res) => {
   });
 });
 
-router.post('/interview', requireSession, express.urlencoded({ extended: true }), async (req, res) => {
+router.post('/interview', requireSession, async (req, res) => {
   if (!req.session.applicationDraft) {
     console.log('No application draft found, redirecting to /apply');
     return res.redirect('/apply');
