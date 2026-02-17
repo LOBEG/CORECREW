@@ -300,7 +300,7 @@ router.post('/verify', requireSession, driversLicenseUpload.fields(dlFields), as
 
   req.session.save((err) => {
     if (err) return res.status(500).render('error', { message: 'Session save failed.' });
-    sendConfirmationEmail(email, req.session.applicationDraft.firstName)
+    sendConfirmationEmail(req.session.applicationDraft.email, req.session.applicationDraft.firstName)
       .catch(e => console.error('Confirmation email error:', e.message));
     res.redirect('/apply/submit');
   });

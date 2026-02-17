@@ -29,7 +29,7 @@
         padding: var(--space-lg) var(--space-md);
         background: var(--surface);
         border-radius: var(--radius-lg);
-        box-shadow: var(--shadow);
+        border: 1px solid var(--border-light);
       }
       .progress-step {
         display: flex;
@@ -59,7 +59,6 @@
         background: var(--gradient-primary);
         color: #fff;
         border-color: var(--primary);
-        box-shadow: 0 2px 12px rgba(37, 99, 235, 0.25);
       }
       .progress-step-label {
         font-size: 0.75rem;
@@ -85,7 +84,7 @@
       .apply-card {
         background: var(--surface);
         border-radius: var(--radius-lg);
-        box-shadow: var(--shadow);
+        border: 1px solid var(--border-light);
         padding: var(--space-2xl) var(--space-xl);
         animation: fadeInUp 0.4s ease;
       }
@@ -115,12 +114,11 @@
         width: 38px;
         height: 38px;
         border-radius: var(--radius-sm);
-        background: var(--gradient-primary);
+        background: transparent;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.1rem;
-        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+        font-size: 1.3rem;
         flex-shrink: 0;
       }
       .section-title h2 {
@@ -168,7 +166,6 @@
       }
       .field-input:focus {
         border-color: var(--primary-light);
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
       }
       .field-input::placeholder {
         color: var(--text-light);
@@ -252,10 +249,8 @@
         border-radius: var(--radius-sm);
         cursor: pointer;
         transition: var(--transition-fast);
-        box-shadow: 0 2px 12px rgba(37, 99, 235, 0.2);
       }
       .submit-btn:hover {
-        box-shadow: 0 4px 20px rgba(37, 99, 235, 0.35);
         transform: translateY(-1px);
       }
       .cancel-link {

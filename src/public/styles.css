@@ -21,10 +21,6 @@
   --text-light: #94a3b8;
   --border: #e5e9f2;
   --border-light: #f1f5f9;
-  --shadow: 0 4px 32px 0 rgba(16, 42, 72, 0.08);
-  --shadow-lg: 0 8px 40px 0 rgba(16, 42, 72, 0.12);
-  --shadow-card: 0 2px 16px 0 rgba(16, 42, 72, 0.06), 0 4px 24px 0 rgba(16, 42, 72, 0.07);
-  --shadow-card-hover: 0 8px 30px 0 rgba(16, 42, 72, 0.10), 0 16px 48px 0 rgba(16, 42, 72, 0.13);
   --gradient-primary: linear-gradient(135deg, #1846a3 0%, #2563eb 100%);
   --gradient-hero: linear-gradient(135deg, #0f2b5e 0%, #1846a3 40%, #2563eb 100%);
   --gradient-accent: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
@@ -222,12 +218,11 @@ a:hover {
   backdrop-filter: blur(20px) saturate(200%);
   -webkit-backdrop-filter: blur(20px) saturate(200%);
   border-bottom: 1px solid rgba(229, 233, 242, 0.7);
-  box-shadow: 0 1px 16px 0 rgba(24, 70, 163, 0.07), 0 1px 3px rgba(0, 0, 0, 0.03);
   position: sticky;
   top: 0;
   z-index: 1000;
   width: 100%;
-  transition: box-shadow var(--transition-smooth), background var(--transition-smooth);
+  transition: background var(--transition-smooth);
 }
 
 .site-header .container {
@@ -262,7 +257,6 @@ a:hover {
   height: 48px;
   border-radius: 12px;
   object-fit: cover;
-  box-shadow: 0 2px 12px -2px rgba(24, 70, 163, 0.25);
   flex-shrink: 0;
   transition: transform var(--transition-fast);
 }
@@ -430,12 +424,10 @@ a:hover {
 .btn.primary {
   background: var(--gradient-primary);
   color: white;
-  box-shadow: 0 2px 8px 0 rgba(24, 70, 163, 0.15);
 }
 
 .btn.primary:hover {
   background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-  box-shadow: 0 4px 16px 0 rgba(24, 70, 163, 0.22);
   transform: translateY(-2px);
   text-decoration: none;
   color: white;
@@ -443,7 +435,6 @@ a:hover {
 
 .btn.primary:active {
   transform: translateY(-1px);
-  box-shadow: 0 2px 6px 0 rgba(24, 70, 163, 0.18);
 }
 
 .btn.primary:focus-visible {
@@ -479,7 +470,6 @@ a:hover {
   border-radius: 4px;
   cursor: pointer;
   text-decoration: none;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   transition: background 0.2s;
 }
 .back-btn:hover, .btn.ghost.back-float:hover {
@@ -537,7 +527,6 @@ a:hover {
   margin-bottom: var(--space-md);
   line-height: 1.12;
   letter-spacing: -0.03em;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.15);
 }
 
 .hero-desc {
@@ -558,11 +547,9 @@ a:hover {
   background: var(--gradient-accent);
   border: none;
   color: #fff;
-  box-shadow: 0 4px 14px rgba(46, 204, 113, 0.3);
 }
 
 .hero .actions .btn.primary:hover {
-  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
   transform: translateY(-2px);
 }
 
@@ -584,7 +571,6 @@ a:hover {
   height: 200px;
   object-fit: cover;
   border-radius: 12px;
-  box-shadow: var(--shadow);
 }
 
 /* --- Stats Section --- */
@@ -593,7 +579,6 @@ a:hover {
   padding: var(--space-xl) var(--space-lg);
   background: var(--surface);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
   border: 1px solid var(--border-light);
   position: relative;
   overflow: hidden;
@@ -622,14 +607,12 @@ a:hover {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-radius: var(--radius-md);
-  box-shadow: 0 2px 8px rgba(16, 42, 72, 0.04);
   transition: all var(--transition-smooth);
   border: 1px solid rgba(229, 233, 242, 0.6);
 }
 
 .stat:hover {
   transform: translateY(-6px);
-  box-shadow: 0 12px 32px 0 rgba(24, 70, 163, 0.12), 0 4px 12px rgba(24, 70, 163, 0.06);
   border-color: rgba(37, 99, 235, 0.2);
   background: rgba(255, 255, 255, 0.95);
 }
@@ -641,22 +624,20 @@ a:hover {
   margin-bottom: var(--space-sm);
   width: 52px;
   height: 52px;
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, rgba(24,70,163,0.08), rgba(37,99,235,0.12));
   border-radius: 14px;
   margin: 0 auto var(--space-sm) auto;
-  box-shadow: 0 4px 16px rgba(24, 70, 163, 0.2);
-  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+  transition: transform var(--transition-smooth);
 }
 
 .stat:hover .stat-icon {
   transform: scale(1.08);
-  box-shadow: 0 6px 20px rgba(24, 70, 163, 0.25);
 }
 
 .stat-icon svg {
   width: 22px;
   height: 22px;
-  stroke: white;
+  stroke: var(--primary);
   stroke-width: 2;
 }
 
@@ -678,7 +659,6 @@ a:hover {
 .card {
   background: var(--surface);
   border-radius: 16px;
-  box-shadow: var(--shadow-card);
   border: 1px solid var(--border-light);
   padding: var(--space-xl);
   transition: all var(--transition-smooth);
@@ -688,7 +668,6 @@ a:hover {
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-card-hover);
   border-color: rgba(37, 99, 235, 0.15);
 }
 
@@ -727,7 +706,6 @@ a:hover {
   border-radius: 16px;
   padding: var(--space-xl);
   border: 1px solid var(--border-light);
-  box-shadow: 0 2px 16px rgba(24, 70, 163, 0.06);
   position: relative;
   overflow: hidden;
 }
@@ -783,7 +761,6 @@ a:hover {
   padding: var(--space-xs);
   background: white;
   border-radius: 7px;
-  box-shadow: 0 2px 8px 0 rgba(24, 70, 163, 0.03);
 }
 
 .contact-label-left {
@@ -820,7 +797,6 @@ a:hover {
   padding: 10px 22px;
   font-size: 0.92rem;
   font-weight: 600;
-  box-shadow: 0 2px 12px 0 rgba(24, 70, 163, 0.2);
   border: none;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(.4,0,.2,1);
@@ -828,7 +804,6 @@ a:hover {
 .quick-apply-float-btn:hover {
   background: var(--primary-dark);
   color: #fff;
-  box-shadow: 0 4px 20px 0 rgba(24, 70, 163, 0.3);
   transform: translateY(-2px);
 }
 
@@ -860,7 +835,7 @@ a:hover {
 .quick-apply-modal-content {
   background: white;
   border-radius: 10px;
-  box-shadow: 0 12px 38px rgba(24, 70, 163, 0.17);
+  border: 1px solid var(--border-light);
   padding: var(--space-md);
   width: 100%;
   max-width: 320px;
@@ -915,14 +890,12 @@ textarea {
   font-family: inherit;
   transition: all var(--transition-fast);
   min-height: 42px;
-  box-shadow: 0 1px 3px rgba(16, 42, 72, 0.04);
 }
 
 input:focus,
 select:focus,
 textarea:focus {
   border-color: var(--primary-light);
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12), 0 1px 3px rgba(16, 42, 72, 0.04);
   background: #fff;
 }
 
@@ -1190,17 +1163,15 @@ a:focus {
 .page-card {
   background: var(--surface);
   border-radius: 22px;
-  box-shadow: var(--shadow-card);
   border: 1px solid var(--border-light);
   padding: var(--space-2xl);
   margin-bottom: var(--space-xl);
   position: relative;
   animation: fadeInUp 0.5s ease both;
-  transition: box-shadow var(--transition-smooth), transform var(--transition-smooth);
+  transition: transform var(--transition-smooth);
 }
 
 .page-card:hover {
-  box-shadow: var(--shadow-card-hover);
 }
 
 .page-card h2 {
@@ -1261,29 +1232,17 @@ a:focus {
   gap: var(--space-sm);
   transition: all var(--transition-smooth);
   background: var(--surface);
-  box-shadow: 0 2px 8px rgba(16, 42, 72, 0.04);
 }
 
 .job-listing:hover {
   background: var(--surface);
   border-left-color: var(--accent-green);
-  box-shadow: var(--shadow-card-hover);
   transform: translateX(4px) translateY(-2px);
 }
 
 .job-listing:last-child {
   border-bottom: 1px solid var(--border-light);
   margin-bottom: 0;
-}
-
-/* --- Quick Apply button pulse animation --- */
-.quick-apply-float-btn {
-  animation: pulse-glow 3s ease-in-out infinite;
-}
-
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 2px 12px 0 rgba(24, 70, 163, 0.2); }
-  50% { box-shadow: 0 2px 18px 0 rgba(24, 70, 163, 0.3); }
 }
 
 /* --- Now hiring banner enhancement --- */
@@ -1342,12 +1301,10 @@ a:focus {
 .wizard-step.active::before {
   background: var(--gradient-primary);
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(24, 70, 163, 0.15);
 }
 .wizard-step.completed::before {
   background: var(--gradient-accent);
   border-color: var(--accent-green);
-  box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.15);
 }
 .wizard-step.active { color: var(--primary); }
 .wizard-step.completed { color: var(--accent-green-dark); }
@@ -1373,7 +1330,6 @@ a:focus {
   border-radius: var(--radius-md);
   padding: var(--space-lg);
   margin-bottom: var(--space-lg);
-  box-shadow: 0 2px 8px rgba(16, 42, 72, 0.04);
   transition: border-color var(--transition-fast);
 }
 .question-card:hover {
@@ -1499,19 +1455,16 @@ a:focus {
   justify-content: center;
   color: #fff;
   font-size: 1.15rem;
-  box-shadow: 0 3px 12px rgba(24, 70, 163, 0.22);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition: transform var(--transition-fast);
 }
 .about-feature:hover .about-feature-icon {
   transform: scale(1.08);
-  box-shadow: 0 4px 16px rgba(24, 70, 163, 0.28);
 }
 
 /* --- Service Cards with gradient top border --- */
 .service-card {
   background: var(--surface);
   border-radius: 16px;
-  box-shadow: var(--shadow-card);
   border: 1px solid var(--border-light);
   padding: var(--space-xl);
   transition: all var(--transition-smooth);
@@ -1531,7 +1484,6 @@ a:focus {
 }
 .service-card:hover {
   transform: translateY(-5px);
-  box-shadow: var(--shadow-card-hover);
   border-color: rgba(37, 99, 235, 0.12);
 }
 .service-card:hover::before {
@@ -1559,7 +1511,6 @@ a:focus {
   align-items: center;
   justify-content: center;
   margin-bottom: var(--space-md);
-  box-shadow: 0 3px 10px rgba(24, 70, 163, 0.2);
   font-size: 1.2rem;
 }
 
@@ -1569,7 +1520,6 @@ a:focus {
   height: 100px;
   margin: 0 auto var(--space-xl);
   animation: checkCircle 0.6s ease both;
-  filter: drop-shadow(0 4px 16px rgba(46, 204, 113, 0.3));
 }
 .success-checkmark svg {
   width: 100%;
@@ -1657,7 +1607,6 @@ a:focus {
   background: var(--gradient-primary);
   color: #fff;
   border-color: transparent;
-  box-shadow: 0 2px 8px rgba(24, 70, 163, 0.2);
 }
 .form-progress-step.completed {
   background: var(--accent-green);
@@ -1697,7 +1646,6 @@ a:focus {
   justify-content: center;
   color: #fff;
   font-size: 1rem;
-  box-shadow: 0 2px 8px rgba(24, 70, 163, 0.15);
 }
 .form-section-header h2 {
   margin: 0;
@@ -1749,14 +1697,12 @@ a:focus {
   color: #fff;
   border: none;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(24, 70, 163, 0.15);
   transition: all var(--transition-smooth);
   min-height: 42px;
   text-decoration: none;
 }
 .btn-submit-lg:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(24, 70, 163, 0.25);
   color: #fff;
   text-decoration: none;
 }
@@ -1778,7 +1724,6 @@ a:focus {
 .info-note-card {
   background: var(--surface);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
   padding: var(--space-2xl);
   border: 1px solid var(--border-light);
   position: relative;
@@ -1879,7 +1824,6 @@ body {
 .job-listing-card {
   background: var(--surface);
   border-radius: 16px;
-  box-shadow: var(--shadow-card);
   border: 1px solid var(--border-light);
   padding: var(--space-xl);
   margin-bottom: var(--space-lg);
@@ -1900,7 +1844,6 @@ body {
 }
 .job-listing-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-card-hover);
   border-color: rgba(37, 99, 235, 0.12);
 }
 .job-listing-card:hover::before {
@@ -1919,12 +1862,10 @@ body {
 /* --- Hero image enhanced --- */
 .hero-image {
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+  transition: transform var(--transition-smooth);
 }
 .hero-image:hover {
   transform: scale(1.02);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
 }
 
 /* --- Footer section title enhancement --- */
@@ -1955,11 +1896,10 @@ body {
 
 /* --- Service icon enhanced --- */
 .service-icon {
-  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+  transition: transform var(--transition-smooth);
 }
 .service-card:hover .service-icon {
   transform: scale(1.08) rotate(-3deg);
-  box-shadow: 0 4px 16px rgba(24, 70, 163, 0.25);
 }
 
 /* --- Enhanced section title --- */
