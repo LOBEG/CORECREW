@@ -200,9 +200,9 @@
 
     /* Back button */
     .back-btn {
-      position: fixed;
-      left: 2rem;
-      top: 2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       background: var(--surface);
       border: 1.5px solid var(--border);
       padding: 0.6rem 1.4rem;
@@ -211,14 +211,14 @@
       border-radius: var(--radius-sm);
       cursor: pointer;
       text-decoration: none;
-      z-index: 1050;
       transition: all var(--transition-fast);
       font-size: 0.9rem;
+      margin-bottom: var(--space-lg);
     }
     .back-btn:hover {
       background: var(--surface-dark);
       border-color: var(--primary-light);
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
 
     /* Form actions */
@@ -231,12 +231,9 @@
     /* Responsive */
     @media (max-width: 700px) {
       .back-btn {
-        position: static;
-        display: block;
         width: 100%;
         max-width: 320px;
-        margin: 0 auto var(--space-lg) auto;
-        z-index: 1;
+        justify-content: center;
       }
       main.container { padding-top: 0 !important; }
       .wizard-step { font-size: 0.78rem; }
@@ -254,12 +251,12 @@
 <body>
   <%- include('partials/header') %>
 
-  <a href="/" class="back-btn"
-     onclick="if(document.referrer && document.referrer !== window.location.href){window.history.back();}else{window.location.href='/';} return false;">
-    &#8592; Back
-  </a>
-
   <main class="container" style="max-width: 760px;">
+    <a href="/" class="back-btn"
+       onclick="if(document.referrer && document.referrer !== window.location.href){window.history.back();}else{window.location.href='/';} return false;">
+      &#8592; Back
+    </a>
+
     <!-- Wizard progress -->
     <nav class="wizard-steps" aria-label="Application progress">
       <span class="wizard-step completed">1<br>Application Submitted</span>
