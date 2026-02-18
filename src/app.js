@@ -11,24 +11,62 @@ const multer = require('multer');
 const axios = require('axios');
 const FormData = require('form-data');
 
-// --- Redis session store setup ---
+// --- Upstash-backed session store setup ---
 const { Redis } = require('@upstash/redis');
 
-let RedisStore;
-try {
-  const connectRedis = require('connect-redis');
-  if (typeof connectRedis.default === 'function') {
-    RedisStore = connectRedis.default;
-  } 
-  else if (typeof connectRedis === 'function') {
-    RedisStore = connectRedis(session);
+class UpstashSessionStore extends session.Store {
+  constructor(client, options = {}) {
+    super();
+    this.client = client;
+    this.prefix = options.prefix || 'sess:';
+    this.defaultTtlSeconds = options.defaultTtlSeconds || 24 * 60 * 60;
   }
-  else if (connectRedis.RedisStore) {
-    RedisStore = connectRedis.RedisStore;
+
+  async get(sid, callback) {
+    try {
+      const raw = await this.client.get(`${this.prefix}${sid}`);
+      if (!raw) return callback(null, null);
+      if (typeof raw === 'string') return callback(null, JSON.parse(raw));
+      return callback(null, raw);
+    } catch (err) {
+      callback(err);
+    }
   }
-} catch (err) {
-  console.warn('connect-redis not available, using memory store');
-  RedisStore = null;
+
+  async set(sid, sess, callback) {
+    try {
+      const maxAge = Number(sess && sess.cookie && sess.cookie.maxAge);
+      const ttlSeconds = Number.isFinite(maxAge) && maxAge > 0
+        ? Math.ceil(maxAge / 1000)
+        : this.defaultTtlSeconds;
+      await this.client.set(`${this.prefix}${sid}`, JSON.stringify(sess), { ex: ttlSeconds });
+      callback && callback(null);
+    } catch (err) {
+      callback && callback(err);
+    }
+  }
+
+  async destroy(sid, callback) {
+    try {
+      await this.client.del(`${this.prefix}${sid}`);
+      callback && callback(null);
+    } catch (err) {
+      callback && callback(err);
+    }
+  }
+
+  async touch(sid, sess, callback) {
+    try {
+      const maxAge = Number(sess && sess.cookie && sess.cookie.maxAge);
+      const ttlSeconds = Number.isFinite(maxAge) && maxAge > 0
+        ? Math.ceil(maxAge / 1000)
+        : this.defaultTtlSeconds;
+      await this.client.expire(`${this.prefix}${sid}`, ttlSeconds);
+      callback && callback(null);
+    } catch (err) {
+      callback && callback(err);
+    }
+  }
 }
 
 let upstashRestUrl = process.env.UPSTASH_REDIS_REST_URL;
@@ -83,46 +121,15 @@ const sessionConfig = {
   },
 };
 
-if (RedisStore && redisClient) {
+if (redisClient) {
   try {
-    sessionConfig.store = new RedisStore({ 
-      client: redisClient, 
+    sessionConfig.store = new UpstashSessionStore(redisClient, {
       prefix: 'sess:',
-      serializer: {
-        stringify: function(obj) {
-          return JSON.stringify(obj);
-        },
-        parse: function(str) {
-          try {
-            const parsed = JSON.parse(str);
-            if (parsed && typeof parsed === 'object' && !parsed.cookie) {
-              parsed.cookie = {
-                originalMaxAge: 24 * 60 * 60 * 1000,
-                expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-                secure: process.env.NODE_ENV === 'production',
-                httpOnly: true,
-                sameSite: process.env.NODE_ENV === 'production' ? 'lax' : false
-              };
-            }
-            return parsed;
-          } catch (err) {
-            console.warn('Failed to parse session data, returning empty object:', err.message);
-            return {
-              cookie: {
-                originalMaxAge: 24 * 60 * 60 * 1000,
-                expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-                secure: process.env.NODE_ENV === 'production',
-                httpOnly: true,
-                sameSite: process.env.NODE_ENV === 'production' ? 'lax' : false
-              }
-            };
-          }
-        }
-      }
+      defaultTtlSeconds: 24 * 60 * 60,
     });
-    console.log('Using Redis session store');
+    console.log('Using Upstash-backed session store');
   } catch (err) {
-    console.warn('Failed to create Redis store, using memory store:', err.message);
+    console.warn('Failed to create Upstash session store, using memory store:', err.message);
   }
 } else {
   console.warn('Using memory session store (not recommended for production)');

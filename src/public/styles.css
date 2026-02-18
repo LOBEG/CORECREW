@@ -260,7 +260,7 @@ a:hover {
   flex-shrink: 0;
   transition: transform var(--transition-fast);
 }
-.brand:hover .logo { transform: scale(1.05); }
+.brand:hover .logo { transform: none; }
 
 /* Hamburger menu toggle */
 .nav-toggle {
@@ -306,21 +306,7 @@ a:hover {
   transition: all var(--transition-fast);
   position: relative;
 }
-.site-header nav a.btn.ghost::after {
-  content: '';
-  position: absolute;
-  bottom: 6px;
-  left: 50%;
-  transform: translateX(-50%) scaleX(0);
-  width: 60%;
-  height: 2px;
-  background: var(--accent-green);
-  border-radius: 1px;
-  transition: transform var(--transition-fast);
-}
-.site-header nav a.btn.ghost:hover::after {
-  transform: translateX(-50%) scaleX(1);
-}
+.site-header nav a.btn.ghost::after { display: none; }
 /* Hide Apply Now button in header on all screens */
 .site-header nav a.btn.primary {
   display: none !important;

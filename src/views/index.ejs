@@ -253,7 +253,6 @@
       .hero-btn-primary:hover,
       .hero-btn-primary:active {
         background: var(--primary-dark);
-        transform: translateY(-3px);
         color: #fff;
         text-decoration: none;
         box-shadow: none;
@@ -263,7 +262,7 @@
         color: #fff;
         text-decoration: none;
         box-shadow: none;
-        outline: 2px solid var(--primary-light);
+        outline: 2px solid rgba(255, 255, 255, 0.85);
         outline-offset: 2px;
       }
       .hero-btn-accent {
@@ -273,7 +272,6 @@
       .hero-btn-accent:hover,
       .hero-btn-accent:active {
         background: var(--accent-green-dark);
-        transform: translateY(-3px);
         color: #fff;
         text-decoration: none;
         box-shadow: none;
@@ -283,7 +281,7 @@
         color: #fff;
         text-decoration: none;
         box-shadow: none;
-        outline: 2px solid var(--accent-green);
+        outline: 2px solid rgba(255, 255, 255, 0.85);
         outline-offset: 2px;
       }
       .hero-btn-ghost {
@@ -296,7 +294,6 @@
         background: var(--surface-dark);
         border-color: var(--primary-light);
         color: var(--primary);
-        transform: translateY(-3px);
         text-decoration: none;
         box-shadow: none;
       }
@@ -700,6 +697,15 @@
         color: #fff;
         text-decoration: none;
         box-shadow: none;
+      }
+      .home-header nav a.btn.primary.home-apply-btn:focus,
+      .home-header nav a.btn.primary.home-apply-btn:active,
+      .home-header nav a.btn.primary.home-apply-btn:focus-visible {
+        background: var(--primary-dark);
+        color: #fff;
+        box-shadow: none;
+        outline: 2px solid rgba(255, 255, 255, 0.85);
+        outline-offset: 2px;
       }
       @media (max-width: 700px) {
         .home-header nav a.btn.primary.home-apply-btn {
