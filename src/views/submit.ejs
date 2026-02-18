@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Application Submitted — Core Crew Logistics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
+  <link rel="stylesheet" href="/public/styles.css" />
+  <style>
+    .submit-page {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: calc(100vh - 80px);
+      padding: 48px 16px 64px;
+    }
+
+    .submit-card {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+      max-width: 600px;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    /* Animated checkmark */
+    .checkmark-area {
+      background: var(--gradient-accent);
+      padding: 40px 24px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .checkmark-svg {
+      width: 96px;
+      height: 96px;
+    }
+
+    .checkmark-circle {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.3);
+      stroke-width: 3;
+    }
+
+    .checkmark-circle-fill {
+      fill: none;
+      stroke: #fff;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-dasharray: 226;
+      stroke-dashoffset: 226;
+      animation: circle-draw 0.6s ease-out 0.2s forwards;
+      transform-origin: center;
+    }
+
+    .checkmark-tick {
+      fill: none;
+      stroke: #fff;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 50;
+      stroke-dashoffset: 50;
+      animation: tick-draw 0.4s ease-out 0.7s forwards;
+    }
+
+    @keyframes circle-draw {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes tick-draw {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .checkmark-title {
+      color: #fff;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 16px 0 0;
+      text-align: center;
+      opacity: 0;
+      animation: fade-up 0.5s ease-out 1s forwards;
+    }
+
+    /* Card body */
+    .submit-card .card-body {
+      padding: 32px 32px 28px;
+    }
+
+    /* Branding row */
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+    }
+
+    .brand-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--primary);
+    }
+
+    /* Greeting */
+    .greeting {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0 0 6px;
+    }
+
+    .greeting-sub {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin: 0 0 24px;
+      line-height: 1.6;
+    }
+
+    /* Timeline */
+    .timeline {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin: 0 0 28px;
+      padding: 20px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 44px;
+      left: 12%;
+      right: 12%;
+      height: 3px;
+      background: var(--accent-green);
+      border-radius: 2px;
+      z-index: 0;
+    }
+
+    .timeline-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .timeline-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .timeline-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text);
+      text-align: center;
+    }
+
+    /* What's Next box */
+    .next-steps {
+      background: var(--surface-dark);
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      border-left: 4px solid var(--primary);
+    }
+
+    .next-steps-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .next-steps ul {
+      margin: 0;
+      padding: 0 0 0 20px;
+      list-style: none;
+    }
+
+    .next-steps li {
+      position: relative;
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.7;
+      padding-left: 6px;
+    }
+
+    .next-steps li::before {
+      content: '✓';
+      position: absolute;
+      left: -20px;
+      color: var(--accent-green);
+      font-weight: 700;
+    }
+
+    /* Actions */
+    .submit-actions {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .btn-home {
+      display: inline-block;
+      padding: 14px 40px;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background var(--transition-fast);
+    }
+
+    .btn-home:hover {
+      background: var(--primary-dark);
+      color: #fff;
+    }
+
+    .redirect-note {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .redirect-note .dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      margin-right: 6px;
+      animation: pulse-dot 1.5s ease-in-out infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    /* Contact */
+    .contact-note {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      padding: 16px 32px 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .contact-note a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .contact-note a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .submit-page {
+        padding: 24px 12px 48px;
+      }
+
+      .checkmark-area {
+        padding: 32px 16px 24px;
+      }
+
+      .checkmark-svg {
+        width: 72px;
+        height: 72px;
+      }
+
+      .checkmark-title {
+        font-size: 1.25rem;
+      }
+
+      .submit-card .card-body {
+        padding: 24px 20px 20px;
+      }
+
+      .timeline::before {
+        left: 8%;
+        right: 8%;
+      }
+
+      .timeline-icon {
+        width: 26px;
+        height: 26px;
+      }
+
+      .timeline-icon svg {
+        width: 13px;
+        height: 13px;
+      }
+
+      .timeline-label {
+        font-size: 0.65rem;
+      }
+
+      .next-steps {
+        padding: 16px 18px;
+      }
+
+      .contact-note {
+        padding: 14px 20px 18px;
+      }
+    }
+  </style>
+  <script>
+    setTimeout(function() {
+      window.location.href = "/";
+    }, 4000);
+  </script>
+</head>
+<body>
+  <%- include('partials/header') %>
+  <main>
+    <div class="submit-page">
+      <div class="submit-card">
+
+        <!-- Animated success checkmark -->
+        <div class="checkmark-area">
+          <svg class="checkmark-svg" viewBox="0 0 96 96">
+            <circle class="checkmark-circle" cx="48" cy="48" r="36" />
+            <circle class="checkmark-circle-fill" cx="48" cy="48" r="36" />
+            <path class="checkmark-tick" d="M30 50 L42 62 L66 36" />
+          </svg>
+          <div class="checkmark-title">Application Submitted!</div>
+        </div>
+
+        <!-- Card body -->
+        <div class="card-body">
+
+          <!-- Company branding -->
+          <div class="brand-row">
+            <img src="/public/img/logo.jpg" alt="Core Crew Logistics" class="brand-logo" />
+            <span class="brand-name">Core Crew Logistics</span>
+          </div>
+
+          <!-- Personalized greeting -->
+          <p class="greeting">Congratulations, <%= firstName %>!</p>
+          <p class="greeting-sub">Your application has been received and is now being processed. We appreciate your interest in joining our team.</p>
+
+          <!-- Application timeline -->
+          <div class="timeline">
+            <div class="timeline-step">
+              <div class="timeline-icon">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="timeline-label">Applied</span>
+            </div>
+            <div class="timeline-step">
+              <div class="timeline-icon">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="timeline-label">Interview</span>
+            </div>
+            <div class="timeline-step">
+              <div class="timeline-icon">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="timeline-label">Verified</span>
+            </div>
+            <div class="timeline-step">
+              <div class="timeline-icon">
+                <svg viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5L6.5 11.5L12.5 4.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="timeline-label">Complete</span>
+            </div>
+          </div>
+
+          <!-- What's Next info box -->
+          <div class="next-steps">
+            <div class="next-steps-title">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="#1846a3" stroke-width="2"/><path d="M9 5.5V9.5" stroke="#1846a3" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="12.5" r="1" fill="#1846a3"/></svg>
+              What's Next?
+            </div>
+            <ul>
+              <li>Our recruiting team will review your application within 1&ndash;3 business days</li>
+              <li>You will receive an email confirmation with your application details</li>
+              <li>A team member will reach out to schedule next steps if selected</li>
+              <li>You can check your application status anytime on our portal</li>
+            </ul>
+          </div>
+
+          <!-- CTA -->
+          <div class="submit-actions">
+            <a class="btn-home" href="/">Go to Homepage Now</a>
+            <div class="redirect-note">
+              <span class="dot"></span>Redirecting to homepage automatically&hellip;
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Contact info -->
+        <div class="contact-note">
+          Questions? Reach us at <a href="mailto:info@corecrewlogistics.com">info@corecrewlogistics.com</a> or call our recruiting line.
+        </div>
+
+      </div>
+    </div>
+  </main>
+</body>
+</html>

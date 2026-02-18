@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title><%= job.title %> — Job Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
+  <link rel="stylesheet" href="/public/styles.css" />
+  <style>
+    .job-detail-header {
+      background: var(--gradient-primary);
+      margin: calc(-1 * var(--space-2xl)) calc(-1 * var(--space-2xl)) var(--space-xl);
+      padding: var(--space-2xl) var(--space-2xl) var(--space-xl);
+      border-radius: 22px 22px 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-md);
+    }
+    .job-detail-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 0;
+      width: 100%;
+    }
+    .job-detail-header .job-badge {
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 100px;
+    }
+    .job-detail-header .job-badge.type {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    .job-detail-header .job-badge.category {
+      background: var(--accent-orange);
+      color: #fff;
+      border: none;
+    }
+    .job-detail-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      margin-bottom: var(--space-xl);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .job-detail-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      background: var(--surface-dark);
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-weight: 500;
+    }
+    .benefits-heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary);
+      font-size: 1.08rem;
+      font-weight: 700;
+      margin-bottom: var(--space-sm);
+    }
+    .benefits-heading::before {
+      content: '';
+      width: 4px;
+      height: 18px;
+      background: var(--gradient-accent);
+      border-radius: 2px;
+    }
+    .benefit-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, rgba(46,204,113,0.08), rgba(39,174,96,0.05));
+      border: 1px solid rgba(46,204,113,0.18);
+      border-radius: 100px;
+      font-size: 0.9rem;
+      color: var(--accent-green-dark);
+      font-weight: 500;
+      transition: all var(--transition-fast);
+    }
+    .benefit-chip:hover {
+      background: linear-gradient(135deg, rgba(46,204,113,0.15), rgba(39,174,96,0.10));
+      border-color: rgba(46,204,113,0.3);
+      transform: translateY(-1px);
+    }
+    .applicants-count {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      background: var(--surface-dark);
+      padding: 6px 14px;
+      border-radius: 100px;
+    }
+    .apply-btn-lg {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      padding: 16px 40px;
+      font-size: 1.12rem;
+      font-weight: 700;
+      border-radius: 12px;
+      background: var(--gradient-primary);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: all var(--transition-smooth);
+      text-decoration: none;
+      min-height: 54px;
+      letter-spacing: 0.01em;
+    }
+    .apply-btn-lg:hover {
+      transform: translateY(-3px);
+      color: #fff;
+    }
+    @media (max-width: 600px) {
+      .job-detail-header {
+        margin: calc(-1 * var(--space-2xl)) calc(-1 * var(--space-2xl)) var(--space-lg);
+        padding: var(--space-xl) var(--space-lg);
+      }
+      .job-detail-title { font-size: 1.25rem; }
+      .apply-btn-lg { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <%- include('partials/header') %>
+  <main class="container">
+    <div class="back-row">
+      <a href="/jobs" class="btn ghost">
+        &larr; Back to Open Positions
+      </a>
+    </div>
+    <section class="page-card">
+      <div class="job-detail-header">
+        <h2 class="job-detail-title" style="margin:0;"><%= job.title %></h2>
+        <span class="job-badge type"><%= job.type %></span>
+        <% if (job.category) { %>
+          <span class="job-badge category"><%= job.category %></span>
+        <% } %>
+      </div>
+      <div class="job-detail-meta">
+        <span>📅 <%= job.posted %></span>
+        <span>📍 <%= job.location %></span>
+        <span>💰 <%= job.salary %></span>
+        <span>📊 <%= job.experience %> experience</span>
+      </div>
+      <p style="line-height:1.7;margin-bottom:var(--space-lg);"><%= job.description %></p>
+      <div style="margin:var(--space-lg) 0;">
+        <div class="benefits-heading">Key Benefits</div>
+        <ul class="benefits-list">
+          <% job.benefits.forEach(function(benefit){ %>
+            <li class="benefit-chip"><%= benefit %></li>
+          <% }); %>
+        </ul>
+      </div>
+      <div class="applicants-count">👤 <%= job.applicants %> applicants</div>
+      <div class="actions">
+        <a href="/apply?position=<%= encodeURIComponent(job.title) %>" class="apply-btn-lg">Apply Now →</a>
+      </div>
+    </section>
+  </main>
+  <%- include('partials/footer') %>
+</body>
+</html>

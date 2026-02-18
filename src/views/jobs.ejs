@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jobs & Careers — Core Crew Logistics</title>
+    <link rel="icon" type="image/jpeg" href="/public/img/logo.jpg" />
+    <link rel="stylesheet" href="/public/styles.css" />
+    <style>
+      .jobs-hero-heading {
+        font-size: 1.5rem;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
+        margin-bottom: var(--space-sm);
+      }
+      .job-listing {
+        border: 1px solid var(--border-light);
+        border-left: 4px solid var(--primary);
+        border-radius: 14px;
+        padding: 22px 26px;
+        margin-bottom: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: all 0.3s cubic-bezier(.4,0,.2,1);
+        background: var(--surface);
+        position: relative;
+        overflow: hidden;
+      }
+      .job-listing::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(24,70,163,0.02) 0%, rgba(37,99,235,0.03) 100%);
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+      }
+      .job-listing:hover {
+        border-left-color: var(--accent-green);
+        transform: translateX(4px);
+      }
+      .job-listing:hover::before {
+        opacity: 1;
+      }
+      .job-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .job-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        text-decoration: none;
+        transition: color 0.2s;
+        letter-spacing: -0.01em;
+      }
+      .job-title:hover {
+        color: var(--primary-light);
+        text-decoration: none;
+      }
+      .job-badge {
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.82rem;
+        font-weight: 600;
+        padding: 4px 14px;
+        border-radius: 100px;
+        border: 1px solid var(--border-light);
+        letter-spacing: 0.01em;
+      }
+      .job-badge.type {
+        background: linear-gradient(135deg, rgba(24,70,163,0.08), rgba(37,99,235,0.12));
+        color: var(--primary);
+        border-color: rgba(24,70,163,0.12);
+      }
+      .job-badge.category {
+        background: linear-gradient(135deg, #f7b731, #f5a623);
+        color: #fff;
+        border-color: transparent;
+      }
+      .job-actions {
+        margin-top: 8px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .job-actions a {
+        border-radius: 8px;
+        padding: 9px 22px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.25s cubic-bezier(.4,0,.2,1);
+        font-size: 0.95rem;
+      }
+      .job-actions a.details {
+        background: transparent;
+        color: var(--primary);
+        border: 1.5px solid var(--border);
+      }
+      .job-actions a.details:hover {
+        background: var(--surface-dark);
+        border-color: var(--primary-light);
+        color: var(--primary-dark);
+      }
+      .job-actions a.btn.primary {
+      }
+      .job-actions a.btn.primary:hover {
+        transform: translateY(-2px);
+      }
+      @media (max-width: 600px) {
+        .job-header { flex-direction: column; gap: 6px; align-items: flex-start; }
+        .job-actions { flex-direction: column; gap: 7px; }
+        .job-listing { padding: 16px; }
+        .job-actions a { text-align: center; width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('partials/header') %>
+    <main class="container">
+      <div class="back-row">
+        <a href="/" class="btn ghost">
+          &larr; Back to Homepage
+        </a>
+      </div>
+      <section class="page-card">
+        <h2 class="jobs-hero-heading">Open Positions</h2>
+        <p>Click the position title to view details or apply. All positions may be available as <strong>Full Time</strong> or <strong>Part Time</strong>.</p>
+        <% Object.entries(jobDetails).forEach(function([key, job]) { %>
+          <div class="job-listing">
+            <div class="job-header">
+              <a href="/jobs/<%= key %>" class="job-title"><%= job.title %></a>
+              <span class="job-badge type"><%= job.type %></span>
+              <% if (job.category) { %>
+                <span class="job-badge category"><%= job.category %></span>
+              <% } %>
+            </div>
+            <div class="job-actions">
+              <a href="/jobs/<%= key %>" class="details">View Details</a>
+              <a href="/apply?position=<%= encodeURIComponent(job.title) %>" class="btn primary">Apply Now</a>
+            </div>
+          </div>
+        <% }) %>
+      </section>
+    </main>
+    <%- include('partials/footer') %>
+  </body>
+</html>
