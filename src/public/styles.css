@@ -379,12 +379,9 @@ a:hover {
   .site-header .logo { width: 24px; height: 24px;}
 }
 
-/* HORIZONTAL SCROLL INDICATOR - NAV */
+/* Header nav background kept plain to avoid placeholder-like bar artifacts */
 .site-header nav {
-  background:
-    linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1) 85%) 100% 50%/40px 100% no-repeat,
-    linear-gradient(to left, rgba(255,255,255,0), rgba(255,255,255,1) 85%) 0 50%/40px 100% no-repeat;
-  background-attachment: local, local;
+  background: none;
 }
 
 /* --- Buttons --- */

