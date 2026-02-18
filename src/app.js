@@ -10,6 +10,10 @@ const cors = require('cors');
 const multer = require('multer');
 const axios = require('axios');
 const FormData = require('form-data');
+const nodemailer = require('nodemailer');
+const { rateLimit } = require('express-rate-limit');
+const DEFAULT_SMTP_PORT = 465;
+const SMTP_TIMEOUT_MS = parseInt(process.env.SMTP_TIMEOUT_MS, 10) || 10000;
 
 // --- Upstash-backed session store setup ---
 const { Redis } = require('@upstash/redis');
@@ -252,6 +256,78 @@ app.get('/sitemap.xml', (req, res) => {
 });
 
 app.get('/healthz', (req, res) => res.json({ ok: true }));
+
+const healthzEmailLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 30,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: { ok: false, error: 'rate_limited' }
+});
+
+app.get('/healthz/email', healthzEmailLimiter, async (req, res) => {
+  const healthzEmailToken = process.env.HEALTHZ_EMAIL_TOKEN;
+  if (healthzEmailToken && req.query.token !== healthzEmailToken) {
+    return res.status(403).json({ ok: false, error: 'forbidden' });
+  }
+
+  const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
+  const parsedSmtpPort = parseInt(process.env.SMTP_PORT, 10);
+  const smtpPort = Number.isFinite(parsedSmtpPort) && parsedSmtpPort > 0 ? parsedSmtpPort : DEFAULT_SMTP_PORT;
+  const smtpUser = process.env.SMTP_USER || process.env.GMAIL_USER || process.env.EMAIL_USER;
+  const smtpPass = process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD || process.env.GMAIL_PASS || process.env.EMAIL_PASS;
+  const userHint = (typeof smtpUser === 'string' && smtpUser.includes('@'))
+    ? smtpUser.replace(/(.{1,2}).*(@.*)/, '$1***$2')
+    : (smtpUser ? String(smtpUser).slice(0, 2) + '***' : '');
+
+  if (!smtpUser || !smtpPass) {
+    return res.status(500).json({
+      ok: false,
+      configured: false,
+      error: 'SMTP credentials missing',
+      expectedEnv: [
+        'SMTP_USER/SMTP_PASS',
+        'GMAIL_USER/GMAIL_APP_PASSWORD',
+        'GMAIL_USER/GMAIL_PASS',
+        'EMAIL_USER/EMAIL_PASS'
+      ]
+    });
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpPort === DEFAULT_SMTP_PORT,
+      auth: {
+        user: smtpUser,
+        pass: smtpPass,
+      },
+      connectionTimeout: SMTP_TIMEOUT_MS,
+      greetingTimeout: SMTP_TIMEOUT_MS,
+      socketTimeout: SMTP_TIMEOUT_MS,
+    });
+
+    await transporter.verify();
+    return res.json({
+      ok: true,
+      configured: true,
+      smtpHost,
+      smtpPort,
+      userHint
+    });
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      configured: true,
+      smtpHost,
+      smtpPort,
+      userHint,
+      error: 'SMTP verification failed',
+      detail: healthzEmailToken ? (error && error.message ? error.message : '') : undefined
+    });
+  }
+});
 
 const upload = multer({ dest: '/tmp/' });
 
