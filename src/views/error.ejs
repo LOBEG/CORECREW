@@ -14,7 +14,8 @@
         <div class="error-icon">⚠️</div>
         <h2>Something Went Wrong</h2>
         <p><%= message %></p>
-        <a class="btn primary" href="/apply">Go Back</a>
+        <a class="btn primary" href="/apply/verify"
+           onclick="if(document.referrer && document.referrer !== window.location.href){window.history.back();}else{window.location.href='/apply/verify';} return false;">Go Back</a>
       </div>
     </main>
     <%- include('partials/footer') %>

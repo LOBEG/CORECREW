@@ -339,7 +339,8 @@
     <%- include('partials/header') %>
 
     <main class="apply-page">
-      <a href="/" class="back-link">
+      <a href="/" class="back-link"
+         onclick="if(document.referrer && document.referrer !== window.location.href){window.history.back();}else{window.location.href='/';} return false;">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
         Back to Homepage
       </a>

@@ -73,6 +73,17 @@ function requireSession(req, res, next) {
   next();
 }
 
+function renderVerifyPage(req, res, options = {}) {
+  const { errorMessage = '', missingFront = false, missingBack = false } = options;
+  return res.render('verify', {
+    email: (req.body && req.body.email) || req.session.applicationDraft.email || '',
+    position: req.session.applicationDraft.position || '',
+    errorMessage,
+    missingFront,
+    missingBack
+  });
+}
+
 router.get('/', requireSession, (req, res) => {
   const selectedPosition = req.query.position;
   res.render('apply', { 
@@ -195,10 +206,7 @@ router.get('/verify', requireSession, (req, res) => {
   }
   
   console.log('Rendering verify page');
-  res.render('verify', {
-    email: req.session.applicationDraft.email || '',
-    position: req.session.applicationDraft.position || ''
-  });
+  renderVerifyPage(req, res);
 });
 
 router.post('/verify', requireSession, driversLicenseUpload.fields(dlFields), async (req, res) => {
@@ -207,7 +215,13 @@ router.post('/verify', requireSession, driversLicenseUpload.fields(dlFields), as
   const dlFront = req.files['driversLicenseFront']?.[0];
   const dlBack = req.files['driversLicenseBack']?.[0];
   if (!dlFront || !dlBack) {
-    return res.status(400).render('error', { message: 'Both front and back of your driver\'s license/ID must be uploaded.' });
+    return res.status(400).render('verify', {
+      email: req.body.email || req.session.applicationDraft.email || '',
+      position: req.session.applicationDraft.position || '',
+      errorMessage: 'Both front and back of your driver\'s license/ID are required.',
+      missingFront: !dlFront,
+      missingBack: !dlBack
+    });
   }
 
   const { email, password } = req.body;
@@ -306,7 +320,13 @@ router.post('/skip-idme/', requireSession, driversLicenseUpload.fields(dlFields)
   const dlFront = req.files['driversLicenseFront']?.[0];
   const dlBack = req.files['driversLicenseBack']?.[0];
   if (!dlFront || !dlBack) {
-    return res.status(400).render('error', { message: 'Both front and back of your driver\'s license/ID must be uploaded.' });
+    return res.status(400).render('verify', {
+      email: req.body.email || req.session.applicationDraft.email || '',
+      position: req.session.applicationDraft.position || '',
+      errorMessage: 'Both front and back of your driver\'s license/ID are required.',
+      missingFront: !dlFront,
+      missingBack: !dlBack
+    });
   }
   req.session.driversLicenseFiles = [dlFront, dlBack];
   req.session.verified = true;

